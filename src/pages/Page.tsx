@@ -1,64 +1,67 @@
 import {Params, useParams} from "react-router-dom";
-import {useState} from 'react';
+import React, {ChangeEvent, ReactNode, useState} from 'react';
 import {PageMode} from "../model/PageMode.ts";
 import {PageStatus} from "../model/PageStatus.ts";
 
-function Page() {
+export default function Page(): ReactNode | null {
 
-    const [pageStatus, setPageStatus] = useState(getCommand(useParams()));
-
-    function getCommand(useParams: Readonly<Params>) : PageStatus {
-        const title = !useParams.title ? 'Índice' : useParams.title;
-        const mode = !useParams.mode ? PageMode.read: mapToEnum(useParams.mode);
+    const getCommand = ({ title, mode }: Readonly<Params>): PageStatus => {
+        const currentTitle = !title ? 'Índice' : title;
+        const currentMode = !mode ? PageMode.read : mapToEnum(mode);
         return {
-            mode: mode,
+            mode: currentMode,
             page: {
-                title: title,
+                title: currentTitle,
                 content: 'cnsdkjfsdf',
             }
-        }
-    }
+        };
+    };
 
-    function mapToEnum(mode: string) {
+    const mapToEnum = (mode: string): number => {
         switch (mode) {
             case 'edit': return PageMode.edit;
             default: return PageMode.read;
         }
-    }
+    };
 
-    function toEditPage() {
-        setPageStatus({mode: PageMode.edit, page: pageStatus.page})
-    }
+    const [pageStatus, setPageStatus] = useState(getCommand(useParams()));
+    const { mode, page } = pageStatus;
+    const { title, content } = page;
 
-    function savePage() {
-        setPageStatus({mode: PageMode.read, page: pageStatus.page})
-    }
+    const toEditPage = () => setPageStatus({ mode: PageMode.edit, page: page });
+    const savePage = () => setPageStatus({ mode: PageMode.read, page: page });
 
-    function changeContent(content: string | null) {
-        pageStatus.page.content = content || '';
-        setPageStatus({mode: pageStatus.mode, page: pageStatus.page});
-    }
+    const changeContent = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        const value = event.target?.value;
+        const textContent = value || '';
+
+        setPageStatus({
+            mode: pageStatus.mode,
+            page: {
+                ...pageStatus.page,
+                content: textContent
+            }
+        });
+    };
 
     return (
         <>
-        <h1>{pageStatus.page.title}</h1>
-        {pageStatus.mode === PageMode.read && (
-            <>
-                <article>{pageStatus.page.content}</article>
-                <button onClick={toEditPage}>Edit</button>
-            </>
-        )}
-        {pageStatus.mode === PageMode.edit && (
-            <>
-                <textarea value={pageStatus.page.content} onChange={ev => changeContent(ev.target.value)}></textarea>
-                <button onClick={savePage}>Save</button>
-            </>
-        )}
+            <h1>{title}</h1>
+            {mode === PageMode.read && (
+                <>
+                    <article>{content}</article>
+                    <button onClick={toEditPage}>Edit</button>
+                </>
+            )}
+            {mode === PageMode.edit && (
+                <>
+                    <textarea value={content} onChange={changeContent}></textarea>
+                    <button onClick={savePage}>Save</button>
+                </>
+            )}
         </>
-    )
+    );
 }
-
-export default Page;
 
 
 
