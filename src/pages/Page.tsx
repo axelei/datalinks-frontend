@@ -1,7 +1,8 @@
 import {Params, useParams} from "react-router-dom";
-import {useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import {PageMode} from "../model/PageMode.ts";
 import {PageStatus} from "../model/PageStatus.ts";
+import {clone} from "../service/Common.ts";
 
 function Page() {
 
@@ -12,7 +13,7 @@ function Page() {
         const mode = !useParams.mode ? PageMode.read: mapToEnum(useParams.mode);
         return {
             mode: mode,
-            page: {
+            article: {
                 title: title,
                 content: 'cnsdkjfsdf',
             }
@@ -26,34 +27,39 @@ function Page() {
         }
     }
 
-    function toEditPage() {
-        setPageStatus({mode: PageMode.edit, page: pageStatus.page})
+    function editPageEvent() {
+        setPageStatus({mode: PageMode.edit, article: pageStatus.article, editingArticle: clone(pageStatus.article) })
     }
 
-    function savePage() {
-        setPageStatus({mode: PageMode.read, page: pageStatus.page})
+    function savePageEvent() {
+        setPageStatus({mode: PageMode.read, article: clone(pageStatus.editingArticle)})
     }
 
-    function changeContent(content: string | null) {
-        pageStatus.page.content = content || '';
-        setPageStatus({mode: pageStatus.mode, page: pageStatus.page});
+    function changeContentEvent(ev: ChangeEvent<HTMLTextAreaElement>) {
+        pageStatus.editingArticle.content = ev.target.value || '';
+        setPageStatus({mode: pageStatus.mode, article: pageStatus.article, editingArticle: pageStatus.editingArticle });
+    }
+
+    function cancelEditionEvent() {
+        setPageStatus({mode: PageMode.read, article: pageStatus.article });
     }
 
     return (
         <>
-        <h1>{pageStatus.page.title}</h1>
+        <h1>{pageStatus.article.title}</h1>
         {pageStatus.mode === PageMode.read && (
             <>
-                <article>{pageStatus.page.content}</article>
-                <button onClick={toEditPage}>Edit</button>
+                <article>{pageStatus.article.content}</article>
+                <button onClick={editPageEvent}>Edit</button>
             </>
         )}
-        {pageStatus.mode === PageMode.edit && (
-            <>
-                <textarea value={pageStatus.page.content} onChange={ev => changeContent(ev.target.value)}></textarea>
-                <button onClick={savePage}>Save</button>
-            </>
-        )}
+            {pageStatus.mode === PageMode.edit && (
+                <>
+                    <textarea value={pageStatus.editingArticle.content} onChange={changeContentEvent}></textarea>
+                    <button onClick={savePageEvent}>Save</button>
+                    <button onClick={cancelEditionEvent}>Cancel</button>
+                </>
+            )}
         </>
     )
 }

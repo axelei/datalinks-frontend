@@ -1,7 +1,8 @@
 import {PageMode} from "./PageMode.ts";
-import {PageObject} from "./PageObject.ts";
+import {Article} from "./Article.ts";
 
 export interface PageStatus {
     mode: PageMode;
-    page: PageObject;
+    editingArticle? : Article,
+    article: Article;
 }

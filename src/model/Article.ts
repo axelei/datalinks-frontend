@@ -1,4 +1,4 @@
-export interface PageObject {
+export interface Article {
     title: string;
     content: string;
 }
