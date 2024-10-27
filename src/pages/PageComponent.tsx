@@ -1,10 +1,11 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
+import {Page} from "../model/page/Page.ts";
 
 export default function PageComponent() : ReactNode | null {
 
-    const fetchPage = async (title : string) : Promise<object> => {
+    const fetchPage = async (title : string) : Promise<Page> => {
         const data = await fetch('http://localhost:8080/page/' + title);
         return data.json();
     }
@@ -42,12 +43,12 @@ export default function PageComponent() : ReactNode | null {
         }
 
         const apiResponse = fetchPage(currentTitle);
-        const { title: reponseTitle, content: responseContent } = apiResponse;
+        apiResponse.then(data => {
+            setTitle(data.title);
+            setContent(data.content);
 
-        setTitle(reponseTitle);
-        setContent(responseContent);
-
-        document.title = 'Datalinks' + ' - ' + reponseTitle;
+            document.title = 'Datalinks' + ' - ' + data.title;
+        })
 
     }, [location.pathname]);
 
