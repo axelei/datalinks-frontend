@@ -1,14 +1,14 @@
 import {createBrowserRouter} from "react-router-dom";
-import Page from "./pages/Page.tsx";
+import PageComponent from "./pages/PageComponent.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Page />,
+        element: <PageComponent />,
         children: [
             {
                 path: "/Page/:title",
-                element: <Page />,
+                element: <PageComponent />,
             }
         ]
     },
