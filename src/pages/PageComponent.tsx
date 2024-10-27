@@ -1,18 +1,12 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
-import {useLocation, useSearchParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
 export default function PageComponent() : ReactNode | null {
 
-    const fetchPage = (title : string) : void => {
-        fetch('http://localhost:8080/page/' + title)
-            .then(response => response.json())
-            .then(response => {
-                console.log(response.title);
-                setTitle(response.title);
-                setContent(response.content);
-                document.title = 'Datalinks' + ' - ' + response.title;
-            });
+    const fetchPage = async (title : string) : Promise<object> => {
+        const data = await fetch('http://localhost:8080/page/' + title);
+        return data.json();
     }
 
     const editPageEvent = () : void => {
@@ -46,7 +40,15 @@ export default function PageComponent() : ReactNode | null {
         if (!currentTitle) {
             currentTitle = 'Índice';
         }
-        fetchPage(currentTitle);
+
+        const apiResponse = fetchPage(currentTitle);
+        const { title: reponseTitle, content: responseContent } = apiResponse;
+
+        setTitle(reponseTitle);
+        setContent(responseContent);
+
+        document.title = 'Datalinks' + ' - ' + reponseTitle;
+
     }, [location.pathname]);
 
 
