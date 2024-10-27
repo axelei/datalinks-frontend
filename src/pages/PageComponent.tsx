@@ -47,7 +47,7 @@ export default function PageComponent() : ReactNode | null {
         setTitle(reponseTitle);
         setContent(responseContent);
 
-        document.title = 'Datalinks' + ' - ' + responseContent;
+        document.title = 'Datalinks' + ' - ' + reponseTitle;
 
     }, [location.pathname]);
 
