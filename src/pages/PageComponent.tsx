@@ -2,6 +2,9 @@ import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
 import {Page} from "../model/page/Page.ts";
+import Button from '@mui/material/Button';
+import {TextareaAutosize} from "@mui/material";
+import LoadingModal from "../components/LoadingModal.tsx";
 
 export default function PageComponent() : ReactNode | null {
 
@@ -10,14 +13,29 @@ export default function PageComponent() : ReactNode | null {
         return data.json();
     }
 
+    const savePage = async () : Promise<object> => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: tempContent
+        };
+        return await fetch('http://localhost:8080/page/' + title, requestOptions);
+    }
+
     const editPageEvent = () : void => {
         setMode(PageMode.edit);
         setTempContent(content);
     }
 
     const savePageEvent = () : void => {
-        setMode(PageMode.read);
-        setContent(tempContent);
+        setLoading(true);
+        const saveResult = savePage();
+        saveResult.then(value => {
+            console.log(value);
+            setMode(PageMode.read);
+            setContent(tempContent);
+            setLoading(false);
+        });
     }
 
     const changeContentEvent = (ev: ChangeEvent<HTMLTextAreaElement>) : void => {
@@ -33,6 +51,8 @@ export default function PageComponent() : ReactNode | null {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tempContent, setTempContent] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     const location = useLocation();
 
@@ -55,18 +75,19 @@ export default function PageComponent() : ReactNode | null {
 
     return (
         <>
-        <h1>{title}</h1>
+            <LoadingModal loading={loading} />
+            <h1>{title}</h1>
             {mode === PageMode.read && (
                 <>
                     <article>{content}</article>
-                    <button onClick={editPageEvent}>Edit</button>
+                    <Button variant="contained" onClick={editPageEvent}>Edit</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <textarea value={tempContent} onChange={changeContentEvent}></textarea>
-                    <button onClick={savePageEvent}>Save</button>
-                    <button onClick={cancelEditionEvent}>Cancel</button>
+                    <TextareaAutosize value={tempContent} onChange={changeContentEvent}></TextareaAutosize>
+                    <Button variant="contained" onClick={savePageEvent}>Save</Button>
+                    <Button variant="contained" onClick={cancelEditionEvent}>Cancel</Button>
                 </>
             )}
         </>
