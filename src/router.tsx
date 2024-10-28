@@ -7,7 +7,7 @@ const router = createBrowserRouter([
         element: <PageComponent />,
         children: [
             {
-                path: "/Page/:title",
+                path: "/page/:title",
                 element: <PageComponent />,
             }
         ]

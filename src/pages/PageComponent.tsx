@@ -16,7 +16,10 @@ export default function PageComponent() : ReactNode | null {
     const savePage = async () : Promise<object> => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
+            headers: {
+                'Content-Type': 'text/plain',
+                'user-token': 'gñap'
+            },
             body: tempContent
         };
         return await fetch('http://localhost:8080/page/' + title, requestOptions);
