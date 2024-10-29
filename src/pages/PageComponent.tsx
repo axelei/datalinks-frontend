@@ -12,7 +12,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 export default function PageComponent() : ReactNode | null {
 
     const fetchPage = async (title : string) : Promise<Page> => {
-        const data = await fetch('http://localhost:8080/page/' + title);
+        const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
         return data.json();
     }
 
@@ -25,7 +25,7 @@ export default function PageComponent() : ReactNode | null {
             },
             body: tempContent
         };
-        return await fetch('http://localhost:8080/page/' + title, requestOptions);
+        return await fetch(import.meta.env.VITE_API + '/page/' + title, requestOptions);
     }
 
     const editPageEvent = () : void => {
