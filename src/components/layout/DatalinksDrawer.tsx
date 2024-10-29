@@ -5,17 +5,19 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {useAppSelector} from "../../hooks.ts";
+import PersonIcon from '@mui/icons-material/Person';
+import {UserLevel} from "../../model/user/UserLevel.ts";
+import HouseIcon from '@mui/icons-material/House';
+import {useNavigate} from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -29,6 +31,7 @@ export default function DatalinksDrawer(props: Props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const loggedUser = useAppSelector((state) => state.loggedUser);
+    const navigate = useNavigate();
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -45,34 +48,51 @@ export default function DatalinksDrawer(props: Props) {
         }
     };
 
+    const clickLogin = () => {
+        if (loggedUser.userLevel == UserLevel.guest) {
+            // go to login
+        } else {
+            navigate('/user/' + loggedUser.username);
+        }
+    }
+
     const drawer = (
         <div>
             <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
-            {loggedUser.username}
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                            </ListItemIcon>
-                            <ListItemText primary={text}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                <ListItem key='frontpage' disablePadding onClick={() => navigate('/')}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <HouseIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Front page'/>
+                    </ListItemButton>
+                </ListItem>
             </List>
             <Divider/>
             <List>
-                {['All mail', 'Trash', 'Spam', 'About...'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                            </ListItemIcon>
-                            <ListItemText primary={text}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                <ListItem key='login' disablePadding onClick={clickLogin}>
+                    {loggedUser.userLevel == UserLevel.guest &&
+                        <>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <PersonIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary='Login'/>
+                            </ListItemButton>
+                        </>
+                    }
+                    {loggedUser.userLevel != UserLevel.guest &&
+                        <>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <PersonIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={loggedUser.username}/>
+                            </ListItemButton>
+                        </>
+                    }
+                </ListItem>
             </List>
         </div>
     );

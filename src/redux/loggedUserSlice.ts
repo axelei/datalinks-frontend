@@ -6,16 +6,16 @@ import {UserLevel} from "../model/user/UserLevel.ts";
 const initialState: User = {
     email: "",
     name: "",
-    userLevel: UserLevel.user,
+    userLevel: UserLevel.guest,
     username: "Anonymous IP",
 }
 
 export const loggedUserSlice = createSlice({
-    name: 'user',
+    name: 'loggedUser',
     initialState,
     reducers: {
-        setLoggedUser: (state, action) : void => {
-            state.userLevel = action.payload;
+        setLoggedUser: (_state, action) : void => {
+            return action.payload;
         },
     },
 });
