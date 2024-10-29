@@ -12,15 +12,18 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {Provider} from "react-redux";
 import {store} from './redux/store.ts'
+import DatalinksDrawer from "./components/layout/DatalinksDrawer.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={store}>
-            <Header />
-            <Body>
-              <RouterProvider router={router} />
-            </Body>
-            <Footer />
+            <DatalinksDrawer>
+                <Header />
+                <Body>
+                  <RouterProvider router={router} />
+                </Body>
+                <Footer />
+            </DatalinksDrawer>
         </Provider>
     </StrictMode>,
 )

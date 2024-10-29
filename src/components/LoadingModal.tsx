@@ -1,6 +1,5 @@
 import {ReactNode} from "react";
-import {Box, Modal} from "@mui/material";
-import {ClipLoader} from "react-spinners";
+import {Box, CircularProgress, Modal} from "@mui/material";
 
 export default function LoadingModal(props: { loading: boolean }) : ReactNode | null {
 
@@ -24,13 +23,7 @@ export default function LoadingModal(props: { loading: boolean }) : ReactNode | 
                 open={props.loading}
             >
                 <Box sx={style}>
-                    <ClipLoader
-                        color='#000000'
-                        loading={props.loading}
-                        size={150}
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <CircularProgress />
                     <br />
                     Loading...
                 </Box>
