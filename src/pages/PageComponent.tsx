@@ -7,7 +7,7 @@ import {TextareaAutosize} from "@mui/material";
 import '../css/pagecomponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-
+import {Category} from "../model/page/Category.ts";
 
 export default function PageComponent() : ReactNode | null {
 
@@ -56,6 +56,7 @@ export default function PageComponent() : ReactNode | null {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tempContent, setTempContent] = useState('');
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const dispatch = useDispatch();
 
@@ -71,8 +72,9 @@ export default function PageComponent() : ReactNode | null {
         apiResponse.then(data => {
             setTitle(data.title);
             setContent(data.content);
+            setCategories(data.categories);
 
-            document.title = 'Datalinks' + ' - ' + data.title;
+            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title;
         })
 
     }, [location.pathname]);
@@ -94,6 +96,13 @@ export default function PageComponent() : ReactNode | null {
                     <Button variant="contained" onClick={cancelEditionEvent}>Cancel</Button>
                 </>
             )}
+            <ul>
+            {categories.map((category) => (
+                <li key={'category-' + category.name}>
+                    {category.name} -
+                </li>
+            ))}
+            </ul>
         </>
     )
 }

@@ -1,5 +1,6 @@
 import {ReactNode} from "react";
 import {Box, CircularProgress, Modal} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export default function LoadingModal(props: { loading: boolean }) : ReactNode | null {
 
@@ -24,8 +25,9 @@ export default function LoadingModal(props: { loading: boolean }) : ReactNode | 
             >
                 <Box sx={style}>
                     <CircularProgress />
-                    <br />
-                    Loading...
+                    <Typography>
+                        Loading...
+                    </Typography>
                 </Box>
             </Modal>
         </>

@@ -16,8 +16,6 @@
 #root {
   margin: auto;
   width: 100%;
-  padding: 25px;
-  background-color: #f9f9f9;
   max-width: 1320px;
 }
 
@@ -76,7 +74,18 @@ button:focus-visible {
   }
 }
 
+#site-logo {
+  width: 100%;
+}
+
 #body {
+
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2em;
 }
 
 footer {

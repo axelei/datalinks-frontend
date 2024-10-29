@@ -1,16 +1,20 @@
 import {createBrowserRouter} from "react-router-dom";
 import PageComponent from "./pages/PageComponent.tsx";
+import UserComponent from "./pages/UserComponent.tsx";
+import Layout from "./components/layout/Layout.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <PageComponent />,
-        children: [
-            {
-                path: "/page/:title",
-                element: <PageComponent />,
-            }
-        ]
+        element: <Layout><PageComponent /></Layout>,
+    },
+    {
+        path: "/page/:title",
+        element: <Layout><PageComponent /></Layout>,
+    },
+    {
+        path: "/user/:name",
+        element: <Layout><UserComponent /></Layout>
     },
 ]);
 
