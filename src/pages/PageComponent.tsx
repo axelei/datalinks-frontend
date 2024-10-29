@@ -5,6 +5,7 @@ import {Page} from "../model/page/Page.ts";
 import Button from '@mui/material/Button';
 import {TextareaAutosize} from "@mui/material";
 import LoadingModal from "../components/LoadingModal.tsx";
+import '../css/pagecomponent.css';
 
 export default function PageComponent() : ReactNode | null {
 
@@ -88,7 +89,7 @@ export default function PageComponent() : ReactNode | null {
             )}
             {mode === PageMode.edit && (
                 <>
-                    <TextareaAutosize value={tempContent} onChange={changeContentEvent}></TextareaAutosize>
+                    <TextareaAutosize value={tempContent} onChange={changeContentEvent} id='editArea' minRows='20'></TextareaAutosize>
                     <Button variant="contained" onClick={savePageEvent}>Save</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>Cancel</Button>
                 </>
