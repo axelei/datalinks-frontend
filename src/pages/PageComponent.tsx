@@ -36,8 +36,7 @@ export default function PageComponent() : ReactNode | null {
     const savePageEvent = () : void => {
         dispatch(loadingOn());
         const saveResult = savePage();
-        saveResult.then(value => {
-            console.log(value);
+        saveResult.then(() => {
             setMode(PageMode.read);
             setContent(tempContent);
             dispatch(loadingOff());

@@ -9,7 +9,7 @@ export default function Body(props: { children: ReactNode }) : ReactNode | null 
     return (
         <>
             <LoadingModal loading={loading} />
-            <div>{props.children}</div>
+            <div id='body'>{props.children}</div>
         </>
     );
 }
