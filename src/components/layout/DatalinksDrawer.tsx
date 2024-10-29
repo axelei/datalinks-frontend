@@ -15,6 +15,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import {useAppSelector} from "../../hooks.ts";
 
 const drawerWidth = 240;
 
@@ -27,6 +28,7 @@ export default function DatalinksDrawer(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const loggedUser = useAppSelector((state) => state.loggedUser);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -45,29 +47,29 @@ export default function DatalinksDrawer(props: Props) {
 
     const drawer = (
         <div>
-            <Toolbar />
-            <Divider />
+            <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
+            {loggedUser.username}
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={text}/>
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
-            <Divider />
+            <Divider/>
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                {['All mail', 'Trash', 'Spam', 'About...'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={text}/>
                         </ListItemButton>
                     </ListItem>
                 ))}

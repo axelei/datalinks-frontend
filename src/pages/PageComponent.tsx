@@ -71,8 +71,9 @@ export default function PageComponent() : ReactNode | null {
         apiResponse.then(data => {
             setTitle(data.title);
             setContent(data.content);
+            console.log(data.categories);
 
-            document.title = 'Datalinks' + ' - ' + data.title;
+            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title;
         })
 
     }, [location.pathname]);
