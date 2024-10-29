@@ -4,8 +4,10 @@ import {useLocation} from "react-router-dom";
 import {Page} from "../model/page/Page.ts";
 import Button from '@mui/material/Button';
 import {TextareaAutosize} from "@mui/material";
-import LoadingModal from "../components/LoadingModal.tsx";
 import '../css/pagecomponent.css';
+import {useDispatch} from "react-redux";
+import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
+
 
 export default function PageComponent() : ReactNode | null {
 
@@ -32,13 +34,13 @@ export default function PageComponent() : ReactNode | null {
     }
 
     const savePageEvent = () : void => {
-        setLoading(true);
+        dispatch(loadingOn());
         const saveResult = savePage();
         saveResult.then(value => {
             console.log(value);
             setMode(PageMode.read);
             setContent(tempContent);
-            setLoading(false);
+            dispatch(loadingOff());
         });
     }
 
@@ -56,7 +58,7 @@ export default function PageComponent() : ReactNode | null {
     const [content, setContent] = useState('');
     const [tempContent, setTempContent] = useState('');
 
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const location = useLocation();
 
@@ -79,7 +81,6 @@ export default function PageComponent() : ReactNode | null {
 
     return (
         <>
-            <LoadingModal loading={loading} />
             <h1>{title}</h1>
             {mode === PageMode.read && (
                 <>
