@@ -17,7 +17,7 @@ import {useAppSelector} from "../../hooks.ts";
 import PersonIcon from '@mui/icons-material/Person';
 import {UserLevel} from "../../model/user/UserLevel.ts";
 import HouseIcon from '@mui/icons-material/House';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -58,7 +58,9 @@ export default function DatalinksDrawer(props: Props) {
 
     const drawer = (
         <div>
-            <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
+            <Link to='/'>
+                <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
+            </Link>
             <List>
                 <ListItem key='frontpage' disablePadding onClick={() => navigate('/')}>
                     <ListItemButton>
