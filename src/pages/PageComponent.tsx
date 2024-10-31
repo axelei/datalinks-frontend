@@ -1,19 +1,26 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
-import {Page} from "../model/page/Page.ts";
+import {newPage, Page} from "../model/page/Page.ts";
 import Button from '@mui/material/Button';
 import {TextareaAutosize} from "@mui/material";
 import '../css/pagecomponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Category} from "../model/page/Category.ts";
+import {useAppSelector} from "../hooks.ts";
 
 export default function PageComponent() : ReactNode | null {
 
+    const loggedUser = useAppSelector((state) => state.loggedUser);
+
     const fetchPage = async (title : string) : Promise<Page> => {
         const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
-        return data.json();
+        if (data.ok) {
+            return data.json();
+        } else {
+            return newPage(title);
+        }
     }
 
     const savePage = async () : Promise<object> => {
@@ -21,7 +28,7 @@ export default function PageComponent() : ReactNode | null {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain',
-                'user-token': 'gñap'
+                'user-token': loggedUser.token,
             },
             body: tempContent
         };
@@ -65,7 +72,7 @@ export default function PageComponent() : ReactNode | null {
     useEffect(() => {
         let currentTitle = location.pathname.split('/')[2];
         if (!currentTitle) {
-            currentTitle = 'Índice';
+            currentTitle = import.meta.env.VITE_SITE_INDEX;
         }
 
         const apiResponse = fetchPage(currentTitle);

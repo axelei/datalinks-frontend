@@ -1,13 +1,15 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {RootState} from "./store.ts";
-import {User} from "../model/user/User.ts";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {newUser, User} from "../model/user/User.ts";
 
-const initialState: User = {
-    email: "",
-    name: "",
-    userLevel: UserLevel.guest,
-    username: "Anonymous IP",
+interface LoggedUser {
+    user: User;
+    token: string;
+}
+
+const initialState: LoggedUser = {
+    user: newUser(),
+    token: '',
 }
 
 export const loggedUserSlice = createSlice({
@@ -15,7 +17,7 @@ export const loggedUserSlice = createSlice({
     initialState,
     reducers: {
         setLoggedUser: (_state, action) : void => {
-            return action.payload;
+            return action.payload.user;
         },
     },
 });

@@ -18,6 +18,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import {UserLevel} from "../../model/user/UserLevel.ts";
 import HouseIcon from '@mui/icons-material/House';
 import {Link, useNavigate} from 'react-router-dom';
+import LoginModal from "../LoginModal.tsx";
 
 const drawerWidth = 240;
 
@@ -30,6 +31,7 @@ export default function DatalinksDrawer(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const [showLogin, setShowLogin] = React.useState(false);
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const navigate = useNavigate();
 
@@ -49,15 +51,16 @@ export default function DatalinksDrawer(props: Props) {
     };
 
     const clickLogin = () => {
-        if (loggedUser.userLevel == UserLevel.guest) {
-            // go to login
+        if (loggedUser.user.userLevel == UserLevel.guest) {
+            setShowLogin(true);
         } else {
-            navigate('/user/' + loggedUser.username);
+            navigate('/user/' + loggedUser.user.username);
         }
     }
 
     const drawer = (
         <div>
+            <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
             <Link to='/'>
                 <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
             </Link>
@@ -74,7 +77,7 @@ export default function DatalinksDrawer(props: Props) {
             <Divider/>
             <List>
                 <ListItem key='login' disablePadding onClick={clickLogin}>
-                    {loggedUser.userLevel == UserLevel.guest &&
+                    {loggedUser.user.userLevel == UserLevel.guest &&
                         <>
                             <ListItemButton>
                                 <ListItemIcon>
@@ -84,13 +87,13 @@ export default function DatalinksDrawer(props: Props) {
                             </ListItemButton>
                         </>
                     }
-                    {loggedUser.userLevel != UserLevel.guest &&
+                    {loggedUser.user.userLevel != UserLevel.guest &&
                         <>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <PersonIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary={loggedUser.username}/>
+                                <ListItemText primary={loggedUser.user.username}/>
                             </ListItemButton>
                         </>
                     }
