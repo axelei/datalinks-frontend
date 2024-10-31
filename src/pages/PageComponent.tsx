@@ -25,7 +25,7 @@ export default function PageComponent() : ReactNode | null {
 
     const savePage = async () : Promise<object> => {
         const requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'text/plain',
                 'user-token': loggedUser.token,
