@@ -1,25 +1,42 @@
 import {ReactNode} from "react";
-import {Box, FormControl, Modal, TextField} from "@mui/material";
+import {Box, Modal, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import {modalStyle} from "../service/Common.ts";
+import {SubmitHandler, useForm, useFormState} from "react-hook-form";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }) : ReactNode | null {
-
-    const validateInputs = () => {
-        const username = document.getElementById('usernameField') as HTMLInputElement;
-        const password = document.getElementById('passwordField') as HTMLInputElement;
-        console.log(username);
-        console.log(password);
-    }
 
     const handleClose = () => {
         props.onClose();
     }
 
-    const handleLogin = () => {
-        validateInputs();
-        //console.log('Login with username: ' + username + ' and password: ' + password);
+    type Inputs = {
+        username: string
+        password: string
+    }
+
+    const login = async (username : string, password: string) : void => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({username, password}),
+        };
+        const data = await fetch(import.meta.env.VITE_API + '/user/login', requestOptions);
+        if (data.ok) {
+            console.log('Login successful');
+        } else {
+            console.log('Login NOT successful');
+        }
+    }
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<Inputs>()
+    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
+        login(inputs.username, inputs.password);
     }
 
     return (
@@ -34,15 +51,20 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
                     <Typography>
                         Login
                     </Typography>
-                    <FormControl id="loginFormControl">
-                            <TextField id="usernameField" label="Username" variant="outlined" />
-                            <TextField id="passwordField" label="Password" variant="outlined" type="password" />
-                            <Button variant='contained' onClick={handleLogin}>Login</Button>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+
+                        <TextField id="usernameField" label="Username" variant="outlined" {...register("username", { required: true })} /><br/>
+                        {errors.username && <span>Username is required<br/></span>}
+                        <TextField id="passwordField" label="Password" variant="outlined" {...register("password", { required: true })} /><br/>
+                        {errors.password && <span>Password is required<br /></span>}
+                        <div>
+                            <Button variant='contained' type="submit">Login</Button>
                             <Button variant='contained' onClick={handleClose}>Cancel</Button>
-                    </FormControl>
+                        </div>
+                    </form>
                 </Box>
             </Modal>
         </>
-    );
+);
 
 }
