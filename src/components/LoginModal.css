@@ -1,0 +1,18 @@
+.login-modal form {
+
+    gap: 16px; /* Este es el CSS que aumenta la separación entre forms. A la hora de decidir tamaños en css intenta siempre usar multiples de 4 u 8. Te ahorrarás dolores de cabeza en el futurp */
+
+    display: flex;
+    flex-direction: column;
+
+    .hbox { /* este es el css que hace que los botones se alineen en una fila */
+        button {
+            width:100%;
+        }
+        display: flex;
+        flex-direction: row;
+        gap: 16px; /* Este es tu separador de flexbox (display: flex) */
+    }
+
+}
+
