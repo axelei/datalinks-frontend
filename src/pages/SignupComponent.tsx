@@ -1,15 +1,17 @@
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import '../css/SignupComponent.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useDispatch} from "react-redux";
+import Typography from "@mui/material/Typography";
 
 
 export default function SignUp() : ReactNode | null {
 
     const dispatch = useDispatch();
+    const [validationError, setValidationError] = useState<string>('');
 
     type Inputs = {
         username: string
@@ -19,7 +21,7 @@ export default function SignUp() : ReactNode | null {
         name?: string
     }
 
-    const signup = async (inputs : Inputs) : Promise<void> => {
+    const signup = async (inputs : Inputs) : Promise<string> => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -28,10 +30,17 @@ export default function SignUp() : ReactNode | null {
         const data = await fetch(import.meta.env.VITE_API + '/user/signup', requestOptions);
         if (data.ok) {
             console.log('Sign up successful');
-            return data.json();
+            return data.text();
         } else {
-            return Promise.reject('Login failed');
+            return Promise.reject(data.text());
         }
+    }
+
+    const validateForm = (inputs : Inputs) : Promise<string> => {
+        if (inputs.password !== inputs.passwordAgain) {
+            return Promise.reject('Passwords do not match');
+        }
+        return Promise.resolve('');
     }
 
     const {
@@ -39,14 +48,29 @@ export default function SignUp() : ReactNode | null {
         handleSubmit,
         formState: { errors },
     } = useForm<Inputs>()
-    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
+    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) : void => {
+        setValidationError('');
+        validateForm(inputs)
+            .then(() => {
+                sendSignup(inputs);
+            }).catch((error) => {
+                setValidationError(error);
+        });
+    }
+
+    const sendSignup = (inputs : Inputs) : void => {
         dispatch(loadingOn());
         const result = signup(inputs);
-        result.then((data) => {
-            console.log(data)
-        }).catch((error) => {
-            console.log(error);
-        }).finally(() => {
+        result.then((data: string) : void => {
+            //TODO USER CREATED
+            console.log("Used created OK");
+            console.log(data);
+        }).catch((error : Promise<string>) : void => {
+            error.then((data: string) : void => {
+                setValidationError(data);
+                console.log(data.length);
+            });
+        }).finally(() : void => {
             dispatch(loadingOff());
         });
     }
@@ -62,7 +86,7 @@ export default function SignUp() : ReactNode | null {
                     <FormControl>
                         <TextField label="Username" variant="outlined"
                                    {...register("username", {required: true, pattern: usernamePattern})}
-                                   helperText={errors.username && "Username is required"}
+                                   helperText={errors.username && "Username must be alphanumeric"}
                                    error={!!errors.username}
                         />
                     </FormControl>
@@ -86,6 +110,16 @@ export default function SignUp() : ReactNode | null {
                                    helperText={errors.email && "Email seems not correct"}
                                    error={!!errors.email}
                         />
+                    </FormControl>
+                    <FormControl>
+                        <TextField label="Name" variant="outlined"
+                                   {...register("name")}
+                                   helperText={errors.name && "Name seems not correct"}
+                                   error={!!errors.name}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <Typography color="error">{validationError}</Typography>
                     </FormControl>
 
                     <FormControl>
