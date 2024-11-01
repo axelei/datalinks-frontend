@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import {modalStyle} from "../service/Common.ts";
 import {useDispatch} from "react-redux";
 import {hideError} from "../redux/showErrorSlice.ts";
+import ErrorIcon from '@mui/icons-material/Error';
 
 export default function ErrorModal(props: { show: boolean }) : ReactNode | null {
 
@@ -18,6 +19,7 @@ export default function ErrorModal(props: { show: boolean }) : ReactNode | null 
                 open={props.show}
             >
                 <Box sx={modalStyle}>
+                    <ErrorIcon />
                     <h2>Something went wrong...</h2>
                     <Typography>
                         Either the server failed to process the request or you don't have permissions to perform the requested action.

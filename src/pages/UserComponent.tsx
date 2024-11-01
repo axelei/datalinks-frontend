@@ -1,6 +1,5 @@
 import {ReactNode, useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
-import '../css/pagecomponent.css';
 import {useDispatch} from "react-redux";
 import {User} from "../model/user/User.ts";
 import {setLoggedUser} from "../redux/loggedUserSlice.ts";

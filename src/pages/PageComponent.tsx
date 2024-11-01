@@ -4,7 +4,7 @@ import {useLocation} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
 import Button from '@mui/material/Button';
 import {TextareaAutosize} from "@mui/material";
-import '../css/pagecomponent.css';
+import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Category} from "../model/page/Category.ts";

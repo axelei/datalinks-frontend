@@ -7,7 +7,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
-import "./LoginModal.css";
+import "../css/LoginModal.css";
 import {showError} from "../redux/showErrorSlice.ts";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }): ReactNode | null {
@@ -33,8 +33,10 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     if (data.ok) {
       console.log('Login successful');
       return data.json();
+    } else if (data.status == 404) {
+      return Promise.reject(404);
     } else {
-      return Promise.reject('Login failed');
+      return Promise.reject(500);
     }
   }
 
@@ -49,7 +51,12 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     result.then((data) => {
       console.log(data)
     }).catch((error) => {
-      dispatch(showError());
+      if (error == 404) {
+        console.log(error);
+        dispatch(showError());
+      } else {
+        dispatch(showError());
+      }
       console.log(error);
     }).finally(() => {
       dispatch(loadingOff());
@@ -65,17 +72,23 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         open={props.show}
         onClose={handleClose}
       >
-        <Box sx={modalStyle} className={"login-modal"}> {/* no le tengas alergia al css, te va a ahorrar problemas. Pasar styledObjects hace llorar al niño Jesús */}
-          <Typography>Log in</Typography>
+        <Box sx={modalStyle} className={"login-modal"}>
+          <h2>Log in</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl fullWidth>  {/* Podrías utilizar Flexbox (display: flex) par esto, pero FormControl viene con material UI y ofrece ya ese estilo, mejor usar lo que ya tienes */}
-              <TextField label="Username" variant="outlined" {...register("username", {required: true})} />
-              {errors.username && <Typography color="error">Username is required</Typography>}
+            <FormControl fullWidth>
+              <TextField label="Username" variant="outlined"
+                         {...register("username", {required: true})}
+                         helperText={errors.username && "Username is required"}
+                         error={!!errors.username}
+              />
             </FormControl>
 
             <FormControl fullWidth>
-              <TextField label="Password" variant="outlined" {...register("password", {required: true})} />
-              {errors.password && <Typography color="error">Password is required</Typography>}
+              <TextField label="Password" variant="outlined" type="password"
+                         {...register("password", {required: true})}
+                         helperText={errors.password && "Password is required"}
+                         error={!!errors.password}
+              />
             </FormControl>
 
             <FormControl fullWidth className="hbox" >
@@ -83,8 +96,8 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
               <Button variant='contained' onClick={handleClose}>Cancel</Button>
             </FormControl>
 
-            <FormControl fullWidth><p>Don't have an account? <Link to='/signup' onClick={props.onClose}>Sign up</Link>
-            </p>
+            <FormControl fullWidth>
+              <p>Don't have an account? <Link to='/signup' onClick={props.onClose}>Sign up</Link></p>
             </FormControl>
           </form>
         </Box>

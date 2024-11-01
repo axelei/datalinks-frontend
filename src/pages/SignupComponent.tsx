@@ -1,11 +1,10 @@
 import {ReactNode} from 'react';
-import '../css/pagecomponent.css';
+import '../css/SignupComponent.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {TextField} from "@mui/material";
+import {FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useDispatch} from "react-redux";
-import Typography from "@mui/material/Typography";
 
 
 export default function SignUp() : ReactNode | null {
@@ -52,20 +51,48 @@ export default function SignUp() : ReactNode | null {
         });
     }
 
+    const usernamePattern = /^[A-Za-z0-9]+$/i;
+    const emailPattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+
     return (
         <>
-            <h1>Sign up</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField label="Username" variant="outlined" {...register("username", { required: true })} /><br/>
-                {errors.username && <Typography>Username is required<br/></Typography>}
-                <TextField label="Password" variant="outlined" {...register("password", { required: true })} /><br/>
-                {errors.password && <Typography>Password is required<br /></Typography>}
-                <TextField label="Password again" variant="outlined" {...register("passwordAgain", { required: true })} /><br/>
-                {errors.passwordAgain && <Typography>Password again is required<br /></Typography>}
-                <div>
-                    <Button variant='contained' type="submit">Sign up</Button>
-                </div>
-            </form>
+            <div className="signup-form">
+                <h2>Sign up</h2>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FormControl>
+                        <TextField label="Username" variant="outlined"
+                                   {...register("username", {required: true, pattern: usernamePattern})}
+                                   helperText={errors.username && "Username is required"}
+                                   error={!!errors.username}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField label="Password" variant="outlined" type="password"
+                                   {...register("password", {required: true })}
+                                   helperText={errors.password && "Password confirmation is required"}
+                                   error={!!errors.password}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField label="Password confirmation" variant="outlined" type="password"
+                                   {...register("passwordAgain", {required: true })}
+                                   helperText={errors.passwordAgain && "Password confirmation is required"}
+                                   error={!!errors.passwordAgain}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField label="Email" variant="outlined"
+                                   {...register("email", {required: true, pattern: emailPattern})}
+                                   helperText={errors.email && "Email seems not correct"}
+                                   error={!!errors.email}
+                        />
+                    </FormControl>
+
+                    <FormControl>
+                        <Button variant='contained' type="submit">Sign up</Button>
+                    </FormControl>
+                </form>
+            </div>
         </>
     )
 }
