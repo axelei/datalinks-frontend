@@ -8,6 +8,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import "./LoginModal.css";
+import {showError} from "../redux/showErrorSlice.ts";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }): ReactNode | null {
 
@@ -53,6 +54,25 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
       dispatch(loadingOff());
     });
   }
+  
+      const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<Inputs>()
+    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
+        dispatch(loadingOn());
+        const result = login(inputs.username, inputs.password);
+        result.then((data) => {
+            console.log(data)
+        }).catch((error) => {
+            dispatch(showError());
+            console.log(error);
+        }).finally(() => {
+            dispatch(loadingOff());
+        });
+    }
+
 
   return (
     <>
