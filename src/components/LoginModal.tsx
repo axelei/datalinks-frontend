@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import {ReactNode} from "react";
 import {Box, FormControl, Modal, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -41,37 +41,20 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = (inputs: Inputs) => {
+  const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
     dispatch(loadingOn());
     const result = login(inputs.username, inputs.password);
     result.then((data) => {
       console.log(data)
     }).catch((error) => {
+      dispatch(showError());
       console.log(error);
     }).finally(() => {
       dispatch(loadingOff());
     });
   }
-  
-      const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<Inputs>()
-    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
-        dispatch(loadingOn());
-        const result = login(inputs.username, inputs.password);
-        result.then((data) => {
-            console.log(data)
-        }).catch((error) => {
-            dispatch(showError());
-            console.log(error);
-        }).finally(() => {
-            dispatch(loadingOff());
-        });
-    }
 
 
   return (
