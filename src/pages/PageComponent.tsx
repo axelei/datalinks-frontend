@@ -46,8 +46,10 @@ export default function PageComponent() : ReactNode | null {
         saveResult.then(() => {
             setMode(PageMode.read);
             setContent(tempContent);
-            dispatch(loadingOff());
-        });
+        }).finally(() => {
+                dispatch(loadingOff());
+            }
+        );
     }
 
     const changeContentEvent = (ev: ChangeEvent<HTMLTextAreaElement>) : void => {

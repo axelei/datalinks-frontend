@@ -51,6 +51,7 @@ export default function DatalinksDrawer(props: Props) {
     };
 
     const clickLogin = () => {
+        handleDrawerClose();
         if (loggedUser.user.userLevel == UserLevel.guest) {
             setShowLogin(true);
         } else {
@@ -61,11 +62,11 @@ export default function DatalinksDrawer(props: Props) {
     const drawer = (
         <div>
             <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
-            <Link to='/'>
+            <Link to='/' onClick={handleDrawerClose}>
                 <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
             </Link>
             <List>
-                <ListItem key='frontpage' disablePadding onClick={() => navigate('/')}>
+                <ListItem key='frontpage' disablePadding onClick={() => { navigate('/'); handleDrawerClose();}}>
                     <ListItemButton>
                         <ListItemIcon>
                             <HouseIcon />
@@ -83,7 +84,7 @@ export default function DatalinksDrawer(props: Props) {
                                 <ListItemIcon>
                                     <PersonIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary='Login'/>
+                                <ListItemText primary='Log in or sign in'/>
                             </ListItemButton>
                         </>
                     }
