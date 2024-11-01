@@ -32,6 +32,7 @@ export default function DatalinksDrawer(props: Props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [showLogin, setShowLogin] = React.useState(false);
+
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const navigate = useNavigate();
 
