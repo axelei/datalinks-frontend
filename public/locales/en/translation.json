@@ -9,5 +9,12 @@
   "Email seems not correct": "Email seems not correct",
   "Name": "Name",
   "Name seems not correct": "Name seems not correct",
-  "Sign up": "Sign up"
+  "Sign up": "Sign up",
+  "Edit": "Edit",
+  "Cancel": "Cancel",
+  "Site logo": "Site logo",
+  "Front page": "Front page",
+  "Log in or sign in": "Log in or sign in",
+  "User not found": "User not found",
+  "User": "User"
 }

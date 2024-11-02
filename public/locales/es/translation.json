@@ -9,5 +9,12 @@
   "Email seems not correct": "El email no parece correcto",
   "Name": "Name",
   "Name seems not correct": "El nombre no parece correct",
-  "Sign up": "Inscribirse"
+  "Sign up": "Inscribirse",
+  "Edit": "Editar",
+  "Cancel": "Cancelar",
+  "Site logo": "Logo del sitio",
+  "Front page": "Página principal",
+  "Log in or sign in": "Iniciar sesión o inscribirse",
+  "User not found": "Usuario no encontrado",
+  "User": "Usuario"
 }

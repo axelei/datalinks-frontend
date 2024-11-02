@@ -8,8 +8,11 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import "../css/LoginModal.css";
 import {showError} from "../redux/showErrorSlice.ts";
+import {useTranslation} from "react-i18next";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }): ReactNode | null {
+
+  const { t } = useTranslation();
 
   const handleClose = () => {
     props.onClose();
@@ -72,12 +75,12 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         onClose={handleClose}
       >
         <Box sx={modalStyle} className={"login-modal"}>
-          <h2>Log in</h2>
+          <h2>{t("Log in")}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth>
               <TextField label="Username" variant="outlined"
                          {...register("username", {required: true})}
-                         helperText={errors.username && "Username is required"}
+                         helperText={errors.username && t("Username is required")}
                          error={!!errors.username}
               />
             </FormControl>
@@ -85,18 +88,18 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
             <FormControl fullWidth>
               <TextField label="Password" variant="outlined" type="password"
                          {...register("password", {required: true})}
-                         helperText={errors.password && "Password is required"}
+                         helperText={errors.password && t("Password is required")}
                          error={!!errors.password}
               />
             </FormControl>
 
             <FormControl fullWidth className="hbox" >
-              <Button variant='contained' type="submit">Login</Button>
-              <Button variant='contained' onClick={handleClose}>Cancel</Button>
+              <Button variant='contained' type="submit">{t("Username")}</Button>
+              <Button variant='contained' onClick={handleClose}>{t("Cancel")}</Button>
             </FormControl>
 
             <FormControl fullWidth>
-              <p>Don't have an account? <Link to='/signup' onClick={props.onClose}>Sign up</Link></p>
+              <p>{t("Don't have an account?")} <Link to='/signup' onClick={props.onClose}>{t("Sign up")}</Link></p>
             </FormControl>
           </form>
         </Box>

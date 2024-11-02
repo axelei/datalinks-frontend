@@ -6,9 +6,11 @@ import {modalStyle} from "../service/Common.ts";
 import {useDispatch} from "react-redux";
 import {hideError} from "../redux/showErrorSlice.ts";
 import ErrorIcon from '@mui/icons-material/Error';
+import {useTranslation} from "react-i18next";
 
 export default function ErrorModal(props: { show: boolean }) : ReactNode | null {
 
+    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     return (
@@ -20,9 +22,9 @@ export default function ErrorModal(props: { show: boolean }) : ReactNode | null 
             >
                 <Box sx={modalStyle}>
                     <ErrorIcon />
-                    <h2>Something went wrong...</h2>
+                    <h2>{t("Something went wrong...")}</h2>
                     <Typography>
-                        Either the server failed to process the request or you don't have permissions to perform the requested action.
+                        {t("Either the server failed to process the request or you don't have permissions to perform the requested action.")}
                     </Typography>
                     <Button onClick={() => dispatch(hideError())}>OK</Button>
                 </Box>

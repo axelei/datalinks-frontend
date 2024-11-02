@@ -1,8 +1,11 @@
 import {ReactNode} from "react";
 import {Box, CircularProgress, Modal} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import {useTranslation} from "react-i18next";
 
 export default function LoadingModal(props: { loading: boolean }) : ReactNode | null {
+
+    const { t } = useTranslation();
 
     const style = {
         position: 'absolute',
@@ -26,7 +29,7 @@ export default function LoadingModal(props: { loading: boolean }) : ReactNode | 
                 <Box sx={style}>
                     <CircularProgress />
                     <Typography>
-                        Loading...
+                        {t("Loading...")}
                     </Typography>
                 </Box>
             </Modal>

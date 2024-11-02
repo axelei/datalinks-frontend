@@ -41,7 +41,7 @@ export default function UserComponent() : ReactNode | null {
 
     return (
         <>
-            <h1>User: {username}</h1>
+            <h1>{t("User")}: {username}</h1>
             <p>
                 {name}
             </p>
