@@ -9,6 +9,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {Provider} from "react-redux";
 import {store} from './redux/store.ts'
+import './i18n';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

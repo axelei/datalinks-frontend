@@ -19,6 +19,7 @@ import {UserLevel} from "../../model/user/UserLevel.ts";
 import HouseIcon from '@mui/icons-material/House';
 import {Link, useNavigate} from 'react-router-dom';
 import LoginModal from "../LoginModal.tsx";
+import {useTranslation} from "react-i18next";
 
 const drawerWidth = 240;
 
@@ -28,7 +29,9 @@ interface Props {
 }
 
 export default function DatalinksDrawer(props: Props) {
+
     const { window } = props;
+    const { t } = useTranslation();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [showLogin, setShowLogin] = React.useState(false);
@@ -64,7 +67,7 @@ export default function DatalinksDrawer(props: Props) {
         <div>
             <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
             <Link to='/' onClick={handleDrawerClose}>
-                <img id="site-logo" src={'/images/datalinks.svg'} alt='Site logo'/>
+                <img id="site-logo" src={'/images/datalinks.svg'} alt={t("Site logo")} />
             </Link>
             <List>
                 <ListItem key='frontpage' disablePadding onClick={() => { navigate('/'); handleDrawerClose();}}>
@@ -72,7 +75,7 @@ export default function DatalinksDrawer(props: Props) {
                         <ListItemIcon>
                             <HouseIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Front page'/>
+                        <ListItemText primary={t("Front page")} />
                     </ListItemButton>
                 </ListItem>
             </List>
@@ -85,7 +88,7 @@ export default function DatalinksDrawer(props: Props) {
                                 <ListItemIcon>
                                     <PersonIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary='Log in or sign in'/>
+                                <ListItemText primary={t("Log in or sign in")} />
                             </ListItemButton>
                         </>
                     }
@@ -127,7 +130,7 @@ export default function DatalinksDrawer(props: Props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Datalinks
+                        {import.meta.env.VITE_SITE_TITLE}
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -143,7 +146,7 @@ export default function DatalinksDrawer(props: Props) {
                     onTransitionEnd={handleDrawerTransitionEnd}
                     onClose={handleDrawerClose}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true,
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },

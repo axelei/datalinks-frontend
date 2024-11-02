@@ -6,10 +6,12 @@ import {FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useDispatch} from "react-redux";
 import Typography from "@mui/material/Typography";
+import {useTranslation} from "react-i18next";
 
 
 export default function SignUp() : ReactNode | null {
 
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const [validationError, setValidationError] = useState<string>('');
 
@@ -38,7 +40,7 @@ export default function SignUp() : ReactNode | null {
 
     const validateForm = (inputs : Inputs) : Promise<string> => {
         if (inputs.password !== inputs.passwordAgain) {
-            return Promise.reject('Passwords do not match');
+            return Promise.reject(t("Passwords do not match"));
         }
         return Promise.resolve('');
     }
@@ -48,7 +50,7 @@ export default function SignUp() : ReactNode | null {
         handleSubmit,
         formState: { errors },
     } = useForm<Inputs>()
-    const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) : void => {
+    const onSubmit : SubmitHandler<Inputs> = (inputs : Inputs) : void => {
         setValidationError('');
         validateForm(inputs)
             .then(() => {
@@ -81,40 +83,40 @@ export default function SignUp() : ReactNode | null {
     return (
         <>
             <div className="signup-form">
-                <h2>Sign up</h2>
+                <h2>{t("Sign up")}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl>
-                        <TextField label="Username" variant="outlined"
+                        <TextField label={t("Username")} variant="outlined"
                                    {...register("username", {required: true, pattern: usernamePattern})}
-                                   helperText={errors.username && "Username must be alphanumeric"}
+                                   helperText={errors.username && t("Username must be alphanumeric")}
                                    error={!!errors.username}
                         />
                     </FormControl>
                     <FormControl>
-                        <TextField label="Password" variant="outlined" type="password"
+                        <TextField label={t("Password")} variant="outlined" type="password"
                                    {...register("password", {required: true })}
-                                   helperText={errors.password && "Password confirmation is required"}
+                                   helperText={errors.password && t("Password is required")}
                                    error={!!errors.password}
                         />
                     </FormControl>
                     <FormControl>
-                        <TextField label="Password confirmation" variant="outlined" type="password"
+                        <TextField label={t("Password confirmation")} variant="outlined" type="password"
                                    {...register("passwordAgain", {required: true })}
-                                   helperText={errors.passwordAgain && "Password confirmation is required"}
+                                   helperText={errors.passwordAgain && t("Password confirmation is required")}
                                    error={!!errors.passwordAgain}
                         />
                     </FormControl>
                     <FormControl>
-                        <TextField label="Email" variant="outlined"
+                        <TextField label={t("Email")} variant="outlined"
                                    {...register("email", {required: true, pattern: emailPattern})}
-                                   helperText={errors.email && "Email seems not correct"}
+                                   helperText={errors.email && t("Email seems not correct")}
                                    error={!!errors.email}
                         />
                     </FormControl>
                     <FormControl>
-                        <TextField label="Name" variant="outlined"
+                        <TextField label={t("Name")} variant="outlined"
                                    {...register("name")}
-                                   helperText={errors.name && "Name seems not correct"}
+                                   helperText={errors.name && t("Name seems not correct")}
                                    error={!!errors.name}
                         />
                     </FormControl>
@@ -123,7 +125,7 @@ export default function SignUp() : ReactNode | null {
                     </FormControl>
 
                     <FormControl>
-                        <Button variant='contained' type="submit">Sign up</Button>
+                        <Button variant='contained' type="submit">{t("Sign up")}</Button>
                     </FormControl>
                 </form>
             </div>

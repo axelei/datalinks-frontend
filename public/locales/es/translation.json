@@ -1,0 +1,13 @@
+{
+  "Username": "Usuario",
+  "Username must be alphanumeric": "El usuario debe ser alfanumérico",
+  "Password": "Contraseña",
+  "Password is required": "La contraseña es obligatoria",
+  "Password confirmation": "Confirmación de contraseña",
+  "Password confirmation is required": "La confirmación de contraseña es obligatoria",
+  "Email": "Email",
+  "Email seems not correct": "El email no parece correcto",
+  "Name": "Name",
+  "Name seems not correct": "El nombre no parece correct",
+  "Sign up": "Inscribirse"
+}

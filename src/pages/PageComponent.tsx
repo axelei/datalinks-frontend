@@ -9,9 +9,11 @@ import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Category} from "../model/page/Category.ts";
 import {useAppSelector} from "../hooks.ts";
+import {useTranslation} from "react-i18next";
 
 export default function PageComponent() : ReactNode | null {
 
+    const { t } = useTranslation();
     const loggedUser = useAppSelector((state) => state.loggedUser);
 
     const fetchPage = async (title : string) : Promise<Page> => {
@@ -95,14 +97,14 @@ export default function PageComponent() : ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <article>{content}</article>
-                    <Button variant="contained" onClick={editPageEvent}>Edit</Button>
+                    <Button variant="contained" onClick={editPageEvent}>{t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
                     <TextareaAutosize value={tempContent} onChange={changeContentEvent} id='editArea' minRows='20'></TextareaAutosize>
-                    <Button variant="contained" onClick={savePageEvent}>Save</Button>
-                    <Button variant="contained" onClick={cancelEditionEvent}>Cancel</Button>
+                    <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
+                    <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>
             )}
             <ul>

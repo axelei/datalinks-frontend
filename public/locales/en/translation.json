@@ -1,0 +1,13 @@
+{
+  "Username": "Username",
+  "Username must be alphanumeric": "Username must be alphanumeric",
+  "Password": "Password",
+  "Password is required": "Password is required",
+  "Password confirmation": "Password confirmation",
+  "Password confirmation is required": "Password confirmation is required",
+  "Email": "Email",
+  "Email seems not correct": "Email seems not correct",
+  "Name": "Name",
+  "Name seems not correct": "Name seems not correct",
+  "Sign up": "Sign up"
+}

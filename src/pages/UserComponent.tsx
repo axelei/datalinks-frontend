@@ -3,15 +3,17 @@ import {useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {User} from "../model/user/User.ts";
 import {setLoggedUser} from "../redux/loggedUserSlice.ts";
+import {useTranslation} from "react-i18next";
 
 
 export default function UserComponent() : ReactNode | null {
 
     const fetchUser = async (username : string) : Promise<User> => {
-        const data = await fetch(import.meta.env.VITE_API + '/user/' + username);
+        const data = await fetch(import.meta.env.VITE_API + '/user/' + username + '/get');
         return data.json();
     }
 
+    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     const location = useLocation();
@@ -22,17 +24,19 @@ export default function UserComponent() : ReactNode | null {
     useEffect(() => {
         const usernamePath = location.pathname.split('/')[2];
 
-        const apiResponse = fetchUser(usernamePath);
-        apiResponse.then(data => {
-
-            setUsername(data.username);
-            setName(data.name);
-            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.username;
+        fetchUser(usernamePath)
+            .then((data : User) => {
+                setUsername(data.username);
+                setName(data.name);
+                dispatch(setLoggedUser({username: data.username, name: data.name, email: data.email, userLevel: data.userLevel}));
+                document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.username;
+            }).catch(() => {
+                setUsername(t("User not found"));
+                setName('');
+                document.title = import.meta.env.VITE_SITE_TITLE + ' - User not found';
         });
 
-        dispatch(setLoggedUser({username: usernamePath, name: 'sdfsdf', email: 'sdfsdf', userLevel: 'admin'}));
-
-    }, [dispatch, location.pathname]);
+    }, [dispatch, location.pathname, t]);
 
 
     return (
