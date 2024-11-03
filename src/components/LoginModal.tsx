@@ -1,4 +1,4 @@
-import {ReactNode} from "react";
+import {ReactNode, useState} from "react";
 import {Box, FormControl, Modal, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {modalStyle} from "../service/Common.ts";
@@ -9,16 +9,22 @@ import {Link} from "react-router-dom";
 import "../css/LoginModal.css";
 import {showError} from "../redux/showErrorSlice.ts";
 import {useTranslation} from "react-i18next";
+import Typography from "@mui/material/Typography";
+import {setLoggedToken, setLoggedUser} from "../redux/loggedUserSlice.ts";
+import {fetchUser} from "../service/UserService.ts";
+import {User} from "../model/user/User.ts";
+import {useCookies} from "react-cookie";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }): ReactNode | null {
 
   const { t } = useTranslation();
+  const [validationError, setValidationError] = useState<string>('');
+  const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     props.onClose();
   }
-
-  const dispatch = useDispatch();
 
   type Inputs = {
     username: string
@@ -33,7 +39,6 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     };
     const data = await fetch(import.meta.env.VITE_API + '/user/login', requestOptions);
     if (data.ok) {
-      console.log('Login successful');
       return data.json();
     } else if (data.status == 404) {
       return Promise.reject(404);
@@ -46,20 +51,25 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<Inputs>();
+
   const onSubmit: SubmitHandler<Inputs> = (inputs : Inputs) => {
+    setValidationError('');
     dispatch(loadingOn());
     const result = login(inputs.username, inputs.password);
     result.then((data) => {
-      console.log(data)
+      fetchUser(inputs.username).then((user : User) => {
+        dispatch(setLoggedUser({username: user.username, name: user.name, email: user.email, userLevel: user.userLevel}));
+        dispatch(setLoggedToken(data));
+        setCookie('loginToken', data, {path: '/'});
+        handleClose();
+      });
     }).catch((error) => {
       if (error == 404) {
-        console.log(error);
-        dispatch(showError());
+        setValidationError(t("Username or password incorrect, or the username does not exist"));
       } else {
         dispatch(showError());
       }
-      console.log(error);
     }).finally(() => {
       dispatch(loadingOff());
     });
@@ -92,9 +102,12 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
                          error={!!errors.password}
               />
             </FormControl>
+            <FormControl>
+              <Typography color="error">{validationError}</Typography>
+            </FormControl>
 
             <FormControl fullWidth className="hbox" >
-              <Button variant='contained' type="submit">{t("Username")}</Button>
+              <Button variant='contained' type="submit">{t("Log in")}</Button>
               <Button variant='contained' onClick={handleClose}>{t("Cancel")}</Button>
             </FormControl>
 

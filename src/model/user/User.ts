@@ -11,7 +11,7 @@ export interface User {
 export const newUser = () : User => {
     return {
         email: "",
-        name: "",
+        name: "Anonymous IP",
         userLevel: UserLevel.guest,
         username: "AnonymousIP",
         creationDate: Date.now(),

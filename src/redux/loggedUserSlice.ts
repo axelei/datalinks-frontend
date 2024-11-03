@@ -19,10 +19,13 @@ export const loggedUserSlice = createSlice({
         setLoggedUser: (_state, action) : void => {
             return action.payload.user;
         },
+        setLoggedToken: (_state, action) : void => {
+            return action.payload.token;
+        },
     },
 });
 
-export const { setLoggedUser } = loggedUserSlice.actions;
+export const { setLoggedUser, setLoggedToken } = loggedUserSlice.actions;
 export default loggedUserSlice.reducer;
 export const selectUser = (state: RootState) => state.loggedUser;
 

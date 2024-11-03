@@ -4,14 +4,10 @@ import {useDispatch} from "react-redux";
 import {User} from "../model/user/User.ts";
 import {setLoggedUser} from "../redux/loggedUserSlice.ts";
 import {useTranslation} from "react-i18next";
+import {fetchUser} from "../service/UserService.ts";
 
 
 export default function UserComponent() : ReactNode | null {
-
-    const fetchUser = async (username : string) : Promise<User> => {
-        const data = await fetch(import.meta.env.VITE_API + '/user/' + username + '/get');
-        return data.json();
-    }
 
     const { t } = useTranslation();
     const dispatch = useDispatch();

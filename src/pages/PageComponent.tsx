@@ -30,7 +30,7 @@ export default function PageComponent() : ReactNode | null {
             method: 'PUT',
             headers: {
                 'Content-Type': 'text/plain',
-                'user-token': loggedUser.token,
+                'login-token': loggedUser.token,
             },
             body: tempContent
         };
