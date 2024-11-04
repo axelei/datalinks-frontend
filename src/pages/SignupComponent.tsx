@@ -26,7 +26,7 @@ export default function SignUp() : ReactNode | null {
     const [validationError, setValidationError] = useState<string>('');
     const [sucessOpen, setSucessOpen] = useState<boolean>(false);
     const [gray, setGray] = useState<boolean>(false);
-    const [captcha, setCaptcha] = useState<string>('');
+    const [captcha, setCaptcha] = useState<string | null>(null);
 
     type Inputs = {
         username: string
@@ -34,7 +34,7 @@ export default function SignUp() : ReactNode | null {
         passwordAgain: string
         email: string
         name?: string
-        captcha: string
+        captcha?: string
     }
 
     const signup = async (inputs : Inputs) : Promise<string> => {
@@ -99,7 +99,7 @@ export default function SignUp() : ReactNode | null {
         });
     }
 
-    const onChangeCaptcha = (value : string) => {
+    const onChangeCaptcha = (value : string | null) => {
         setCaptcha(value);
     }
 
