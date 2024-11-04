@@ -16,6 +16,7 @@ import {useDispatch} from "react-redux";
 import Typography from "@mui/material/Typography";
 import {useTranslation} from "react-i18next";
 import CheckIcon from '@mui/icons-material/Check';
+import ReCAPTCHA from "react-google-recaptcha";
 
 
 export default function SignUp() : ReactNode | null {
@@ -25,6 +26,7 @@ export default function SignUp() : ReactNode | null {
     const [validationError, setValidationError] = useState<string>('');
     const [sucessOpen, setSucessOpen] = useState<boolean>(false);
     const [gray, setGray] = useState<boolean>(false);
+    const [captcha, setCaptcha] = useState<string>('');
 
     type Inputs = {
         username: string
@@ -32,13 +34,14 @@ export default function SignUp() : ReactNode | null {
         passwordAgain: string
         email: string
         name?: string
+        captcha: string
     }
 
     const signup = async (inputs : Inputs) : Promise<string> => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({...inputs}),
+            body: JSON.stringify({...inputs, captcha: captcha}),
         };
         const data = await fetch(import.meta.env.VITE_API + '/user/signup', requestOptions);
         if (data.ok) {
@@ -50,6 +53,9 @@ export default function SignUp() : ReactNode | null {
     }
 
     const validateForm = (inputs : Inputs) : Promise<string> => {
+        if (!captcha) {
+            return Promise.reject(t("Captcha is required"));
+        }
         if (inputs.password !== inputs.passwordAgain) {
             return Promise.reject(t("Passwords do not match"));
         }
@@ -93,11 +99,15 @@ export default function SignUp() : ReactNode | null {
         });
     }
 
+    const onChangeCaptcha = (value : string) => {
+        setCaptcha(value);
+    }
+
     const handleSucessClose = () => {
         setSucessOpen(false);
     }
 
-    const usernamePattern = /^[A-Za-z0-9]+$/i;
+    const usernamePattern = /^[A-Za-z0-9]{3,20}$/i;
     const emailPattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
     return (
@@ -125,7 +135,7 @@ export default function SignUp() : ReactNode | null {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl>
                         <TextField label={t("Username")} variant="outlined" disabled={gray}
-                                   {...register("username", {required: true, pattern: usernamePattern, min: 3, max: 20 })}
+                                   {...register("username", {required: true, pattern: usernamePattern })}
                                    helperText={errors.username && t("Username must be alphanumeric and between 3 and 20 characters")}
                                    error={!!errors.username}
                         />
@@ -156,6 +166,12 @@ export default function SignUp() : ReactNode | null {
                                    {...register("name")}
                                    helperText={errors.name && t("Name seems not correct")}
                                    error={!!errors.name}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <ReCAPTCHA {...register("captcha")}
+                            sitekey="6Ld2MnUqAAAAAIEtHM3hx4e-DoouOJsViXLaGADX"
+                            onChange={onChangeCaptcha}
                         />
                     </FormControl>
                     <FormControl>
