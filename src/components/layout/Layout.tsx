@@ -25,7 +25,7 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
             fetchUserByLoginToken(cookies.loginToken)
                 .then((user : User) => {
                     dispatch(setLoggedToken(cookies.loginToken));
-                    dispatch(setLoggedUser({username: user.username, name: user.name, email: user.email, userLevel: user.userLevel, creationDate: user.creationDate}));
+                    dispatch(setLoggedUser({...user}));
                 }).catch((error) => {
                     console.log(error);
                     removeCookie('loginToken', {path: '/'});

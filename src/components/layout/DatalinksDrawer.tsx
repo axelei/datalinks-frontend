@@ -24,6 +24,8 @@ import {useCookies} from "react-cookie";
 import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
 import {newUser} from "../../model/user/User.ts";
 import {useDispatch} from "react-redux";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 
 const drawerWidth = 240;
 
@@ -108,15 +110,15 @@ export default function DatalinksDrawer(props: Props) {
                         <ListItem key='login' disablePadding onClick={clickLogin}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <PersonIcon/>
+                                    <PersonIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={t("Log in or sign in")} />
+                                <ListItemText primary={t("Log in")} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem key='signup' disablePadding onClick={clickSignup}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <PersonIcon/>
+                                    <AssignmentOutlinedIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t("Sign up")} />
                             </ListItemButton>
@@ -127,7 +129,7 @@ export default function DatalinksDrawer(props: Props) {
                         <ListItem key='user' disablePadding onClick={clickUser}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <PersonIcon/>
+                                    <PersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={loggedUser.user.username}/>
                             </ListItemButton>
@@ -135,7 +137,7 @@ export default function DatalinksDrawer(props: Props) {
                         <ListItem key='logout' disablePadding onClick={clickLogout}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <PersonIcon/>
+                                    <ExitToAppIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t("Log out")}/>
                             </ListItemButton>
