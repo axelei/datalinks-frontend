@@ -20,6 +20,10 @@ import HouseIcon from '@mui/icons-material/House';
 import {Link, useNavigate} from 'react-router-dom';
 import LoginModal from "../LoginModal.tsx";
 import {useTranslation} from "react-i18next";
+import {useCookies} from "react-cookie";
+import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
+import {newUser} from "../../model/user/User.ts";
+import {useDispatch} from "react-redux";
 
 const drawerWidth = 240;
 
@@ -38,6 +42,9 @@ export default function DatalinksDrawer(props: Props) {
 
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const navigate = useNavigate();
+    const [_cookies, setCookie] = useCookies(['loginToken']);
+
+    const dispatch = useDispatch();
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -56,11 +63,26 @@ export default function DatalinksDrawer(props: Props) {
 
     const clickLogin = () => {
         handleDrawerClose();
-        if (loggedUser.user.userLevel == UserLevel.guest) {
-            setShowLogin(true);
-        } else {
-            navigate('/user/' + loggedUser.user.username);
-        }
+        setShowLogin(true);
+    }
+
+    const clickLogout = () => {
+        handleDrawerClose();
+        setCookie('loginToken', '', {path: '/'});
+        dispatch(setLoggedUser(newUser()));
+        dispatch(setLoggedToken(''));
+
+        navigate('/');
+    }
+
+    const clickUser = () => {
+        handleDrawerClose();
+        navigate('/user/' + loggedUser.user.username);
+    }
+
+    const clickSignup = () => {
+        handleDrawerClose();
+        navigate('/signup');
     }
 
     const drawer = (
@@ -81,28 +103,44 @@ export default function DatalinksDrawer(props: Props) {
             </List>
             <Divider/>
             <List>
-                <ListItem key='login' disablePadding onClick={clickLogin}>
-                    {loggedUser.user.userLevel == UserLevel.guest &&
-                        <>
+                {loggedUser.user.userLevel == UserLevel.guest &&
+                    <>
+                        <ListItem key='login' disablePadding onClick={clickLogin}>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <PersonIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary={t("Log in or sign in")} />
                             </ListItemButton>
-                        </>
-                    }
-                    {loggedUser.user.userLevel != UserLevel.guest &&
-                        <>
+                        </ListItem>
+                        <ListItem key='signup' disablePadding onClick={clickSignup}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <PersonIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={t("Sign up")} />
+                            </ListItemButton>
+                        </ListItem>
+                    </>}
+                {loggedUser.user.userLevel != UserLevel.guest &&
+                    <>
+                        <ListItem key='user' disablePadding onClick={clickUser}>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <PersonIcon/>
                                 </ListItemIcon>
                                 <ListItemText primary={loggedUser.user.username}/>
                             </ListItemButton>
-                        </>
-                    }
-                </ListItem>
+                        </ListItem>
+                        <ListItem key='logout' disablePadding onClick={clickLogout}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <PersonIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={t("Log out")}/>
+                            </ListItemButton>
+                        </ListItem>
+                    </>}
             </List>
         </div>
     );

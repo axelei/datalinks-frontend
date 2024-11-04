@@ -19,7 +19,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
 
   const { t } = useTranslation();
   const [validationError, setValidationError] = useState<string>('');
-  const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
+  const [_cookies, setCookie] = useCookies(['loginToken']);
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -31,7 +31,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     password: string
   }
 
-  const login = async (username: string, password: string): Promise<void> => {
+  const login = async (username: string, password: string): Promise<string> => {
     const requestOptions = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -59,7 +59,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
     const result = login(inputs.username, inputs.password);
     result.then((data) => {
       fetchUser(inputs.username).then((user : User) => {
-        dispatch(setLoggedUser({username: user.username, name: user.name, email: user.email, userLevel: user.userLevel}));
+        dispatch(setLoggedUser({...user}));
         dispatch(setLoggedToken(data));
         setCookie('loginToken', data, {path: '/'});
         handleClose();

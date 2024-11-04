@@ -2,7 +2,6 @@ import {ReactNode, useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {User} from "../model/user/User.ts";
-import {setLoggedUser} from "../redux/loggedUserSlice.ts";
 import {useTranslation} from "react-i18next";
 import {fetchUser} from "../service/UserService.ts";
 
@@ -24,12 +23,11 @@ export default function UserComponent() : ReactNode | null {
             .then((data : User) => {
                 setUsername(data.username);
                 setName(data.name);
-                dispatch(setLoggedUser({username: data.username, name: data.name, email: data.email, userLevel: data.userLevel}));
                 document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.username;
             }).catch(() => {
                 setUsername(t("User not found"));
                 setName('');
-                document.title = import.meta.env.VITE_SITE_TITLE + ' - User not found';
+                document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("User not found");
         });
 
     }, [dispatch, location.pathname, t]);

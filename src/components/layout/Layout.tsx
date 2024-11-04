@@ -18,22 +18,22 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
     const showError = useAppSelector((state) => state.showError.value);
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const dispatch = useDispatch();
-    const [cookies, setcookies, removeCookie] = useCookies(['loginToken']);
+    const [cookies, _setcookies, removeCookie] = useCookies(['loginToken']);
 
     useEffect(() => {
         if (cookies.loginToken && !loggedUser.token) {
             fetchUserByLoginToken(cookies.loginToken)
                 .then((user : User) => {
                     dispatch(setLoggedToken(cookies.loginToken));
-                    dispatch(setLoggedUser({username: user.username, name: user.name, email: user.email, userLevel: user.userLevel}));
+                    dispatch(setLoggedUser({username: user.username, name: user.name, email: user.email, userLevel: user.userLevel, creationDate: user.creationDate}));
                 }).catch((error) => {
                     console.log(error);
-                    //removeCookie('loginToken', {path: '/'});
-                    //dispatch(setLoggedUser(newUser()));
-                    //dispatch(setLoggedToken(''));
+                    removeCookie('loginToken', {path: '/'});
+                    dispatch(setLoggedUser(newUser()));
+                    dispatch(setLoggedToken(''));
                 });
         }
-    }, [cookies.loginToken, loggedUser.token, removeCookie]);
+    }, [cookies.loginToken, dispatch, loggedUser.token, removeCookie]);
 
     return (<>
             <ErrorModal show={showError} />

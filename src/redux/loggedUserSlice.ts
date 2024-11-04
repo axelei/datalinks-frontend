@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {RootState} from "./store.ts";
 import {newUser, User} from "../model/user/User.ts";
 
@@ -16,11 +16,11 @@ export const loggedUserSlice = createSlice({
     name: 'loggedUser',
     initialState,
     reducers: {
-        setLoggedUser: (_state, action) : void => {
-            return action.payload.user;
+        setLoggedUser: (state, action: PayloadAction<User>) : void => {
+            state.user = action.payload;
         },
-        setLoggedToken: (_state, action) : void => {
-            return action.payload.token;
+        setLoggedToken: (state, action: PayloadAction<string>) : void => {
+            state.token = action.payload;
         },
     },
 });
