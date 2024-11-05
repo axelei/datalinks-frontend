@@ -25,7 +25,7 @@ export default function ActivateUserComponent() : ReactNode | null {
         dispatch(loadingOn());
         activateUser(activationToken)
             .then((_data : string) => {
-                setResult(t("Sucess! Your user is now activated and you can proceed to log in."));
+                setResult(t("Success! Your user is now activated and you can proceed to log in."));
             }).catch(() => {
                 setResult(t("Activation failed."));
             }).finally(() => {

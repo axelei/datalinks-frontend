@@ -25,7 +25,7 @@ export default function ResetPasswordComponent() : ReactNode | null {
         dispatch(loadingOn());
         resetPassword(resetToken)
             .then((_data : string) => {
-                setResult(t("Sucess! Your password has been reset. Check your email for details."));
+                setResult(t("Success! Your password has been reset. Check your email for details."));
             }).catch(() => {
                 setResult(t("Reset failed."));
             }).finally(() => {
