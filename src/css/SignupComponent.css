@@ -6,3 +6,12 @@
     flex-direction: column;
 
 }
+
+.passwordReset-form form {
+
+    gap: 16px;
+
+    display: flex;
+    flex-direction: column;
+
+}

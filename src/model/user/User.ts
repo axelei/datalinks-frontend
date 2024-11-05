@@ -6,6 +6,7 @@ export interface User {
     name: string;
     userLevel : UserLevel;
     creationDate: number;
+    language?: string;
 }
 
 export const newUser = () : User => {

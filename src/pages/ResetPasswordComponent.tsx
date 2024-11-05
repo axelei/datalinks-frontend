@@ -4,13 +4,13 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 
-export default function ActivateUserComponent() : ReactNode | null {
+export default function ResetPasswordComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const [result, setResult] = useState<string>('');
 
-    const activateUser = async (activationToken : string) : Promise<string> => {
-        const data = await fetch(import.meta.env.VITE_API + '/user/' + activationToken + '/activate');
+    const resetPassword = async (resetToken : string) : Promise<string> => {
+        const data = await fetch(import.meta.env.VITE_API + '/user/' + resetToken + "/reset");
         if (data.ok) {
             return data.text();
         } else {
@@ -21,13 +21,13 @@ export default function ActivateUserComponent() : ReactNode | null {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const activationToken = window.location.pathname.split('/')[2];
+        const resetToken = window.location.pathname.split('/')[2];
         dispatch(loadingOn());
-        activateUser(activationToken)
+        resetPassword(resetToken)
             .then((_data : string) => {
-                setResult(t("Sucess! Your user is now activated and you can proceed to log in."));
+                setResult(t("Sucess! Your password has been reset. Check your email for details."));
             }).catch(() => {
-                setResult(t("Activation failed."));
+                setResult(t("Reset failed."));
             }).finally(() => {
                 dispatch(loadingOff());
             });
@@ -37,7 +37,7 @@ export default function ActivateUserComponent() : ReactNode | null {
 
     return (
         <>
-            <Typography variant="h2">{t("User activation.")}</Typography>
+            <Typography variant="h2">{t("Password reset.")}</Typography>
             <Typography>{result}</Typography>
         </>
     )

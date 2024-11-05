@@ -5,7 +5,7 @@ import {modalStyle} from "../service/Common.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useDispatch} from "react-redux";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "../css/LoginModal.css";
 import {showError} from "../redux/showErrorSlice.ts";
 import {useTranslation} from "react-i18next";
@@ -21,6 +21,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
   const [validationError, setValidationError] = useState<string>('');
   const [_cookies, setCookie] = useCookies(['loginToken']);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     props.onClose();
@@ -62,6 +63,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         dispatch(setLoggedUser({...user}));
         dispatch(setLoggedToken(data));
         setCookie('loginToken', data, {path: '/'});
+        navigate('/user/' + inputs.username);
         handleClose();
       });
     }).catch((error) => {
@@ -85,7 +87,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         onClose={handleClose}
       >
         <Box sx={modalStyle} className={"login-modal"}>
-          <Typography variant="h2">{t("Log in")}</Typography>
+          <Typography variant="h3">{t("Log in")}</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth>
               <TextField label="Username" variant="outlined"
@@ -112,7 +114,10 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
             </FormControl>
 
             <FormControl fullWidth>
-              <p>{t("Don't have an account?")} <Link to='/signup' onClick={props.onClose}>{t("Sign up")}</Link></p>
+              {t("Don't have an account?")} <Link to='/signup' onClick={props.onClose}>{t("Sign up")}</Link>
+            </FormControl>
+            <FormControl fullWidth>
+              {t("Forgot your credentials?")} <Link to='/passwordReset' onClick={props.onClose}>{t("You can request a reset")}</Link>
             </FormControl>
           </form>
         </Box>

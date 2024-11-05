@@ -29,12 +29,12 @@ export default function SignUp() : ReactNode | null {
     const [captcha, setCaptcha] = useState<string | null>(null);
 
     type Inputs = {
-        username: string
-        password: string
-        passwordAgain: string
-        email: string
-        name?: string
-        captcha?: string
+        username: string,
+        password: string,
+        passwordAgain: string,
+        email: string,
+        name?: string,
+        captcha?: string,
     }
 
     const signup = async (inputs : Inputs) : Promise<string> => {
@@ -45,7 +45,6 @@ export default function SignUp() : ReactNode | null {
         };
         const data = await fetch(import.meta.env.VITE_API + '/user/signup', requestOptions);
         if (data.ok) {
-            console.log('Sign up successful');
             return data.text();
         } else {
             return Promise.reject(data.text());
