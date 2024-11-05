@@ -15,6 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import Button from "@mui/material/Button";
 import ReCAPTCHA from "react-google-recaptcha";
 import {SubmitHandler, useForm} from "react-hook-form";
+import {log} from "../service/Common.ts";
 
 export default function ResetPasswordRequestComponent() : ReactNode | null {
 
@@ -69,7 +70,8 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
                 request.then(() => {
                     setSucessOpen(true);
                     setGray(true);
-                }).catch((_error) => {
+                }).catch((error) => {
+                    log("Reset password failed: " + error);
                     setValidationError(t("Password already in reset process or user not found."));
                 });
             }).catch((error) => {

@@ -87,7 +87,7 @@ export default function PageComponent() : ReactNode | null {
             setCategories(data.categories);
 
             document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title;
-        })
+        });
 
     }, [location.pathname]);
 

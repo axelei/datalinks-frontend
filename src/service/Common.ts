@@ -14,3 +14,10 @@ export const modalStyle = {
     p: 4,
     textAlign: 'center',
 };
+
+export const log = (message : string) => {
+    if (import.meta.env.MODE === 'development' || import.meta.env.VITE_IS_DEV) {
+        const date = new Date();
+        console.log(date + ' ' + message);
+    }
+}

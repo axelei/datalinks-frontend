@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
+import {log} from "../service/Common.ts";
 
 export default function ResetPasswordComponent() : ReactNode | null {
 
@@ -24,9 +25,11 @@ export default function ResetPasswordComponent() : ReactNode | null {
         const resetToken = window.location.pathname.split('/')[2];
         dispatch(loadingOn());
         resetPassword(resetToken)
-            .then((_data : string) => {
+            .then((data : string) => {
+                log("Reset password success: " + data);
                 setResult(t("Success! Your password has been reset. Check your email for details."));
-            }).catch(() => {
+            }).catch((error : string) => {
+                log("Reset password failed: " + error);
                 setResult(t("Reset failed."));
             }).finally(() => {
                 dispatch(loadingOff());

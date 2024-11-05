@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import {useTranslation} from "react-i18next";
 import CheckIcon from '@mui/icons-material/Check';
 import ReCAPTCHA from "react-google-recaptcha";
+import {log} from "../service/Common.ts";
 
 
 export default function SignUp() : ReactNode | null {
@@ -79,11 +80,13 @@ export default function SignUp() : ReactNode | null {
     const sendSignup = (inputs : Inputs) : void => {
         dispatch(loadingOn());
         const result = signup(inputs);
-        result.then((_data: string) : void => {
+        result.then((data: string) : void => {
+            log("Signup success: " + data);
             setGray(true);
             setSucessOpen(true);
         }).catch((error : Promise<string>) : void => {
             error.then((data: string) : void => {
+                log("Signup error: " + data);
                 switch (data) {
                     case 'USER_EXISTS':
                         setValidationError(t("Username already exists"));
