@@ -21,6 +21,7 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
     const [cookies, _setcookies, removeCookie] = useCookies(['loginToken']);
 
     useEffect(() => {
+        document.title = import.meta.env.VITE_SITE_TITLE;
         if (cookies.loginToken && !loggedUser.token) {
             fetchUserByLoginToken(cookies.loginToken)
                 .then((user : User) => {

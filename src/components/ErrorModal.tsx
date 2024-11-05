@@ -22,7 +22,7 @@ export default function ErrorModal(props: { show: boolean }) : ReactNode | null 
             >
                 <Box sx={modalStyle}>
                     <ErrorIcon />
-                    <h2>{t("Something went wrong...")}</h2>
+                    <Typography variant="h2">{t("Something went wrong...")}</Typography>
                     <Typography>
                         {t("Either the server failed to process the request or you don't have permissions to perform the requested action.")}
                     </Typography>

@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import {User} from "../model/user/User.ts";
 import {useTranslation} from "react-i18next";
 import {fetchUser} from "../service/UserService.ts";
+import Typography from "@mui/material/Typography";
 
 
 export default function UserComponent() : ReactNode | null {
@@ -35,7 +36,7 @@ export default function UserComponent() : ReactNode | null {
 
     return (
         <>
-            <h1>{t("User")}: {username}</h1>
+            <Typography variant="h2">{t("User")}: {username}</Typography>
             <p>
                 {name}
             </p>

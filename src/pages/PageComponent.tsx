@@ -10,6 +10,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Category} from "../model/page/Category.ts";
 import {useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
+import Typography from "@mui/material/Typography";
 
 export default function PageComponent() : ReactNode | null {
 
@@ -93,7 +94,7 @@ export default function PageComponent() : ReactNode | null {
 
     return (
         <>
-            <h1>{title}</h1>
+            <Typography variant="h2">{title}</Typography>
             {mode === PageMode.read && (
                 <>
                     <article>{content}</article>

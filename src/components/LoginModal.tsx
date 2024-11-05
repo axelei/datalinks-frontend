@@ -85,7 +85,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         onClose={handleClose}
       >
         <Box sx={modalStyle} className={"login-modal"}>
-          <h2>{t("Log in")}</h2>
+          <Typography variant="h2">{t("Log in")}</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth>
               <TextField label="Username" variant="outlined"

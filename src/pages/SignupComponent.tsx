@@ -41,7 +41,7 @@ export default function SignUp() : ReactNode | null {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({...inputs, captcha: captcha}),
+            body: JSON.stringify({...inputs, captcha: captcha, language: navigator.language }),
         };
         const data = await fetch(import.meta.env.VITE_API + '/user/signup', requestOptions);
         if (data.ok) {
@@ -131,7 +131,7 @@ export default function SignUp() : ReactNode | null {
                 </DialogActions>
             </Dialog>
             <div className="signup-form">
-                <h2>{t("Sign up")}</h2>
+                <Typography variant="h2">{t("Sign up")}</Typography>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl>
                         <TextField label={t("Username")} variant="outlined" disabled={gray}
@@ -174,9 +174,7 @@ export default function SignUp() : ReactNode | null {
                             onChange={onChangeCaptcha}
                         />
                     </FormControl>
-                    <FormControl>
-                        <Typography color="error">{validationError}</Typography>
-                    </FormControl>
+                    <Typography color="error">{validationError}</Typography>
 
                     <FormControl>
                         <Button variant='contained' type="submit" disabled={gray}>{t("Sign up")}</Button>
