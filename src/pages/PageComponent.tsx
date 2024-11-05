@@ -7,10 +7,10 @@ import {TextareaAutosize} from "@mui/material";
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Category} from "../model/page/Category.ts";
 import {useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
+import {clone} from "../service/Common.ts";
 
 export default function PageComponent() : ReactNode | null {
 
@@ -33,14 +33,17 @@ export default function PageComponent() : ReactNode | null {
                 'Content-Type': 'text/plain',
                 'login-token': loggedUser.token,
             },
-            body: tempContent
+            body: JSON.stringify({
+                content: pageTemp.content,
+                categories: pageTemp.categories,
+            }),
         };
-        return await fetch(import.meta.env.VITE_API + '/page/' + title, requestOptions);
+        return await fetch(import.meta.env.VITE_API + '/page/' + pageTemp.title, requestOptions);
     }
 
     const editPageEvent = () : void => {
         setMode(PageMode.edit);
-        setTempContent(content);
+        setPageTemp(clone(page));
     }
 
     const savePageEvent = () : void => {
@@ -48,7 +51,7 @@ export default function PageComponent() : ReactNode | null {
         const saveResult = savePage();
         saveResult.then(() => {
             setMode(PageMode.read);
-            setContent(tempContent);
+            setPage(clone(pageTemp));
         }).finally(() => {
                 dispatch(loadingOff());
             }
@@ -56,19 +59,17 @@ export default function PageComponent() : ReactNode | null {
     }
 
     const changeContentEvent = (ev: ChangeEvent<HTMLTextAreaElement>) : void => {
-        setTempContent(ev.target.value);
+        setPageTemp({...pageTemp, content: ev.target.value});
     }
 
     const cancelEditionEvent = () : void => {
         setMode(PageMode.read);
-        setTempContent('');
+        setPageTemp(newPage(''));
     }
 
     const [mode, setMode] = useState(PageMode.read);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [tempContent, setTempContent] = useState('');
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [page, setPage] = useState<Page>(newPage(''));
+    const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
 
     const dispatch = useDispatch();
 
@@ -82,10 +83,7 @@ export default function PageComponent() : ReactNode | null {
 
         const apiResponse = fetchPage(currentTitle);
         apiResponse.then(data => {
-            setTitle(data.title);
-            setContent(data.content);
-            setCategories(data.categories);
-
+            setPage({...data});
             document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title;
         });
 
@@ -94,22 +92,22 @@ export default function PageComponent() : ReactNode | null {
 
     return (
         <>
-            <Typography variant="h2">{title}</Typography>
+            <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
-                    <article>{content}</article>
+                    <article>{page.content}</article>
                     <Button variant="contained" onClick={editPageEvent}>{t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <TextareaAutosize value={tempContent} onChange={changeContentEvent} id='editArea' minRows='20'></TextareaAutosize>
+                    <TextareaAutosize value={pageTemp.content} onChange={changeContentEvent} id='editArea' minRows='20'></TextareaAutosize>
                     <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>
             )}
             <ul>
-            {categories.map((category) => (
+            {page.categories.map((category) => (
                 <li key={'category-' + category.name}>
                     {category.name} -
                 </li>
