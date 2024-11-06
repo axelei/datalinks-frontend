@@ -12,6 +12,7 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {clone, log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function PageComponent() : ReactNode | null {
 
@@ -114,7 +115,7 @@ export default function PageComponent() : ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <article>{page.content}</article>
-                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}>{t("Edit")}</Button>
+                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}><EditIcon /> {t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (

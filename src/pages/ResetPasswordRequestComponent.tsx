@@ -16,6 +16,7 @@ import Button from "@mui/material/Button";
 import ReCAPTCHA from "react-google-recaptcha";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {log} from "../service/Common.ts";
+import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 
 export default function ResetPasswordRequestComponent() : ReactNode | null {
 
@@ -67,12 +68,15 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
         validateForm(inputs)
             .then(() => {
                 const request = sendPasswordResetRequest(inputs);
+                dispatch(loadingOn());
                 request.then(() => {
                     setSucessOpen(true);
                     setGray(true);
                 }).catch((error) => {
                     log("Reset password failed: " + error);
                     setValidationError(t("Password already in reset process or user not found."));
+                }).finally(() => {
+                    dispatch(loadingOff());
                 });
             }).catch((error) => {
             setValidationError(error);

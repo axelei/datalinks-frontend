@@ -1,5 +1,5 @@
 import {ReactNode, useState} from 'react';
-import '../css/SignupComponent.css';
+import '../css/Forms.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {
@@ -18,6 +18,7 @@ import {useTranslation} from "react-i18next";
 import CheckIcon from '@mui/icons-material/Check';
 import ReCAPTCHA from "react-google-recaptcha";
 import {log} from "../service/Common.ts";
+import InfoDialog from "../components/InfoDialog.tsx";
 
 
 export default function SignUp() : ReactNode | null {
@@ -114,24 +115,7 @@ export default function SignUp() : ReactNode | null {
 
     return (
         <>
-            <Dialog
-                open={sucessOpen}
-                onClose={handleSucessClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {t("User created")}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <CheckIcon color="success" /> {t("User created successfully. Please check your email to confirm it.")}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSucessClose} autoFocus>{t("OK")}</Button>
-                </DialogActions>
-            </Dialog>
+            <InfoDialog show={sucessOpen} onClose={handleSucessClose} text={t("User created successfully. Please check your email to confirm it.")} />
             <div className="signup-form">
                 <Typography variant="h2">{t("Sign up")}</Typography>
                 <form onSubmit={handleSubmit(onSubmit)}>
