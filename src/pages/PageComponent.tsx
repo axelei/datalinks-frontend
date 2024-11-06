@@ -28,7 +28,7 @@ export default function PageComponent() : ReactNode | null {
         if (data.ok) {
             return data.json();
         } else {
-            return Promise.reject(data);
+            return Promise.reject(data.text());
         }
     }
 
@@ -61,8 +61,7 @@ export default function PageComponent() : ReactNode | null {
             setPage(clone(pageTemp));
         }).finally(() => {
                 dispatch(loadingOff());
-            }
-        );
+        });
     }
 
     const changeContentEvent = (ev: ChangeEvent<HTMLTextAreaElement>) : void => {
@@ -71,7 +70,7 @@ export default function PageComponent() : ReactNode | null {
 
     const cancelEditionEvent = () : void => {
         setMode(PageMode.read);
-        setPageTemp(newPage(''));
+        setPageTemp(newPage(page.title));
     }
 
     const [mode, setMode] = useState(PageMode.read);
@@ -85,6 +84,7 @@ export default function PageComponent() : ReactNode | null {
         if (!currentTitle) {
             currentTitle = import.meta.env.VITE_SITE_INDEX;
         }
+        log("Current title: " + currentTitle);
 
         document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + currentTitle;
 
@@ -98,12 +98,17 @@ export default function PageComponent() : ReactNode | null {
             }
             setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
 
-        }).catch((error) => {
+        }).catch((error : Promise<string>) => {
 
             const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
             setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
 
-            log("Page fetch failed: " + error);
+            setPage(newPage(currentTitle));
+
+            error.then((data: string) => {
+                log("Page fetch failed: " + data);
+            });
+
         });
 
     }, [config.value, location, loggedUser.user.level, page.block]);

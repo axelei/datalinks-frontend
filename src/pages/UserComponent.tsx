@@ -11,7 +11,7 @@ import {UserLevel} from "../model/user/UserLevel.ts";
 import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import {SubmitHandler, useForm} from "react-hook-form";
-import {FormControl, TextField} from "@mui/material";
+import {Box, FormControl, TextField} from "@mui/material";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import InfoDialog from "../components/InfoDialog.tsx";
 
@@ -108,27 +108,29 @@ export default function UserComponent() : ReactNode | null {
             <Typography variant="h2">{t("User")}: {user.username}</Typography>
             <article className="passwordReset-form">
                 {user.name}
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl>
-                        <TextField label={t("Password")} variant="outlined" type="password"
-                                   {...register("password", {required: true, min: 8})}
-                                   helperText={errors.password && t("Password must be 8 character minimum")}
-                                   error={!!errors.password}
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <TextField label={t("Password confirmation")} variant="outlined" type="password"
-                                   {...register("passwordAgain", {required: true})}
-                                   helperText={errors.passwordAgain && t("Password confirmation is required")}
-                                   error={!!errors.passwordAgain}
-                        />
-                    </FormControl>
-                    <Typography color="error">{changePasswordValidationError}</Typography>
-                    <Button variant="contained" disabled={!canEdit} type="submit"><EditIcon/> {t("Save")}</Button>
-                </form>
+                <Box hidden={!canEdit}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FormControl>
+                            <TextField label={t("Password")} variant="outlined" type="password"
+                                       {...register("password", {required: true, min: 8})}
+                                       helperText={errors.password && t("Password must be 8 character minimum")}
+                                       error={!!errors.password}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <TextField label={t("Password confirmation")} variant="outlined" type="password"
+                                       {...register("passwordAgain", {required: true})}
+                                       helperText={errors.passwordAgain && t("Password confirmation is required")}
+                                       error={!!errors.passwordAgain}
+                            />
+                        </FormControl>
+                        <Typography color="error">{changePasswordValidationError}</Typography>
+                        <Button variant="contained" disabled={!canEdit} type="submit"><EditIcon/> {t("Save")}</Button>
+                    </form>
+                </Box>
             </article>
-                </>
-                )
-            }
+        </>
+    );
+}
 
 
