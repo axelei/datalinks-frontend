@@ -105,7 +105,7 @@ export default function DatalinksDrawer(props: Props) {
             </List>
             <Divider/>
             <List>
-                {loggedUser.user.userLevel == UserLevel.guest &&
+                {loggedUser.user.level == UserLevel.GUEST &&
                     <>
                         <ListItem key='login' disablePadding onClick={clickLogin}>
                             <ListItemButton>
@@ -124,7 +124,7 @@ export default function DatalinksDrawer(props: Props) {
                             </ListItemButton>
                         </ListItem>
                     </>}
-                {loggedUser.user.userLevel != UserLevel.guest &&
+                {loggedUser.user.level != UserLevel.GUEST &&
                     <>
                         <ListItem key='user' disablePadding onClick={clickUser}>
                             <ListItemButton>

@@ -5,6 +5,7 @@ import {User} from "../model/user/User.ts";
 import {useTranslation} from "react-i18next";
 import {fetchUser} from "../service/UserService.ts";
 import Typography from "@mui/material/Typography";
+import {log} from "../service/Common.ts";
 
 
 export default function UserComponent() : ReactNode | null {
@@ -18,6 +19,7 @@ export default function UserComponent() : ReactNode | null {
     const [name, setName] = useState('');
 
     useEffect(() => {
+        log("UserComponent useEffect");
         const usernamePath = location.pathname.split('/')[2];
 
         fetchUser(usernamePath)

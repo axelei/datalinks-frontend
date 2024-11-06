@@ -15,9 +15,13 @@ export const modalStyle = {
     textAlign: 'center',
 };
 
-export const log = (message : string) => {
+export const log = (message : string | null | undefined) => {
     if (import.meta.env.MODE === 'development' || import.meta.env.VITE_IS_DEV) {
         const date = new Date();
         console.log(date + ' ' + message);
     }
+}
+
+export type AssociativeArray<Type> = {
+    [key: string]: Type;
 }

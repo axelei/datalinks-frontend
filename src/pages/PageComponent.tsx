@@ -10,23 +10,29 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {clone} from "../service/Common.ts";
+import {clone, log} from "../service/Common.ts";
+import {UserLevel} from "../model/user/UserLevel.ts";
 
 export default function PageComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const loggedUser = useAppSelector((state) => state.loggedUser);
+    const config = useAppSelector((state) => state.config);
+    const dispatch = useDispatch();
+    const location = useLocation();
 
     const fetchPage = async (title : string) : Promise<Page> => {
+        log("Fetching page: " + title);
         const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
         if (data.ok) {
             return data.json();
         } else {
-            return newPage(title);
+            return Promise.reject(data);
         }
     }
 
     const savePage = async () : Promise<object> => {
+        log("Saving page: " + pageTemp.title);
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -70,24 +76,36 @@ export default function PageComponent() : ReactNode | null {
     const [mode, setMode] = useState(PageMode.read);
     const [page, setPage] = useState<Page>(newPage(''));
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
-
-    const dispatch = useDispatch();
-
-    const location = useLocation();
+    const [canEdit, setCanEdit] = useState<boolean>(false);
 
     useEffect(() => {
+        log("PageComponent useEffect");
         let currentTitle = location.pathname.split('/')[2];
         if (!currentTitle) {
             currentTitle = import.meta.env.VITE_SITE_INDEX;
         }
 
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + currentTitle;
+
         const apiResponse = fetchPage(currentTitle);
         apiResponse.then(data => {
             setPage({...data});
-            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title;
+
+            let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+            if (page.block) {
+                blockLevel = Math.max(blockLevel, page.block);
+            }
+            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+
+        }).catch((error) => {
+
+            const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+
+            log("Page fetch failed: " + error);
         });
 
-    }, [location.pathname]);
+    }, [config.value, location, loggedUser.user.level, page.block]);
 
 
     return (
@@ -96,7 +114,7 @@ export default function PageComponent() : ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <article>{page.content}</article>
-                    <Button variant="contained" onClick={editPageEvent}>{t("Edit")}</Button>
+                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}>{t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
