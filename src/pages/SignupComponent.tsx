@@ -2,20 +2,11 @@ import {ReactNode, useState} from 'react';
 import '../css/Forms.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    FormControl,
-    TextField
-} from "@mui/material";
+import {FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useDispatch} from "react-redux";
 import Typography from "@mui/material/Typography";
 import {useTranslation} from "react-i18next";
-import CheckIcon from '@mui/icons-material/Check';
 import ReCAPTCHA from "react-google-recaptcha";
 import {log} from "../service/Common.ts";
 import InfoDialog from "../components/InfoDialog.tsx";
