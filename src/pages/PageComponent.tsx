@@ -1,9 +1,8 @@
-import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
+import {ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
 import Button from '@mui/material/Button';
-import {TextareaAutosize} from "@mui/material";
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
@@ -13,6 +12,9 @@ import Typography from "@mui/material/Typography";
 import {clone, log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import EditIcon from '@mui/icons-material/Edit';
+import PageContentComponent from "../components/PageContentComponent.tsx";
+import EditorComponent from "../components/EditorComponent.tsx";
+import {ClassicEditor, EventInfo} from "ckeditor5";
 
 export default function PageComponent() : ReactNode | null {
 
@@ -64,8 +66,8 @@ export default function PageComponent() : ReactNode | null {
         });
     }
 
-    const changeContentEvent = (ev: ChangeEvent<HTMLTextAreaElement>) : void => {
-        setPageTemp({...pageTemp, content: ev.target.value});
+    const changeContentEvent = (_event : EventInfo<string, unknown>, editor : ClassicEditor) : void => {
+        setPageTemp({...pageTemp, content: editor.getData()});
     }
 
     const cancelEditionEvent = () : void => {
@@ -119,13 +121,13 @@ export default function PageComponent() : ReactNode | null {
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
-                    <article>{page.content}</article>
+                    <PageContentComponent content={page.content}/>
                     <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}><EditIcon /> {t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <TextareaAutosize value={pageTemp.content} onChange={changeContentEvent} id='editArea' minRows='20'></TextareaAutosize>
+                    <EditorComponent content={pageTemp.content} changeContentEvent={changeContentEvent} />
                     <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>

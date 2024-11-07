@@ -119,14 +119,14 @@ export default function SignUp() : ReactNode | null {
                     </FormControl>
                     <FormControl>
                         <TextField label={t("Password")} variant="outlined" type="password" disabled={gray}
-                                   {...register("password", {required: true, min: 8 })}
+                                   {...register("password", {required: true, minLength: 8 })}
                                    helperText={errors.password && t("Password must be 8 character minimum")}
                                    error={!!errors.password}
                         />
                     </FormControl>
                     <FormControl>
                         <TextField label={t("Password confirmation")} variant="outlined" type="password" disabled={gray}
-                                   {...register("passwordAgain", {required: true })}
+                                   {...register("passwordAgain", {required: true, minLength: 8 })}
                                    helperText={errors.passwordAgain && t("Password confirmation is required")}
                                    error={!!errors.passwordAgain}
                         />
