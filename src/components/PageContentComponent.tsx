@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import {parseMain} from "../service/PageRendering.ts";
+import {parseRenderMain} from "../service/ParseRenderMain.tsx";
 
 interface Props {
     content: string;
@@ -7,11 +7,11 @@ interface Props {
 
 export default function PageContentComponent( props : Props) : ReactNode | null {
 
-    const content = parseMain(props.content);
+    const content = parseRenderMain(props.content);
 
     return (
         <>
-            <article dangerouslySetInnerHTML={{ __html: content }}></article>
+            <article>{content}</article>
         </>
     )
 }
