@@ -127,7 +127,7 @@ export default function PageComponent() : ReactNode | null {
             )}
             {mode === PageMode.edit && (
                 <>
-                    <EditorComponent content={pageTemp.content} changeContentEvent={changeContentEvent} />
+                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent} />
                     <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>

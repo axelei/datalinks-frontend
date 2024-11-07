@@ -1,16 +1,49 @@
 import {ReactNode} from "react";
 import 'ckeditor5/ckeditor5.css';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
-import {ClassicEditor, Essentials, EventInfo, Mention, Paragraph, Undo, Heading, Font, HorizontalLine, ShowBlocks,
-    AutoLink, Link, List, Table, TableToolbar, TableCellProperties, TableProperties, TableColumnResize, TableCaption,
-    Alignment, Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline, CodeBlock, Clipboard, RemoveFormat,
-    SourceEditing, Style, GeneralHtmlSupport,
+import {
+    Alignment,
+    AutoLink,
+    Bold,
+    ClassicEditor,
+    Clipboard,
+    Code,
+    CodeBlock,
+    Essentials,
+    EventInfo,
+    Font,
+    GeneralHtmlSupport,
+    Heading,
+    HorizontalLine,
+    Italic,
+    Link,
+    List,
+    Mention,
+    Paragraph,
+    RemoveFormat,
+    ShowBlocks,
+    SourceEditing,
+    Strikethrough,
+    Style,
+    Subscript,
+    Superscript,
+    Table,
+    TableCaption,
+    TableCellProperties,
+    TableColumnResize,
+    TableProperties,
+    TableToolbar,
+    Underline,
+    Undo,
 } from 'ckeditor5';
+import coreTranslationsEn from 'ckeditor5/translations/en.js';
 import coreTranslationsEs from 'ckeditor5/translations/es.js';
+import coreTranslationsDe from 'ckeditor5/translations/de.js';
 import {useAppSelector} from "../hooks.ts";
+import {t} from "i18next";
 
 interface Props {
-    content: string;
+    initialContent: string;
     changeContentEvent: (event: EventInfo<string, unknown>, editor : ClassicEditor) => void;
 }
 
@@ -18,15 +51,30 @@ interface Props {
 export default function EditorComponent( props : Props) : ReactNode | null {
 
     const loggedUser = useAppSelector((state) => state.loggedUser);
+    let translation = coreTranslationsEn;
+
+    if (loggedUser.user.language) {
+        switch (loggedUser.user.language.substring(0, 2)) {
+            case 'es':
+                translation = coreTranslationsEs;
+                break;
+            case 'de':
+                translation = coreTranslationsDe;
+                break;
+            default:
+                translation = coreTranslationsEn;
+        }
+    }
 
     return (
         <>
             <CKEditor
-                editor={ ClassicEditor }
-                config={ {
+                editor={ClassicEditor}
+                config={{
                     toolbar: {
-                        items: [ 'undo', 'redo', 'showBlocks', '|',
-                            'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat',  '|',
+                        items: [
+                            'undo', 'redo', 'showBlocks', '|',
+                            'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
                             'sourceEditing', '|',
                             'heading', 'codeBlock', 'style', '-',
                             'link', '|',
@@ -38,8 +86,8 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                         shouldNotGroupWhenFull: true,
                     },
                     table: {
-                        contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties',
-                            'tableCellProperties', 'toggleTableCaption', ],
+                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties',
+                            'tableCellProperties', 'toggleTableCaption',],
                     },
                     style: {
                         definitions: [
@@ -57,6 +105,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                              */
                         ]
                     },
+                    placeholder: t('Write your content here'),
                     menuBar: {
                         isVisible: true
                     },
@@ -67,9 +116,9 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                         TableCaption, Alignment, Strikethrough, Subscript, Superscript, Underline, Code, CodeBlock,
                         Clipboard, RemoveFormat, SourceEditing, Style, GeneralHtmlSupport, ShowBlocks
                     ],
-                    translations: [ coreTranslationsEs ],
-                    initialData: props.content,
-                } }
+                    translations: [translation],
+                    initialData: props.initialContent,
+                }}
                 onChange={props.changeContentEvent}
             />
         </>

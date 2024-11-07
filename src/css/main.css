@@ -79,3 +79,7 @@ footer {
     font-size: 0.8em;
     color: #535bf2;
 }
+
+div.ck-toolbar {
+  margin-top: 30px !important;
+}
