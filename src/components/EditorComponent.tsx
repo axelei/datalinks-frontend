@@ -15,13 +15,20 @@ import {
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,
+    Image,
+    ImageCaption,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
     Italic,
     Link,
+    LinkImage,
     List,
     Mention,
     Paragraph,
     RemoveFormat,
     ShowBlocks,
+    SimpleUploadAdapter,
     SourceEditing,
     Strikethrough,
     Style,
@@ -35,6 +42,8 @@ import {
     TableToolbar,
     Underline,
     Undo,
+    ImageUpload,
+    ImageInsertViaUrl,
 } from 'ckeditor5';
 import coreTranslationsEn from 'ckeditor5/translations/en.js';
 import coreTranslationsEs from 'ckeditor5/translations/es.js';
@@ -77,6 +86,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                             'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
                             'sourceEditing', '|',
                             'heading', 'codeBlock', 'style', '-',
+                            'insertImage', '|',
                             'link', '|',
                             'horizontalLine', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                             'insertTable', '|',
@@ -85,9 +95,38 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                         ],
                         shouldNotGroupWhenFull: true,
                     },
+                    image: {
+                        toolbar: [
+                            'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
+                            'toggleImageCaption', 'imageTextAlternative', 'linkImage'
+                        ],
+                        styles: {
+                            options: [
+                                'inline', 'alignLeft', 'alignRight',
+                                'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+                                'block', 'side'
+                            ]
+                        },
+                        insert: {
+                            integrations: [ 'upload', 'assetManager', 'url' ]
+                        }
+                    },
                     table: {
-                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties',
-                            'tableCellProperties', 'toggleTableCaption',],
+                        contentToolbar: [
+                            'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties',
+                            'tableCellProperties', 'toggleTableCaption',
+                        ],
+                    },
+                    simpleUpload: {
+                        // The URL that the images are uploaded to.
+                        uploadUrl: 'http://example.com',
+                        // Enable the XMLHttpRequest.withCredentials property.
+                        withCredentials: true,
+                        // Headers sent along with the XMLHttpRequest to the upload server.
+                        headers: {
+                            // 'X-CSRF-TOKEN': 'CSRF-Token',
+                            Authorization: 'Bearer <JSON Web Token>'
+                        }
                     },
                     style: {
                         definitions: [
@@ -114,7 +153,9 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                         Bold, Essentials, Italic, Mention, Paragraph, Undo, Heading, Font, HorizontalLine, AutoLink,
                         Link, List, Table, TableToolbar, TableCellProperties, TableProperties, TableColumnResize,
                         TableCaption, Alignment, Strikethrough, Subscript, Superscript, Underline, Code, CodeBlock,
-                        Clipboard, RemoveFormat, SourceEditing, Style, GeneralHtmlSupport, ShowBlocks
+                        Clipboard, RemoveFormat, SourceEditing, Style, GeneralHtmlSupport, ShowBlocks,
+                        SimpleUploadAdapter, ImageToolbar, Image, ImageCaption, ImageResize, ImageStyle,
+                        LinkImage, ImageUpload, ImageInsertViaUrl,
                     ],
                     translations: [translation],
                     initialData: props.initialContent,

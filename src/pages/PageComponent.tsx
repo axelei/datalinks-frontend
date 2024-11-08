@@ -40,7 +40,7 @@ export default function PageComponent() : ReactNode | null {
             method: 'PUT',
             headers: {
                 'Content-Type': 'text/plain',
-                'login-token': loggedUser.token,
+                'Authorization': 'Bearer ' + loggedUser.token,
             },
             body: JSON.stringify({
                 content: pageTemp.content,

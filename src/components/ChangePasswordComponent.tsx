@@ -30,7 +30,10 @@ export default function ChangeUserComponent( props: { canEdit: boolean }) : Reac
     const changePassword = async (inputs : ChangePasswordInputs) : Promise<string> => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'login-token': loggedUser.token },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + loggedUser.token
+            },
             body: inputs.password,
         };
         const data = await fetch(import.meta.env.VITE_API + '/user/passwordChange', requestOptions);
