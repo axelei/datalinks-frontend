@@ -107,9 +107,7 @@ export default function PageComponent() : ReactNode | null {
 
             setPage(newPage(currentTitle));
 
-            error.then((data: string) => {
-                log("Page fetch failed: " + data);
-            });
+            log("Page fetch failed: " + error);
 
         });
 

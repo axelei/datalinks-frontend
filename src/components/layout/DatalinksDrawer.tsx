@@ -26,6 +26,11 @@ import {newUser} from "../../model/user/User.ts";
 import {useDispatch} from "react-redux";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import DescriptionIcon from '@mui/icons-material/Description';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import HelpIcon from '@mui/icons-material/Help';
 
 const drawerWidth = 240;
 
@@ -87,6 +92,31 @@ export default function DatalinksDrawer(props: Props) {
         navigate('/signup');
     }
 
+    const newPages = () => {
+        handleDrawerClose();
+        navigate('/newPages');
+    }
+
+    const newUploads = () => {
+        handleDrawerClose();
+        navigate('/newUploads');
+    }
+
+    const recentChanges = () => {
+        handleDrawerClose();
+        navigate('/recentChanges');
+    }
+
+    const randomPage = () => {
+        handleDrawerClose();
+
+    }
+
+    const help = () => {
+        handleDrawerClose();
+        navigate('/help');
+    }
+
     const drawer = (
         <div>
             <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
@@ -143,6 +173,49 @@ export default function DatalinksDrawer(props: Props) {
                             </ListItemButton>
                         </ListItem>
                     </>}
+                <Divider/>
+                <ListItem key='newPages' disablePadding onClick={newPages}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <PostAddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("New pages")} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key='recentChanges' disablePadding onClick={recentChanges}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <DescriptionIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("Recent changes")} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key='newUploads' disablePadding onClick={newUploads}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <NoteAddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("New uploads")} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key='randomPage' disablePadding onClick={randomPage}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <ShuffleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("Random page")} />
+                    </ListItemButton>
+                </ListItem>
+                <Divider/>
+                <ListItem key='help' disablePadding onClick={help}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <HelpIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("Help/about")} />
+                    </ListItemButton>
+                </ListItem>
+
             </List>
         </div>
     );
