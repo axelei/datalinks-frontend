@@ -6,6 +6,7 @@ import SignUpComponent from "./pages/SignupComponent.tsx";
 import ActivateUserComponent from "./pages/ActivateUserComponent.tsx";
 import ResetPasswordRequestComponent from "./pages/ResetPasswordRequestComponent.tsx";
 import ResetPasswordComponent from "./pages/ResetPasswordComponent.tsx";
+import NewPagesComponent from "./pages/NewPagesComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
     {
         path: "/passwordReset",
         element: <Layout><ResetPasswordRequestComponent /></Layout>
+    },
+    {
+        path: "/newPages",
+        element: <Layout><NewPagesComponent /></Layout>
     },
 ]);
 

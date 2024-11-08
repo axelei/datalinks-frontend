@@ -4,9 +4,10 @@ import {UserLevel} from "../user/UserLevel.ts";
 export interface Page {
     title: string;
     content: string;
+    slug?: string;
     categories: Category[];
     block?: UserLevel;
-    creationDate?: number;
+    creationDate?: Date;
 }
 
 export const newPage = (title: string) : Page => {

@@ -9,7 +9,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {clone, log} from "../service/Common.ts";
+import {log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import EditIcon from '@mui/icons-material/Edit';
 import PageContentComponent from "../components/PageContentComponent.tsx";
@@ -52,7 +52,7 @@ export default function PageComponent() : ReactNode | null {
 
     const editPageEvent = () : void => {
         setMode(PageMode.edit);
-        setPageTemp(clone(page));
+        setPageTemp({...page});
     }
 
     const savePageEvent = () : void => {
@@ -60,7 +60,7 @@ export default function PageComponent() : ReactNode | null {
         const saveResult = savePage();
         saveResult.then(() => {
             setMode(PageMode.read);
-            setPage(clone(pageTemp));
+            setPage({...pageTemp});
         }).finally(() => {
                 dispatch(loadingOff());
         });
