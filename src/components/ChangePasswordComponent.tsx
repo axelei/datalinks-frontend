@@ -2,7 +2,6 @@ import {ReactNode, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useDispatch} from "react-redux";
 import {useAppSelector} from "../hooks.ts";
-import {useLocation} from "react-router-dom";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
@@ -11,21 +10,25 @@ import Typography from "@mui/material/Typography";
 import {Box, FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
+import {User} from "../model/user/User.ts";
 
-export default function ChangeUserComponent( props: { canEdit: boolean }) : ReactNode | null {
+interface Props {
+    user : User;
+}
+
+export default function ChangeUserComponent( props : Props) : ReactNode | null {
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const loggedUser = useAppSelector((state) => state.loggedUser);
-    const location = useLocation();
 
     const [changePasswordValidationError, setChangePasswordValidationError] = useState<string>('');
     const [showSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
-        log("ChangePasswordComponent useEffect");
+        log("ChangeUserComponent useEffect");
 
-    }, [dispatch, location.pathname, loggedUser.user.level, loggedUser.user.name, t]);
+    }, [loggedUser.user.level, loggedUser.user.username, props.user.username]);
 
     const changePassword = async (inputs : ChangePasswordInputs) : Promise<string> => {
         const requestOptions = {
@@ -91,7 +94,7 @@ export default function ChangeUserComponent( props: { canEdit: boolean }) : Reac
         <>
             <Typography variant={"h3"}>{t("Change password")}</Typography>
             <InfoDialog show={showSuccess} onClose={() => setShowSuccess(false)} text={t("Password changed successfully")} />
-            <Box hidden={!props.canEdit} className="passwordReset-form" component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+            <Box className="passwordReset-form" component="section" sx={{ p: 2, border: '1px dashed grey' }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormControl>
                         <TextField label={t("Password")} variant="outlined" type="password"
