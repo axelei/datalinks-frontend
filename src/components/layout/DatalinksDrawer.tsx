@@ -31,6 +31,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import HelpIcon from '@mui/icons-material/Help';
+import {log} from "../../service/Common.ts";
 
 const drawerWidth = 240;
 
@@ -107,9 +108,22 @@ export default function DatalinksDrawer(props: Props) {
         navigate('/recentChanges');
     }
 
+    const getRandomPage = async () => {
+        const data = await fetch(import.meta.env.VITE_API + '/page/-randomPage');
+        if (data.ok) {
+            return data.json();
+        } else {
+            return Promise.reject(data.text());
+        }
+    }
+
     const randomPage = () => {
         handleDrawerClose();
-
+        getRandomPage().then((page) => {
+            navigate('/page/' + page.title);
+        }).catch((error) => {
+            log(error);
+        });
     }
 
     const help = () => {
