@@ -8,7 +8,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
 
-export default function NewPagesComponent() : ReactNode | null {
+export default function RecentChangesComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const [pages, setPages] = useState<Page[]>([]);
@@ -26,7 +26,7 @@ export default function NewPagesComponent() : ReactNode | null {
                 pageSize: pageSize,
             }),
         };
-        const data = await fetch(import.meta.env.VITE_API + '/page/newPages', requestOptions);
+        const data = await fetch(import.meta.env.VITE_API + '/page/recentChanges', requestOptions);
         if (data.ok) {
             return data.json();
         } else {
@@ -55,20 +55,20 @@ export default function NewPagesComponent() : ReactNode | null {
     useEffect(() => {
         log("NewPagesComponent useEffect");
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("New pages");
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Recent changes");
 
         searchEvent();
     }, [page, pageSize]);
 
     return (
         <>
-            <Typography variant="h2">{t("New pages")}</Typography>
+            <Typography variant="h2">{t("Recent changes")}</Typography>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>
-                            <TableCell align="right">{t("Creation date")}</TableCell>
+                            <TableCell align="right">{t("Modified date")}</TableCell>
                             <TableCell align="right">ñasfla</TableCell>
                             <TableCell align="right">werqwer)</TableCell>
                             <TableCell align="right">gñap</TableCell>
@@ -83,7 +83,7 @@ export default function NewPagesComponent() : ReactNode | null {
                                 <TableCell component="th" scope="row">
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
-                                <TableCell align="right">{row.creationDate?.toLocaleString()}</TableCell>
+                                <TableCell align="right">{row.modifiedDate?.toLocaleString()}</TableCell>
                                 <TableCell align="right">345</TableCell>
                                 <TableCell align="right">234</TableCell>
                                 <TableCell align="right">345</TableCell>

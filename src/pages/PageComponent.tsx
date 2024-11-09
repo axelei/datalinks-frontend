@@ -111,7 +111,7 @@ export default function PageComponent() : ReactNode | null {
 
         });
 
-    }, [config.value, location, loggedUser.user.level, page.block]);
+    }, [config.value, location, loggedUser.user.level]);
 
 
     return (

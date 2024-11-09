@@ -7,6 +7,8 @@ import ActivateUserComponent from "./pages/ActivateUserComponent.tsx";
 import ResetPasswordRequestComponent from "./pages/ResetPasswordRequestComponent.tsx";
 import ResetPasswordComponent from "./pages/ResetPasswordComponent.tsx";
 import NewPagesComponent from "./pages/NewPagesComponent.tsx";
+import RecentChangesComponent from "./pages/RecentChangesComponent.tsx";
+import NewUploadsComponent from "./pages/NewUploadsComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +42,14 @@ const router = createBrowserRouter([
     {
         path: "/newPages",
         element: <Layout><NewPagesComponent /></Layout>
+    },
+    {
+        path: "/recentChanges",
+        element: <Layout><RecentChangesComponent /></Layout>
+    },
+    {
+        path: "/newUploads",
+        element: <Layout><NewUploadsComponent /></Layout>
     },
 ]);
 

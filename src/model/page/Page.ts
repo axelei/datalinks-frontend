@@ -8,6 +8,7 @@ export interface Page {
     categories: Category[];
     block?: UserLevel;
     creationDate?: Date;
+    modifiedDate?: Date;
 }
 
 export const newPage = (title: string) : Page => {

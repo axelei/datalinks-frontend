@@ -5,7 +5,7 @@ import {modalStyle} from "../service/Common.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useDispatch} from "react-redux";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import "../css/LoginModal.css";
 import {showError} from "../redux/showErrorSlice.ts";
 import {useTranslation} from "react-i18next";
@@ -21,7 +21,6 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
   const [validationError, setValidationError] = useState<string>('');
   const [_cookies, setCookie] = useCookies(['loginToken']);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleClose = () => {
     props.onClose();
@@ -63,7 +62,6 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
         dispatch(setLoggedUser({...user}));
         dispatch(setLoggedToken(data));
         setCookie('loginToken', data, {path: '/'});
-        navigate('/user/' + inputs.username);
         handleClose();
       });
     }).catch((error) => {
