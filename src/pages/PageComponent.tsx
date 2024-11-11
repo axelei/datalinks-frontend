@@ -15,16 +15,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
+import "ckeditor5/ckeditor5.css";
 
-export default function PageComponent() : ReactNode | null {
+export default function PageComponent(): ReactNode | null {
 
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const config = useAppSelector((state) => state.config);
     const dispatch = useDispatch();
     const location = useLocation();
 
-    const fetchPage = async (title : string) : Promise<Page> => {
+    const fetchPage = async (title: string): Promise<Page> => {
         log("Fetching page: " + title);
         const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
         if (data.ok) {
@@ -34,7 +35,7 @@ export default function PageComponent() : ReactNode | null {
         }
     }
 
-    const savePage = async () : Promise<object> => {
+    const savePage = async (): Promise<object> => {
         log("Saving page: " + pageTemp.title);
         const requestOptions = {
             method: 'PUT',
@@ -50,27 +51,27 @@ export default function PageComponent() : ReactNode | null {
         return await fetch(import.meta.env.VITE_API + '/page/' + pageTemp.title, requestOptions);
     }
 
-    const editPageEvent = () : void => {
+    const editPageEvent = (): void => {
         setMode(PageMode.edit);
         setPageTemp({...page});
     }
 
-    const savePageEvent = () : void => {
+    const savePageEvent = (): void => {
         dispatch(loadingOn());
         const saveResult = savePage();
         saveResult.then(() => {
             setMode(PageMode.read);
             setPage({...pageTemp});
         }).finally(() => {
-                dispatch(loadingOff());
+            dispatch(loadingOff());
         });
     }
 
-    const changeContentEvent = (_event : EventInfo<string, unknown>, editor : ClassicEditor) : void => {
+    const changeContentEvent = (_event: EventInfo<string, unknown>, editor: ClassicEditor): void => {
         setPageTemp({...pageTemp, content: editor.getData()});
     }
 
-    const cancelEditionEvent = () : void => {
+    const cancelEditionEvent = (): void => {
         setMode(PageMode.read);
         setPageTemp(newPage(page.title));
     }
@@ -81,7 +82,7 @@ export default function PageComponent() : ReactNode | null {
     const [canEdit, setCanEdit] = useState<boolean>(false);
 
     useEffect(() => {
-        log("PageComponent useEffect");
+        log("PageComponent page useEffect");
         let currentTitle = location.pathname.split('/')[2];
         if (!currentTitle) {
             currentTitle = import.meta.env.VITE_SITE_INDEX;
@@ -93,25 +94,31 @@ export default function PageComponent() : ReactNode | null {
         const apiResponse = fetchPage(currentTitle);
         apiResponse.then(data => {
             setPage({...data});
-
-            let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-            if (page.block) {
-                blockLevel = Math.max(blockLevel, page.block);
-            }
-            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-
-        }).catch((error : Promise<string>) => {
-
+            setPageTemp({...data});
+            setMode(PageMode.read);
+            setBlocks();
+            window.scroll(0, 0);
+        }).catch((error: Promise<string>) => {
             const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
             setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-
             setPage(newPage(currentTitle));
-
             log("Page fetch failed: " + error);
-
         });
 
-    }, [config.value, location, loggedUser.user.level]);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        log("PageComponent user useeffect");
+        setBlocks();
+    }, [config.value, loggedUser.user.level, page.block]);
+
+    const setBlocks = (): void => {
+        let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+        if (page.block) {
+            blockLevel = Math.max(blockLevel, page.block);
+        }
+        setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+    }
 
 
     return (
@@ -120,22 +127,23 @@ export default function PageComponent() : ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <PageContentComponent content={page.content}/>
-                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}><EditIcon /> {t("Edit")}</Button>
+                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}><EditIcon/> {t("Edit")}
+                    </Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent} />
+                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent}/>
                     <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>
             )}
             <ul>
-            {page.categories.map((category) => (
-                <li key={'category-' + category.name}>
-                    {category.name} -
-                </li>
-            ))}
+                {page.categories.map((category) => (
+                    <li key={'category-' + category.name}>
+                        {category.name} -
+                    </li>
+                ))}
             </ul>
         </>
     )

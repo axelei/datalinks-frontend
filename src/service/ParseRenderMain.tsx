@@ -10,9 +10,9 @@ export const parseRenderMain = (content: string) : ReturnType<typeof domToReact>
         trim: true,
         replace: (element : DOMNode) => {
             if (element.type == ElementType.Tag && element.name == 'a') {
-                if (element.attribs.href.toLowerCase().startsWith(import.meta.env.VITE_SITE_URL.toLowerCase() + '/page/')) {
-                    const page = element.attribs.href.substring(element.attribs.href.lastIndexOf('/') + 1);
-                    return (<Link to={'/page/' + page}>{domToReact(element.childNodes as DOMNode[], options)}<LinkIcon fontSize="small" /></Link>);
+                if (element.attribs.href.toLowerCase().startsWith(import.meta.env.VITE_SITE_URL.toLowerCase())) {
+                    const page = element.attribs.href.substring(element.attribs.href.lastIndexOf(import.meta.env.VITE_SITE_URL) + import.meta.env.VITE_SITE_URL.length + 1);
+                    return (<Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}<LinkIcon fontSize="small" /></Link>);
                 } else {
                     element.attribs.target = '_blank';
                 }
