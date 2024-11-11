@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import 'ckeditor5/ckeditor5.css';
+import "ckeditor5/ckeditor5-editor.css";
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {
     Alignment,

@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
-import "ckeditor5/ckeditor5.css";
+import {CKEditor} from '@ckeditor/ckeditor5-react';
 
 export default function PageComponent(): ReactNode | null {
 
