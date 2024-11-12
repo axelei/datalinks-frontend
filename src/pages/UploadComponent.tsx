@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from 'react';
+import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
 import Button from '@mui/material/Button';
@@ -11,8 +11,8 @@ import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import EditIcon from '@mui/icons-material/Edit';
-import {ClassicEditor, EventInfo} from "ckeditor5";
 import {newUpload, Upload} from "../model/upload/Upload.ts";
+import {TextareaAutosize} from "@mui/material";
 
 export default function UploadComponent(): ReactNode | null {
 
@@ -41,10 +41,11 @@ export default function UploadComponent(): ReactNode | null {
                 'Authorization': 'Bearer ' + loggedUser.token,
             },
             body: JSON.stringify({
+                filename: uploadTemp.filename,
                 description: uploadTemp.description,
             }),
         };
-        return await fetch(import.meta.env.VITE_API + '/file/' + uploadTemp.filename, requestOptions);
+        return await fetch(import.meta.env.VITE_API + '/file/update', requestOptions);
     }
 
     const editUploadEvent = (): void => {
@@ -63,8 +64,8 @@ export default function UploadComponent(): ReactNode | null {
         });
     }
 
-    const changeContentEvent = (_event: EventInfo<string, unknown>, editor: ClassicEditor): void => {
-        setUploadTemp({...uploadTemp, description: editor.getData()});
+    const changeContentEvent = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+        setUploadTemp({...uploadTemp, description: event.target.value});
     }
 
     const cancelEditionEvent = (): void => {
@@ -129,11 +130,12 @@ export default function UploadComponent(): ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <Typography variant="body1">{upload.description}</Typography>
-                    <Button variant="contained" onClick={editUploadEvent} disabled={!canEdit}><EditIcon/> {t("Edit")}</Button>
+                    <Button variant="contained" onClick={editUploadEvent} disabled={!canEdit}><EditIcon/>{t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
+                    <TextareaAutosize content={uploadTemp.description} minRows={5} onChange={changeContentEvent}></TextareaAutosize>
                     <Button variant="contained" onClick={saveUploadEvent}>{t("Save")}</Button>
                     <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>

@@ -102,3 +102,7 @@ main {
   white-space: normal;
   width: 100%;
 }
+
+textarea {
+  width: 100%;
+}
