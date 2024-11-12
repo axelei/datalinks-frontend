@@ -72,7 +72,7 @@ export default function PageComponent(): ReactNode | null {
 
     const cancelEditionEvent = (): void => {
         setMode(PageMode.read);
-        setPageTemp(newPage(page.title));
+        setPageTemp({...page});
     }
 
     const [mode, setMode] = useState(PageMode.read);

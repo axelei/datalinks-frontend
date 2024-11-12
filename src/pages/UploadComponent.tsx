@@ -69,7 +69,7 @@ export default function UploadComponent(): ReactNode | null {
 
     const cancelEditionEvent = (): void => {
         setMode(PageMode.read);
-        setUploadTemp(newUpload(uploadTemp.filename));
+        setUploadTemp({...upload});
     }
 
     const [mode, setMode] = useState(PageMode.read);
@@ -78,7 +78,7 @@ export default function UploadComponent(): ReactNode | null {
     const [canEdit, setCanEdit] = useState<boolean>(false);
 
     useEffect(() => {
-        log("PageComponent page useEffect");
+        log("UploadComponent upload useEffect");
         let currentTitle = location.pathname.split('/')[2];
         if (!currentTitle) {
             currentTitle = import.meta.env.VITE_SITE_INDEX;
@@ -104,7 +104,7 @@ export default function UploadComponent(): ReactNode | null {
     }, [location.pathname]);
 
     useEffect(() => {
-        log("PageComponent user useeffect");
+        log("UploadComponent user useeffect");
         setBlocks();
     }, [config.value, loggedUser.user.level, upload.editBlock]);
 
@@ -128,6 +128,7 @@ export default function UploadComponent(): ReactNode | null {
             </p>
             {mode === PageMode.read && (
                 <>
+                    <Typography variant="body1">{upload.description}</Typography>
                     <Button variant="contained" onClick={editUploadEvent} disabled={!canEdit}><EditIcon/> {t("Edit")}</Button>
                 </>
             )}
