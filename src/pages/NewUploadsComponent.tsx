@@ -6,6 +6,7 @@ import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
+import {Link} from "react-router-dom";
 
 export default function NewUploadsComponent() : ReactNode | null {
 
@@ -64,18 +65,20 @@ export default function NewUploadsComponent() : ReactNode | null {
             <Typography variant="h2">{t("New uploads")}</Typography>
             <ImageList cols={5}>
                 {uploads.map((item) => (
-                    <ImageListItem key={item.slug}>
-                        <img
-                            src={import.meta.env.VITE_API + '/file/get/' + item.slug}
-                            alt={item.filename}
-                            loading="lazy"
-                        />
-                        <ImageListItemBar
-                            title={item.filename}
-                            subtitle={<span>{item.description}</span>}
-                            position="below"
-                        />
-                    </ImageListItem>
+                    <Link to={'/upload/' + item.slug}>
+                        <ImageListItem key={item.slug}>
+                            <img
+                                src={import.meta.env.VITE_API + '/file/get/' + item.slug}
+                                alt={item.filename}
+                                loading="lazy"
+                            />
+                            <ImageListItemBar
+                                title={item.filename}
+                                subtitle={<span>{item.description}</span>}
+                                position="below"
+                            />
+                        </ImageListItem>
+                    </Link>
                 ))}
             </ImageList>
             <TablePagination
