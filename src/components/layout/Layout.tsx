@@ -1,6 +1,5 @@
 import {ReactNode, useEffect} from "react";
 import DatalinksDrawer from "./DatalinksDrawer.tsx";
-import Header from "./Header.tsx";
 import Body from "./Body.tsx";
 import Footer from "./Footer.tsx";
 import {useAppSelector} from "../../hooks.ts";
@@ -65,7 +64,6 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
             <ErrorModal show={showError} />
             <LoadingModal loading={loading} />
             <DatalinksDrawer>
-                <Header />
                 <Body>
                     {props.children}
                 </Body>

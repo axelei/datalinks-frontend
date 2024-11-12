@@ -25,3 +25,21 @@ export const log = (message : string | null | undefined) => {
 export type AssociativeArray<Type> = {
     [key: string]: Type;
 }
+
+import { useEffect, useState } from "react";
+
+export const useDebounce = <T>(value: T, delay: number) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};

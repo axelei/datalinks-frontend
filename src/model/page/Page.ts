@@ -4,6 +4,7 @@ import {UserLevel} from "../user/UserLevel.ts";
 export interface Page {
     title: string;
     content: string;
+    summary?: string;
     slug?: string;
     categories: Category[];
     block?: UserLevel;

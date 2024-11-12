@@ -34,7 +34,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: aliceblue;
+}
+
+#searchBar {
+  width: 100%;
+  padding-top: 8px;
 }
 
 h1 {
@@ -91,4 +95,10 @@ figure img {
 
 .MuiImageListItemBar-title {
   white-space: normal !important;
+}
+
+main {
+  word-wrap: break-word;
+  white-space: normal;
+  width: 100%;
 }

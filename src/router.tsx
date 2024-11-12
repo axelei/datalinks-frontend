@@ -9,6 +9,7 @@ import ResetPasswordComponent from "./pages/ResetPasswordComponent.tsx";
 import NewPagesComponent from "./pages/NewPagesComponent.tsx";
 import RecentChangesComponent from "./pages/RecentChangesComponent.tsx";
 import NewUploadsComponent from "./pages/NewUploadsComponent.tsx";
+import SearchComponent from "./pages/SearchComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
     {
         path: "/newUploads",
         element: <Layout><NewUploadsComponent /></Layout>
+    },
+    {
+        path: "/search/:query",
+        element: <Layout><SearchComponent /></Layout>
     },
 ]);
 

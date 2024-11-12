@@ -27,11 +27,13 @@ import {useDispatch} from "react-redux";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import HelpIcon from '@mui/icons-material/Help';
 import {log} from "../../service/Common.ts";
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import BurstModeIcon from '@mui/icons-material/BurstMode';
+import SearchToolbar from "./SearchToolbar.tsx";
 
 const drawerWidth = 240;
 
@@ -101,6 +103,11 @@ export default function DatalinksDrawer(props: Props) {
     const newUploads = () => {
         handleDrawerClose();
         navigate('/newUploads');
+    }
+
+    const uploadFile = () => {
+        handleDrawerClose();
+        navigate('/uploadFile');
     }
 
     const recentChanges = () => {
@@ -188,6 +195,9 @@ export default function DatalinksDrawer(props: Props) {
                         </ListItem>
                     </>}
                 <Divider/>
+                <ListItem key='search' disablePadding>
+                    <SearchToolbar />
+                </ListItem>
                 <ListItem key='newPages' disablePadding onClick={newPages}>
                     <ListItemButton>
                         <ListItemIcon>
@@ -204,20 +214,29 @@ export default function DatalinksDrawer(props: Props) {
                         <ListItemText primary={t("Recent changes")} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key='newUploads' disablePadding onClick={newUploads}>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <NoteAddIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={t("New uploads")} />
-                    </ListItemButton>
-                </ListItem>
                 <ListItem key='randomPage' disablePadding onClick={randomPage}>
                     <ListItemButton>
                         <ListItemIcon>
                             <ShuffleIcon />
                         </ListItemIcon>
                         <ListItemText primary={t("Random page")} />
+                    </ListItemButton>
+                </ListItem>
+                <Divider/>
+                <ListItem key='newUploads' disablePadding onClick={newUploads}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <BurstModeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("New uploads")} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key='uploadFile' disablePadding onClick={uploadFile}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <AddPhotoAlternateIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("Upload file")} />
                     </ListItemButton>
                 </ListItem>
                 <Divider/>

@@ -15,7 +15,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
-import {CKEditor} from '@ckeditor/ckeditor5-react';
 
 export default function PageComponent(): ReactNode | null {
 
@@ -89,7 +88,7 @@ export default function PageComponent(): ReactNode | null {
         }
         log("Current title: " + currentTitle);
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + currentTitle;
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + decodeURIComponent(currentTitle);
 
         const apiResponse = fetchPage(currentTitle);
         apiResponse.then(data => {
@@ -101,7 +100,7 @@ export default function PageComponent(): ReactNode | null {
         }).catch((error: Promise<string>) => {
             const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
             setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-            setPage(newPage(currentTitle));
+            setPage(newPage(decodeURIComponent(currentTitle)));
             log("Page fetch failed: " + error);
         });
 
