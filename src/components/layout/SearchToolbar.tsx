@@ -1,4 +1,4 @@
-import {ChangeEvent, SyntheticEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, SyntheticEvent, useEffect, useState} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import {Autocomplete, InputAdornment, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -56,6 +56,12 @@ export default function SearchToolbar() {
         }
     }
 
+    const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter') {
+            navigate('/search/' + searchTerm);
+        }
+    }
+
     return (<>
         <Toolbar id="searchBar">
             <Autocomplete
@@ -68,6 +74,7 @@ export default function SearchToolbar() {
                     {...params}
                     label={t("Search")}
                     onChange={(event : ChangeEvent<HTMLInputElement>) => {setSearchTerm(event.target.value)}}
+                    onKeyUp={(event) => {searchKeyUp(event)}}
                     slotProps={{
                         input: {
                             ...params.InputProps,

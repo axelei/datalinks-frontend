@@ -5,12 +5,11 @@ import Typography from "@mui/material/Typography";
 import {Page} from "../model/page/Page.ts";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
-import {Link} from "react-router-dom";
-import ListItemButton from "@mui/material/ListItemButton";
+import {TablePagination} from '@mui/material';
 import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import {Link, useLocation} from "react-router-dom";
 
 export default function SearchComponent() : ReactNode | null {
 
@@ -19,6 +18,7 @@ export default function SearchComponent() : ReactNode | null {
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const [query, setQuery] = useState<string>('');
+    const location = useLocation();
 
     const dispatch = useDispatch();
 
@@ -54,26 +54,28 @@ export default function SearchComponent() : ReactNode | null {
     useEffect(() => {
         log("SearchComponents search useEffect");
         searchEvent();
-    }, [query, page, pageSize, location.pathname]);
+    }, [query, page, pageSize]);
 
     useEffect(() => {
         log("SearchComponents setQuery useEffect");
 
         document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Search");
-        setQuery(location.pathname.split('/')[2]);
+        setQuery(decodeURIComponent(location.pathname.split('/')[2]));
 
-    }, [t, location.pathname]);
+    }, [location]);
 
     return (
         <>
-            <Typography variant="h2">{t("Search results") + ": " + decodeURIComponent(query)}</Typography>
+            <Typography variant="h2">{t("Search results") + ": " + query}</Typography>
             <List>
                 {pages.map((row : Page) => (
                     <ListItem key={row.slug}>
-                        <ListItemText
-                            primary={row.title}
-                            secondary={row.summary}
-                        />
+                        <Link to={"/page/" + row.title}>
+                            <ListItemText
+                                primary={row.title}
+                                secondary={row.summary}
+                            />
+                        </Link>
                     </ListItem>
                 ))}
             </List>
@@ -86,6 +88,7 @@ export default function SearchComponent() : ReactNode | null {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Typography hidden={pages.length != 0}>{t("No results found. You can create the page: ")}<Link to={"/page/" + query}>{query}</Link></Typography>
         </>
     );
 }
