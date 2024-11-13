@@ -47,6 +47,18 @@ export default function PageComponent(): ReactNode | null {
         return await fetch(import.meta.env.VITE_API + '/page/' + pageTemp.title, requestOptions);
     }
 
+    const deletePage = async (): Promise<object> => {
+        log("Deleting page: " + page.title);
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'text/plain',
+                'Authorization': 'Bearer ' + loggedUser.token,
+            },
+        };
+        return await fetch(import.meta.env.VITE_API + '/page/' + page.title, requestOptions);
+    }
+
     const editPageEvent = (): void => {
         setMode(PageMode.edit);
         setPageTemp({...page});
@@ -64,7 +76,13 @@ export default function PageComponent(): ReactNode | null {
     }
 
     const deletePageEvent = (): void => {
-
+        dispatch(loadingOn());
+        const deleteResult = deletePage();
+        deleteResult.then(() => {
+            window.location.href = '/';
+        }).finally(() => {
+            dispatch(loadingOff());
+        });
     }
 
     const changeContentEvent = (_event: EventInfo<string, unknown>, editor: ClassicEditor): void => {
