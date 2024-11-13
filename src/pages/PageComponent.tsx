@@ -2,23 +2,20 @@ import {ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
-import Button from '@mui/material/Button';
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useAppSelector} from "../hooks.ts";
-import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
-import EditIcon from '@mui/icons-material/Edit';
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
+import EditButtons from "../components/EditButtons.tsx";
 
 export default function PageComponent(): ReactNode | null {
 
-    const {t} = useTranslation();
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const config = useAppSelector((state) => state.config);
     const dispatch = useDispatch();
@@ -66,6 +63,10 @@ export default function PageComponent(): ReactNode | null {
         });
     }
 
+    const deletePageEvent = (): void => {
+
+    }
+
     const changeContentEvent = (_event: EventInfo<string, unknown>, editor: ClassicEditor): void => {
         setPageTemp({...pageTemp, content: editor.getData()});
     }
@@ -79,6 +80,7 @@ export default function PageComponent(): ReactNode | null {
     const [page, setPage] = useState<Page>(newPage(''));
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
     const [canEdit, setCanEdit] = useState<boolean>(false);
+    const [canDelete, setCanDelete] = useState<boolean>(false);
 
     useEffect(() => {
         log("PageComponent page useEffect");
@@ -116,25 +118,23 @@ export default function PageComponent(): ReactNode | null {
         if (page.block) {
             blockLevel = Math.max(blockLevel, page.block);
         }
+        const deleteLevel = UserLevel[config.value['DELETE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
         setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+        setCanDelete(parseInt(UserLevel[loggedUser.user.level]) >= deleteLevel);
     }
-
 
     return (
         <>
+            <EditButtons editPageEvent={editPageEvent} savePageEvent={savePageEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deletePageEvent}/>
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
                     <PageContentComponent content={page.content}/>
-                    <Button variant="contained" onClick={editPageEvent} disabled={!canEdit}><EditIcon/> {t("Edit")}
-                    </Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
                     <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent}/>
-                    <Button variant="contained" onClick={savePageEvent}>{t("Save")}</Button>
-                    <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
                 </>
             )}
             <ul>

@@ -1,7 +1,6 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation} from "react-router-dom";
-import Button from '@mui/material/Button';
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
@@ -10,9 +9,10 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
-import EditIcon from '@mui/icons-material/Edit';
 import {newUpload, Upload} from "../model/upload/Upload.ts";
 import {TextareaAutosize} from "@mui/material";
+import {Page} from "../model/page/Page.ts";
+import EditButtons from "../components/EditButtons.tsx";
 
 export default function UploadComponent(): ReactNode | null {
 
@@ -22,9 +22,19 @@ export default function UploadComponent(): ReactNode | null {
     const dispatch = useDispatch();
     const location = useLocation();
 
-    const fetchPage = async (fileName: string): Promise<Upload> => {
+    const fetchUpload = async (fileName: string): Promise<Upload> => {
         log("Fetching upload: " + fileName);
         const data = await fetch(import.meta.env.VITE_API + '/file/lookAt/' + fileName);
+        if (data.ok) {
+            return data.json();
+        } else {
+            return Promise.reject(data.text());
+        }
+    }
+
+    const fetchUsage = async (fileName: string): Promise<Page[]> => {
+        log("Fetching usages: " + fileName);
+        const data = await fetch(import.meta.env.VITE_API + '/file/-usages/' + fileName);
         if (data.ok) {
             return data.json();
         } else {
@@ -64,6 +74,10 @@ export default function UploadComponent(): ReactNode | null {
         });
     }
 
+    const deleteUploadEvent = (): void => {
+
+    }
+
     const changeContentEvent = (event: ChangeEvent<HTMLTextAreaElement>): void => {
         setUploadTemp({...uploadTemp, description: event.target.value});
     }
@@ -77,28 +91,38 @@ export default function UploadComponent(): ReactNode | null {
     const [upload, setUpload] = useState<Upload>(newUpload(''));
     const [uploadTemp, setUploadTemp] = useState<Upload>(newUpload(''));
     const [canEdit, setCanEdit] = useState<boolean>(false);
+    const [canDelete, setCanDelete] = useState<boolean>(false);
+    const [usages, setUsages] = useState<Page[]>([]);
 
     useEffect(() => {
         log("UploadComponent upload useEffect");
-        let currentTitle = location.pathname.split('/')[2];
-        if (!currentTitle) {
-            currentTitle = import.meta.env.VITE_SITE_INDEX;
+        let filename = location.pathname.split('/')[2];
+        if (!filename) {
+            filename = import.meta.env.VITE_SITE_INDEX;
         }
-        log("Current title: " + currentTitle);
+        log("Current title: " + filename);
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + decodeURIComponent(currentTitle);
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + decodeURIComponent(filename);
 
-        const apiResponse = fetchPage(currentTitle);
+        const apiResponse = fetchUpload(filename);
         apiResponse.then(data => {
             setUpload({...data});
             setUploadTemp({...data});
             setMode(PageMode.read);
             setBlocks();
+
+            const usageResponse = fetchUsage(filename);
+            usageResponse.then(data => {
+                setUsages(data);
+            }).catch((error: Promise<string>) => {
+                log("Usages fetch failed: " + error);
+            });
+
             window.scroll(0, 0);
         }).catch((error: Promise<string>) => {
             const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
             setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-            setUpload(newUpload(decodeURIComponent(currentTitle)));
+            setUpload(newUpload(decodeURIComponent(filename)));
             log("Page fetch failed: " + error);
         });
 
@@ -115,11 +139,14 @@ export default function UploadComponent(): ReactNode | null {
             blockLevel = Math.max(blockLevel, upload.editBlock);
         }
         setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+        const deleteLevel = UserLevel[config.value['DELETE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+        setCanDelete(parseInt(UserLevel[loggedUser.user.level]) >= deleteLevel);
     }
 
 
     return (
         <>
+            <EditButtons editPageEvent={editUploadEvent} savePageEvent={saveUploadEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deleteUploadEvent}/>
             <Typography variant="h2">{upload.filename}</Typography>
             <p>
             <img
@@ -130,16 +157,21 @@ export default function UploadComponent(): ReactNode | null {
             {mode === PageMode.read && (
                 <>
                     <Typography variant="body1">{upload.description}</Typography>
-                    <Button variant="contained" onClick={editUploadEvent} disabled={!canEdit}><EditIcon/>{t("Edit")}</Button>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <TextareaAutosize content={uploadTemp.description} minRows={5} onChange={changeContentEvent}></TextareaAutosize>
-                    <Button variant="contained" onClick={saveUploadEvent}>{t("Save")}</Button>
-                    <Button variant="contained" onClick={cancelEditionEvent}>{t("Cancel")}</Button>
+                    <TextareaAutosize defaultValue={uploadTemp.description} minRows={5} onChange={changeContentEvent}></TextareaAutosize>
                 </>
             )}
+            <Typography variant="h3">{t("Usages")}</Typography>
+            <ul>
+                {usages.map((item) => (
+                    <li key={item.title}>
+                        <a href={'/page/' + item.title}>{item.title}</a>
+                    </li>
+                ))}
+            </ul>
         </>
     )
 }
