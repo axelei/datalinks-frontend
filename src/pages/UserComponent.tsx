@@ -11,6 +11,7 @@ import {CustomTabPanel} from "../components/layout/CustomTabPanel.tsx";
 import {fetchUser} from "../service/UserService.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import {useAppSelector} from "../hooks.ts";
+import ContributionsComponent from "../components/ContributionsComponent.tsx";
 
 
 export default function UserComponent() : ReactNode | null {
@@ -60,7 +61,7 @@ export default function UserComponent() : ReactNode | null {
                     ñasca
                 </CustomTabPanel>
                 <CustomTabPanel value={tab} index={1}>
-                    Item Two
+                    <ContributionsComponent user={user} />
                 </CustomTabPanel>
                 <CustomTabPanel value={tab} index={2}>
                     <ChangePasswordComponent user={user} />

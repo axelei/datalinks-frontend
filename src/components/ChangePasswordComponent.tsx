@@ -16,7 +16,7 @@ interface Props {
     user : User;
 }
 
-export default function ChangeUserComponent( props : Props) : ReactNode | null {
+export default function ChangePasswordComponent(props : Props) : ReactNode | null {
 
     const { t } = useTranslation();
     const dispatch = useDispatch();

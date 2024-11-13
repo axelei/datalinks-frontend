@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
+import {ImageList, ImageListItem, ImageListItemBar, TablePagination, useMediaQuery} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
 import {Link} from "react-router-dom";
 
@@ -14,6 +14,8 @@ export default function NewUploadsComponent() : ReactNode | null {
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
+    const isMobile = useMediaQuery('(max-width:600px)');
+
 
     const dispatch = useDispatch();
 
@@ -63,7 +65,7 @@ export default function NewUploadsComponent() : ReactNode | null {
     return (
         <>
             <Typography variant="h2">{t("New uploads")}</Typography>
-            <ImageList cols={5}>
+            <ImageList cols={isMobile ? 1 : 5}>
                 {uploads.map((item) => (
                     <Link to={'/upload/' + item.slug}>
                         <ImageListItem key={item.slug}>

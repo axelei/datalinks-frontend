@@ -1,3 +1,7 @@
 #editArea {
     width: 100%;
 }
+
+.uploadImage {
+    max-width: 100%;
+}

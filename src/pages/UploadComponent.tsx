@@ -150,13 +150,13 @@ export default function UploadComponent(): ReactNode | null {
             <Typography variant="h2">{upload.filename}</Typography>
             <p>
             <img
-                src={import.meta.env.VITE_API + '/file/get/' + upload.filename}
+                src={import.meta.env.VITE_API + '/file/get/' + upload.slug}
                 alt={upload.filename}
                 className="uploadImage" />
             </p>
             {mode === PageMode.read && (
                 <>
-                    <Typography variant="body1">{upload.description}</Typography>
+                    <article>{upload.description}</article>
                 </>
             )}
             {mode === PageMode.edit && (
