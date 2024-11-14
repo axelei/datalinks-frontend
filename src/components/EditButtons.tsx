@@ -26,6 +26,7 @@ interface Props {
     canEdit: boolean;
     canDelete: boolean;
     mode: PageMode
+    children?: ReactNode;
 }
 
 
@@ -88,6 +89,7 @@ export default function EditButtons( props : Props) : ReactNode | null {
                             </Fab></span>
                         </Tooltip>
                     </>)}
+                    {props.children}
             </Box>
             <Dialog
                 open={openDialog}

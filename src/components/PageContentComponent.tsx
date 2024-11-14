@@ -6,12 +6,12 @@ import {t} from "i18next";
 
 
 interface Props {
-    content: string;
+    content: string | undefined;
 }
 
 export default function PageContentComponent( props : Props) : ReactNode | null {
 
-    const content = parseRenderMain(props.content);
+    const content = parseRenderMain(props.content || "");
 
     return (
         <>

@@ -11,6 +11,8 @@ import RecentChangesComponent from "./pages/RecentChangesComponent.tsx";
 import NewUploadsComponent from "./pages/NewUploadsComponent.tsx";
 import SearchComponent from "./pages/SearchComponent.tsx";
 import UploadComponent from "./pages/UploadComponent.tsx";
+import EditsComponent from "./pages/EditsComponent.tsx";
+import EditComponent from "./pages/EditComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -61,6 +63,14 @@ const router = createBrowserRouter([
         path: "/search/:query",
         element: <Layout><SearchComponent /></Layout>
     },
+    {
+        path: "/edits/:query",
+        element: <Layout><EditsComponent /></Layout>
+    },
+    {
+        path: "/edit/:query",
+        element: <Layout><EditComponent /></Layout>
+    }
 ]);
 
 export default router;

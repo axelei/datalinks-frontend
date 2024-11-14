@@ -1,6 +1,6 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
@@ -168,7 +168,7 @@ export default function UploadComponent(): ReactNode | null {
             <ul>
                 {usages.map((item) => (
                     <li key={item.title}>
-                        <a href={'/page/' + item.title}>{item.title}</a>
+                        <Link to={'/page/' + item.title}>{item.title}</Link>
                     </li>
                 ))}
             </ul>

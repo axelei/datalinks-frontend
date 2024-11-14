@@ -67,14 +67,14 @@ export default function NewUploadsComponent() : ReactNode | null {
             <Typography variant="h2">{t("New uploads")}</Typography>
             <ImageList cols={isMobile ? 1 : 5}>
                 {uploads.map((item) => (
-                    <Link to={'/upload/' + item.slug}>
+                    <Link to={'/upload/' + item.slug} key={item.slug}>
                         <ImageListItem key={item.slug}>
                             <img
                                 src={import.meta.env.VITE_API + '/file/get/' + item.slug}
                                 alt={item.filename}
                                 loading="lazy"
                             />
-                            <ImageListItemBar
+                            <ImageListItemBar key={item.slug}
                                 title={item.filename}
                                 subtitle={<span>{item.description}</span>}
                                 position="below"

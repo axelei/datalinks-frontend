@@ -24,7 +24,7 @@ export default function SearchComponent() : ReactNode | null {
 
     const search = async (query: string): Promise<Page[]> => {
         log("Fetching query: " + query);
-        const data = await fetch(import.meta.env.VITE_API + '/page/-search/' + query);
+        const data = await fetch(import.meta.env.VITE_API + '/page/-search/' + query + '?page=' + page + '&pageSize=' + pageSize);
         if (data.ok) {
             return data.json();
         } else {

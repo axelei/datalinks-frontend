@@ -31,9 +31,7 @@ export default function SearchToolbar() {
                 query(debouncedSearchTerm)
                     .then((data: Page[]) => {
                         setData(data);
-                        console.log(data);
-                    }).catch((error) => {
-                        console.log(error);
+                    }).catch((_error) => {
                         setData([]);
                     });
             } else {

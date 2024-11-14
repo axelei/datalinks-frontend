@@ -1,6 +1,6 @@
 import {ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
@@ -13,6 +13,9 @@ import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
 import EditButtons from "../components/EditButtons.tsx";
+import {Fab, Tooltip} from "@mui/material";
+import {t} from "i18next";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 export default function PageComponent(): ReactNode | null {
 
@@ -20,6 +23,7 @@ export default function PageComponent(): ReactNode | null {
     const config = useAppSelector((state) => state.config);
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const fetchPage = async (title: string): Promise<Page> => {
         log("Fetching page: " + title);
@@ -94,6 +98,10 @@ export default function PageComponent(): ReactNode | null {
         setPageTemp({...page});
     }
 
+    const editsEvent = (): void => {
+        navigate('/edits/' + page.title);
+    }
+
     const [mode, setMode] = useState(PageMode.read);
     const [page, setPage] = useState<Page>(newPage(''));
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
@@ -143,7 +151,15 @@ export default function PageComponent(): ReactNode | null {
 
     return (
         <>
-            <EditButtons editPageEvent={editPageEvent} savePageEvent={savePageEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deletePageEvent}/>
+            <EditButtons editPageEvent={editPageEvent} savePageEvent={savePageEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deletePageEvent}>
+                {mode === PageMode.read && (
+                <Tooltip title={t("Edits")} placement="left">
+                    <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
+                        <EditNoteIcon/>
+                    </Fab></Typography>
+                </Tooltip>
+                )}
+            </EditButtons>
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
