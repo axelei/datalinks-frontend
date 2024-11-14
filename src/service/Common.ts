@@ -26,7 +26,7 @@ export type AssociativeArray<Type> = {
     [key: string]: Type;
 }
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 export const useDebounce = <T>(value: T, delay: number) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -43,3 +43,13 @@ export const useDebounce = <T>(value: T, delay: number) => {
 
     return debouncedValue;
 };
+
+export const formatDate = (date: Date | string | undefined) : string => {
+    if (!date) {
+        return '';
+    }
+    if (typeof date === 'string') {
+        date = new Date(date);
+    }
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()  + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+}

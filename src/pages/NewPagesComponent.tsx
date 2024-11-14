@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {Page} from "../model/page/Page.ts";
-import {log} from "../service/Common.ts";
+import {formatDate, log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
@@ -83,7 +83,7 @@ export default function NewPagesComponent() : ReactNode | null {
                                 <TableCell component="th" scope="row">
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
-                                <TableCell align="right">{row.creationDate?.toLocaleString()}</TableCell>
+                                <TableCell align="right">{formatDate(row.creationDate)}</TableCell>
                                 <TableCell align="right">345</TableCell>
                                 <TableCell align="right">234</TableCell>
                                 <TableCell align="right">345</TableCell>

@@ -1,8 +1,8 @@
-import {ReactNode, useEffect, useState} from "react";
+import {ChangeEvent, ReactNode, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {log} from "../service/Common.ts";
+import {formatDate, log} from "../service/Common.ts";
 import Typography from "@mui/material/Typography";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from "@mui/material";
 import {User} from "../model/user/User.ts";
 import {Link} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
@@ -15,10 +15,12 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
 
     const { t } = useTranslation();
     const [edits, setEdits] = useState<Edit[]>([]);
+    const [page, setPage] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(10);
 
     const fetchEdits = async () : Promise<Edit[]> => {
         log("Fetching edits: ");
-        const data = await fetch(import.meta.env.VITE_API + '/page/-contributions/' + props.user.username);
+        const data = await fetch(import.meta.env.VITE_API + '/page/-contributions/' + props.user.username + "?page=" + page + "&pageSize=" + pageSize);
         if (data.ok) {
             return data.json();
         } else {
@@ -35,7 +37,15 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
             setEdits([]);
         });
 
-    }, [props.user]);
+    }, [props.user, page, pageSize]);
+
+    const handleChangePage = (_event: unknown, newPage: number) : void => {
+        setPage(newPage);
+    }
+
+    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) : void => {
+        setPageSize(parseInt(event.target.value, 10));
+    }
 
     return (
         <>
@@ -57,12 +67,11 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
                                 <TableCell component="th" scope="row">
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
-                                <TableCell align="right">{row.date?.toLocaleString()}</TableCell>
+                                <TableCell align="right">{formatDate(row.date)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                {/*
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50, 100]}
                     component="div"
@@ -72,7 +81,6 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-                */}
             </TableContainer>
         </>
     );

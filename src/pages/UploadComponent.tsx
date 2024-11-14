@@ -149,10 +149,10 @@ export default function UploadComponent(): ReactNode | null {
             <EditButtons editPageEvent={editUploadEvent} savePageEvent={saveUploadEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deleteUploadEvent}/>
             <Typography variant="h2">{upload.filename}</Typography>
             <p>
-            <img
+            <a href={import.meta.env.VITE_API + '/file/get/' + upload.slug} target="_blank"><img
                 src={import.meta.env.VITE_API + '/file/get/' + upload.slug}
                 alt={upload.filename}
-                className="uploadImage" />
+                className="uploadImage" /></a>
             </p>
             {mode === PageMode.read && (
                 <>

@@ -2,7 +2,7 @@ import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {log} from "../service/Common.ts";
+import {formatDate, log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
@@ -75,7 +75,7 @@ export default function EditsComponent() : ReactNode | null {
                                 <TableCell component="th" scope="row">
                                     <Link to={'/user/' + row.username}>{row.username}</Link>
                                 </TableCell>
-                                <TableCell align="right"><Link to={"/edit/" + row.id}>{row.date?.toLocaleString()}</Link></TableCell>
+                                <TableCell align="right"><Link to={"/edit/" + row.id}>{formatDate(row.date)}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

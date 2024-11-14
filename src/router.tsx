@@ -13,6 +13,7 @@ import SearchComponent from "./pages/SearchComponent.tsx";
 import UploadComponent from "./pages/UploadComponent.tsx";
 import EditsComponent from "./pages/EditsComponent.tsx";
 import EditComponent from "./pages/EditComponent.tsx";
+import AboutComponent from "./pages/AboutComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
     {
         path: "/edit/:query",
         element: <Layout><EditComponent /></Layout>
+    },
+    {
+        path: "/about",
+        element: <Layout><AboutComponent /></Layout>
     }
 ]);
 

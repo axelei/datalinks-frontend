@@ -135,7 +135,7 @@ export default function DatalinksDrawer(props: Props) {
 
     const help = () => {
         handleDrawerClose();
-        navigate('/help');
+        navigate('/about');
     }
 
     const drawer = (

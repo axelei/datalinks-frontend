@@ -2,7 +2,7 @@ import {ReactNode, useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
 import '../css/PageComponent.css';
 import Typography from "@mui/material/Typography";
-import {log} from "../service/Common.ts";
+import {formatDate, log} from "../service/Common.ts";
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import {Edit} from "../model/page/Edit.ts";
 import {t} from "i18next";
@@ -38,7 +38,7 @@ export default function EditComponent(): ReactNode | null {
 
     return (
         <>
-            <Typography variant="h2">{edit?.title + t(" from: ") + edit?.date}</Typography>
+            <Typography variant="h2">{edit?.title + t(" from: ") + formatDate(edit?.date)}</Typography>
             <Typography variant="h3">{t("By: ") + edit?.username}</Typography>
             <PageContentComponent content={edit?.content}/>
         </>
