@@ -4,9 +4,20 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {formatDate, log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
-import {Link} from "react-router-dom";
+import {
+    Paper,
+    Radio,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow
+} from '@mui/material';
+import {Link, useNavigate} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
+import Button from "@mui/material/Button";
 
 export default function EditsComponent() : ReactNode | null {
 
@@ -15,6 +26,10 @@ export default function EditsComponent() : ReactNode | null {
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const currentTitle = decodeURIComponent(location.pathname.split('/')[2]);
+    const navigate = useNavigate();
+
+    const [diff1, setDiff1] = useState<string>('');
+    const [diff2, setDiff2] = useState<string>('');
 
     const dispatch = useDispatch();
 
@@ -47,6 +62,17 @@ export default function EditsComponent() : ReactNode | null {
         });
     }
 
+    const diff1radioChange = (event : ChangeEvent<HTMLInputElement>) => {
+        setDiff1(event.target.value);
+    };
+    const diff2radioChange = (event : ChangeEvent<HTMLInputElement>) => {
+        setDiff2(event.target.value);
+    };
+    const executeCompare = () => {
+        navigate('/diff/' + diff1 + '/' + diff2);
+    }
+
+
     useEffect(() => {
         log("EditsComponent useEffect");
 
@@ -64,6 +90,8 @@ export default function EditsComponent() : ReactNode | null {
                         <TableRow>
                             <TableCell>{t("Username")}</TableCell>
                             <TableCell align="right">{t("Date")}</TableCell>
+                            <TableCell align="center">{t("Compare") + " 1"}</TableCell>
+                            <TableCell align="center">{t("Compare") + " 2"}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -76,8 +104,33 @@ export default function EditsComponent() : ReactNode | null {
                                     <Link to={'/user/' + row.username}>{row.username}</Link>
                                 </TableCell>
                                 <TableCell align="right"><Link to={"/edit/" + row.id}>{formatDate(row.date)}</Link></TableCell>
+                                <TableCell align="center">
+                                    <Radio
+                                        checked={diff1 === row.id}
+                                        onChange={diff1radioChange}
+                                        value={row.id}
+                                        name="radio-buttons-1"
+                                    />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Radio
+                                        checked={diff2 === row.id}
+                                        onChange={diff2radioChange}
+                                        value={row.id}
+                                        name="radio-buttons-2"
+                                    />
+                                </TableCell>
                             </TableRow>
                         ))}
+                        <TableRow
+                            key={''}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell><Button onClick={executeCompare} variant="contained" disabled={!diff1 || !diff2 || diff1 == diff2}>{t("Compare")}</Button></TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
                 <TablePagination

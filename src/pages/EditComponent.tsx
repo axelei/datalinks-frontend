@@ -6,22 +6,13 @@ import {formatDate, log} from "../service/Common.ts";
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import {Edit} from "../model/page/Edit.ts";
 import {t} from "i18next";
+import {fetchEdit} from "../service/EditService.ts";
 
 export default function EditComponent(): ReactNode | null {
 
     const location = useLocation();
     const editId = location.pathname.split('/')[2];
     const [edit, setEdit] = useState<Edit>();
-
-    const fetchEdit = async (edit: string): Promise<Edit> => {
-        log("Fetching edit: " + edit);
-        const data = await fetch(import.meta.env.VITE_API + '/page/-edit/' + edit);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
 
     useEffect(() => {
         log("EditComponent page useEffect");
