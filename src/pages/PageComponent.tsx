@@ -16,6 +16,7 @@ import EditButtons from "../components/EditButtons.tsx";
 import {Fab, Tooltip} from "@mui/material";
 import {t} from "i18next";
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import {showError} from "../redux/showErrorSlice.ts";
 
 export default function PageComponent(): ReactNode | null {
 
@@ -31,7 +32,7 @@ export default function PageComponent(): ReactNode | null {
         if (data.ok) {
             return data.json();
         } else {
-            return Promise.reject(data.text());
+            return Promise.reject(data.status);
         }
     }
 
@@ -74,6 +75,9 @@ export default function PageComponent(): ReactNode | null {
         saveResult.then(() => {
             setMode(PageMode.read);
             setPage({...pageTemp});
+        }).catch((error) => {
+            log("Error while saving page: " + error);
+            dispatch(showError());
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -84,6 +88,9 @@ export default function PageComponent(): ReactNode | null {
         const deleteResult = deletePage();
         deleteResult.then(() => {
             window.location.href = '/';
+        }).catch((error) => {
+            log("Error while deleting page: " + error);
+            dispatch(showError());
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -125,11 +132,14 @@ export default function PageComponent(): ReactNode | null {
             setMode(PageMode.read);
             setBlocks();
             window.scroll(0, 0);
-        }).catch((error: Promise<string>) => {
-            const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-            setPage(newPage(decodeURIComponent(currentTitle)));
-            log("Page fetch failed: " + error);
+        }).catch((error: string) => {
+            if (error == "404") {
+                const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+                setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+                setPage(newPage(decodeURIComponent(currentTitle)));
+            } else {
+                dispatch(showError());
+            }
         });
 
     }, [location.pathname]);
