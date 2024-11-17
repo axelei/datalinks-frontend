@@ -2,7 +2,7 @@ import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {Page} from "../model/page/Page.ts";
+import {Foundling} from "../model/page/Foundling.ts";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {TablePagination} from '@mui/material';
@@ -10,11 +10,12 @@ import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import {Link, useLocation} from "react-router-dom";
+import {getFoundlingPath} from "../model/page/FoundlingType.ts";
 
 export default function SearchComponent() : ReactNode | null {
 
     const { t } = useTranslation();
-    const [pages, setPages] = useState<Page[]>([]);
+    const [foundlings, setFoundlings] = useState<Foundling[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const [query, setQuery] = useState<string>('');
@@ -22,9 +23,9 @@ export default function SearchComponent() : ReactNode | null {
 
     const dispatch = useDispatch();
 
-    const search = async (query: string): Promise<Page[]> => {
+    const search = async (query: string): Promise<Foundling[]> => {
         log("Fetching query: " + query);
-        const data = await fetch(import.meta.env.VITE_API + '/page/-search/' + query + '?page=' + page + '&pageSize=' + pageSize);
+        const data = await fetch(import.meta.env.VITE_API + '/search/full/' + query + '?page=' + page + '&pageSize=' + pageSize);
         if (data.ok) {
             return data.json();
         } else {
@@ -44,8 +45,8 @@ export default function SearchComponent() : ReactNode | null {
         const queryString = location.pathname.split('/')[2];
         dispatch(loadingOn());
         const listResult = search(queryString);
-        listResult.then((data : Page[]) => {
-            setPages(data);
+        listResult.then((data : Foundling[]) => {
+            setFoundlings(data);
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -68,12 +69,12 @@ export default function SearchComponent() : ReactNode | null {
         <>
             <Typography variant="h2">{t("Search results") + ": " + query}</Typography>
             <List>
-                {pages.map((row : Page) => (
-                    <ListItem key={row.slug}>
-                        <Link to={"/page/" + row.title}>
+                {foundlings.map((row : Foundling) => (
+                    <ListItem key={row.title}>
+                        <Link to={getFoundlingPath(row.type) + row.title}>
                             <ListItemText
                                 primary={row.title}
-                                secondary={row.summary}
+                                secondary={row.content}
                             />
                         </Link>
                     </ListItem>
@@ -88,7 +89,7 @@ export default function SearchComponent() : ReactNode | null {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <Typography hidden={pages.length != 0}>{t("No results found. You can create the page: ")}<Link to={"/page/" + query}>{query}</Link></Typography>
+            <Typography hidden={foundlings.length != 0}>{t("No results found. You can create the page: ")}<Link to={"/page/" + query}>{query}</Link></Typography>
         </>
     );
 }

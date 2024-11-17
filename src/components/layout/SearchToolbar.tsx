@@ -5,19 +5,20 @@ import SearchIcon from "@mui/icons-material/Search";
 import {t} from "i18next";
 import {useNavigate} from "react-router-dom";
 import {log, useDebounce} from "../../service/Common.ts";
-import {Page} from "../../model/page/Page.ts";
+import {Foundling} from "../../model/page/Foundling.ts";
+import {getFoundlingPath} from "../../model/page/FoundlingType.ts";
 
 export default function SearchToolbar() {
 
     const navigate = useNavigate();
 
-    const [data, setData] = useState<Page[]>([]);
+    const [data, setData] = useState<Foundling[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-    const query = async (query: string): Promise<Page[]> => {
+    const query = async (query: string): Promise<Foundling[]> => {
         log("Fetching query: " + query);
-        const data = await fetch(import.meta.env.VITE_API + '/page/-titleSearch/' + query);
+        const data = await fetch(import.meta.env.VITE_API + '/search/titleSearch/' + query);
         if (data.ok) {
             return data.json();
         } else {
@@ -29,7 +30,7 @@ export default function SearchToolbar() {
         () => {
             if (debouncedSearchTerm) {
                 query(debouncedSearchTerm)
-                    .then((data: Page[]) => {
+                    .then((data: Foundling[]) => {
                         setData(data);
                     }).catch((_error) => {
                         setData([]);
@@ -44,9 +45,9 @@ export default function SearchToolbar() {
     const chooseSearch = (_event: SyntheticEvent, value: string) => {
         if (value) {
             query(value)
-                .then((data: Page[]) => {
+                .then((data: Foundling[]) => {
                     if (data.length == 1) {
-                        navigate('/page/' + value);
+                        navigate(getFoundlingPath(data[0].type) + value);
                     } else {
                         navigate('/search/' + value);
                     }
@@ -72,7 +73,7 @@ export default function SearchToolbar() {
                     {...params}
                     label={t("Search")}
                     onChange={(event : ChangeEvent<HTMLInputElement>) => {setSearchTerm(event.target.value)}}
-                    onKeyUp={(event) => {searchKeyUp(event)}}
+                    onKeyUp={(event ) => {searchKeyUp(event)}}
                     slotProps={{
                         input: {
                             ...params.InputProps,
