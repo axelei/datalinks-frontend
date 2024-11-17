@@ -5,12 +5,12 @@ import Typography from "@mui/material/Typography";
 import {Foundling} from "../model/search/Foundling.ts";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {TablePagination} from '@mui/material';
+import {Avatar, TablePagination} from '@mui/material';
 import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import {Link, useLocation} from "react-router-dom";
-import {getFoundlingPath} from "../model/search/FoundlingType.ts";
+import {FoundlingType, getFoundlingPath} from "../model/search/FoundlingType.ts";
 
 export default function SearchComponent() : ReactNode | null {
 
@@ -76,6 +76,18 @@ export default function SearchComponent() : ReactNode | null {
                                 primary={row.title}
                                 secondary={row.content}
                             />
+                            {row.type === FoundlingType.upload && (
+                                <Avatar
+                                    src={import.meta.env.VITE_API + '/file/get/' + row.title}
+                                    alt={row.title}
+                                    variant="square"
+                                    sx={{
+                                        width: 100,
+                                        height: 100,
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                            )}
                         </Link>
                     </ListItem>
                 ))}
