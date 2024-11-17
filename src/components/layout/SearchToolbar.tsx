@@ -5,8 +5,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import {t} from "i18next";
 import {useNavigate} from "react-router-dom";
 import {log, useDebounce} from "../../service/Common.ts";
-import {Foundling} from "../../model/page/Foundling.ts";
-import {getFoundlingPath} from "../../model/page/FoundlingType.ts";
+import {Foundling} from "../../model/search/Foundling.ts";
+import {getFoundlingPath} from "../../model/search/FoundlingType.ts";
 
 export default function SearchToolbar() {
 

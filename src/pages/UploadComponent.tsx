@@ -13,6 +13,8 @@ import {newUpload, Upload} from "../model/upload/Upload.ts";
 import {TextareaAutosize} from "@mui/material";
 import {Page} from "../model/page/Page.ts";
 import EditButtons from "../components/EditButtons.tsx";
+import {fetchUpload, saveUpload} from "../service/UploadService.ts";
+import {showError} from "../redux/showErrorSlice.ts";
 
 export default function UploadComponent(): ReactNode | null {
 
@@ -22,40 +24,31 @@ export default function UploadComponent(): ReactNode | null {
     const dispatch = useDispatch();
     const location = useLocation();
 
-    const fetchUpload = async (fileName: string): Promise<Upload> => {
-        log("Fetching upload: " + fileName);
-        const data = await fetch(import.meta.env.VITE_API + '/file/lookAt/' + fileName);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
     const fetchUsage = async (fileName: string): Promise<Page[]> => {
         log("Fetching usages: " + fileName);
         const data = await fetch(import.meta.env.VITE_API + '/file/-usages/' + fileName);
         if (data.ok) {
             return data.json();
         } else {
-            return Promise.reject(data.text());
+            return Promise.reject(data.status);
         }
     }
 
-    const saveUpload = async (): Promise<object> => {
-        log("Saving upload: " + uploadTemp.filename);
+    const deleteUpload = async (fileName: string): Promise<string> => {
+        log("Deleting upload: " + fileName);
         const requestOptions = {
-            method: 'PUT',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'text/plain',
                 'Authorization': 'Bearer ' + loggedUser.token,
             },
-            body: JSON.stringify({
-                filename: uploadTemp.filename,
-                description: uploadTemp.description,
-            }),
         };
-        return await fetch(import.meta.env.VITE_API + '/file/update', requestOptions);
+        const data = await fetch(import.meta.env.VITE_API + '/file/delete/' + fileName, requestOptions);
+        if (data.ok) {
+            return data.text();
+        } else {
+            return Promise.reject(data.status);
+        }
     }
 
     const editUploadEvent = (): void => {
@@ -65,17 +58,29 @@ export default function UploadComponent(): ReactNode | null {
 
     const saveUploadEvent = (): void => {
         dispatch(loadingOn());
-        const saveResult = saveUpload();
+        const saveResult = saveUpload(uploadTemp, loggedUser.token);
         saveResult.then(() => {
             setMode(PageMode.read);
             setUpload({...uploadTemp});
+        }).catch((error) => {
+            log("Error while saving upload: " + error);
+            dispatch(showError());
         }).finally(() => {
             dispatch(loadingOff());
         });
     }
 
     const deleteUploadEvent = (): void => {
-
+        dispatch(loadingOn());
+        const deleteResult = deleteUpload(upload.filename);
+        deleteResult.then((_data) => {
+            window.location.href = '/';
+        }).catch((error) => {
+            log("Error while deleting upload: " + error);
+            dispatch(showError());
+        }).finally(() => {
+            dispatch(loadingOff());
+        });
     }
 
     const changeContentEvent = (event: ChangeEvent<HTMLTextAreaElement>): void => {

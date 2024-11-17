@@ -2,7 +2,7 @@ import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {Foundling} from "../model/page/Foundling.ts";
+import {Foundling} from "../model/search/Foundling.ts";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {TablePagination} from '@mui/material';
@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import {Link, useLocation} from "react-router-dom";
-import {getFoundlingPath} from "../model/page/FoundlingType.ts";
+import {getFoundlingPath} from "../model/search/FoundlingType.ts";
 
 export default function SearchComponent() : ReactNode | null {
 
