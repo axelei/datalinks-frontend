@@ -26,7 +26,7 @@ export default function UploadComponent(): ReactNode | null {
 
     const fetchUsage = async (fileName: string): Promise<Page[]> => {
         log("Fetching usages: " + fileName);
-        const data = await fetch(import.meta.env.VITE_API + '/file/-usages/' + fileName);
+        const data = await fetch(import.meta.env.VITE_API + '/file/usages/' + fileName);
         if (data.ok) {
             return data.json();
         } else {
