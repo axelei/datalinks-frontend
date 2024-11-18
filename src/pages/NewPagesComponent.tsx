@@ -69,9 +69,7 @@ export default function NewPagesComponent() : ReactNode | null {
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>
                             <TableCell align="right">{t("Creation date")}</TableCell>
-                            <TableCell align="right">ñasfla</TableCell>
-                            <TableCell align="right">werqwer)</TableCell>
-                            <TableCell align="right">gñap</TableCell>
+                            <TableCell align="right">{t("Creator")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -84,9 +82,7 @@ export default function NewPagesComponent() : ReactNode | null {
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
                                 <TableCell align="right">{formatDate(row.creationDate)}</TableCell>
-                                <TableCell align="right">345</TableCell>
-                                <TableCell align="right">234</TableCell>
-                                <TableCell align="right">345</TableCell>
+                                <TableCell align="right"><Link to={'/user/' + row.creatorName}>{row.creatorName}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

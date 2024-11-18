@@ -10,6 +10,7 @@ export interface Page {
     block?: UserLevel;
     creationDate?: Date;
     modifiedDate?: Date;
+    creatorName?: string;
 }
 
 export const newPage = (title: string) : Page => {
