@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {ImageList, ImageListItem, ImageListItemBar, TablePagination, useMediaQuery} from '@mui/material';
+import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
 import {Link} from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import '../css/PageComponent.css';
 import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
@@ -23,6 +23,7 @@ export default function UploadComponent(): ReactNode | null {
     const config = useAppSelector((state) => state.config);
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const fetchUsage = async (fileName: string): Promise<Page[]> => {
         log("Fetching usages: " + fileName);
@@ -74,7 +75,7 @@ export default function UploadComponent(): ReactNode | null {
         dispatch(loadingOn());
         const deleteResult = deleteUpload(upload.filename);
         deleteResult.then((_data) => {
-            window.location.href = '/';
+            navigate('/');
         }).catch((error) => {
             log("Error while deleting upload: " + error);
             dispatch(showError());

@@ -87,7 +87,7 @@ export default function PageComponent(): ReactNode | null {
         dispatch(loadingOn());
         const deleteResult = deletePage();
         deleteResult.then(() => {
-            window.location.href = '/';
+            navigate('/');
         }).catch((error) => {
             log("Error while deleting page: " + error);
             dispatch(showError());
