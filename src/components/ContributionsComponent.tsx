@@ -51,7 +51,7 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
         <>
             <Typography variant="h3">{t("Contributions")}</Typography>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>
@@ -67,7 +67,7 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
                                 <TableCell component="th" scope="row">
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
-                                <TableCell align="right">{formatDate(row.date)}</TableCell>
+                                <TableCell align="right"><Link to={'/edit/' + row.id}>{formatDate(row.date)}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

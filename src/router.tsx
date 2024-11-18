@@ -15,6 +15,7 @@ import EditsComponent from "./pages/EditsComponent.tsx";
 import EditComponent from "./pages/EditComponent.tsx";
 import AboutComponent from "./pages/AboutComponent.tsx";
 import DiffComponent from "./pages/DiffComponent.tsx";
+import UploadFileComponent from "./pages/UploadFileComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
     {
         path: "/diff/:diff1/:diff2",
         element: <Layout><DiffComponent /></Layout>
+    },
+    {
+        path: "/uploadFile",
+        element: <Layout><UploadFileComponent /></Layout>
     }
 ]);
 
