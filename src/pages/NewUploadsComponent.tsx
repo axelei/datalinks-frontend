@@ -87,6 +87,7 @@ export default function NewUploadsComponent() : ReactNode | null {
                                 title={item.filename}
                                 subtitle={<span>{item.description}</span>}
                                 position="below"
+                                style={{whiteSpace: "normal", wordBreak: "break-word"}}
                             />
                         </ImageListItem>
                     </Link>

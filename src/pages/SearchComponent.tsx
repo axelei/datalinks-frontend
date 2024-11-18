@@ -75,6 +75,18 @@ export default function SearchComponent() : ReactNode | null {
                             <ListItemText
                                 primary={row.title}
                                 secondary={row.content}
+                                primaryTypographyProps={{
+                                    style: {
+                                        whiteSpace: "normal",
+                                        wordBreak: "break-word",
+                                    }
+                                }}
+                                secondaryTypographyProps={{
+                                    style: {
+                                        whiteSpace: "normal",
+                                        wordBreak: "break-word",
+                                    }
+                                }}
                             />
                             {row.type === FoundlingType.upload && (
                                 <Avatar

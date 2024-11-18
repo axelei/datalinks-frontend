@@ -78,7 +78,7 @@ export default function NewPagesComponent() : ReactNode | null {
                                 key={row.slug}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
+                                <TableCell component="th" scope="row" style={{whiteSpace: "normal", wordBreak: "break-word"}}>
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
                                 <TableCell align="right">{formatDate(row.creationDate)}</TableCell>
