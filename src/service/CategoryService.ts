@@ -7,6 +7,24 @@ export const fetchCategories = async (page: number | null, pageSize: number | nu
     }
 }
 
+export const fetchCategory = async (category: string) => {
+    const data = await fetch(import.meta.env.VITE_API + '/category/get/' + category);
+    if (data.ok) {
+        return data.json();
+    } else {
+        return Promise.reject(data.status);
+    }
+}
+
+export const findCategories = async (query: string) => {
+    const data = await fetch(import.meta.env.VITE_API + '/category/find/' + query);
+    if (data.ok) {
+        return data.json();
+    } else {
+        return Promise.reject(data.status);
+    }
+}
+
 export const addCategory = async (category: string, token: string) => {
     const data = await fetch(import.meta.env.VITE_API + '/category/add', {
         method: 'PUT',

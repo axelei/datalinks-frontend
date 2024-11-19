@@ -17,6 +17,7 @@ import {Fab, Tooltip} from "@mui/material";
 import {t} from "i18next";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import {showError} from "../redux/showErrorSlice.ts";
+import {Category} from "../model/page/Category.ts";
 
 export default function PageComponent(): ReactNode | null {
 
@@ -109,6 +110,10 @@ export default function PageComponent(): ReactNode | null {
         navigate('/edits/' + page.title);
     }
 
+    const setCategories = (categories: Category[]) => {
+        setPageTemp({...pageTemp, categories: categories});
+    }
+
     const [mode, setMode] = useState(PageMode.read);
     const [page, setPage] = useState<Page>(newPage(''));
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
@@ -173,21 +178,14 @@ export default function PageComponent(): ReactNode | null {
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
-                    <PageContentComponent content={page.content}/>
+                    <PageContentComponent page={page}/>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent}/>
+                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent} initialCategories={page.categories} setCategories={setCategories} />
                 </>
             )}
-            <ul>
-                {page.categories?.map((category) => (
-                    <li key={'category-' + category.name}>
-                        {category.name} -
-                    </li>
-                ))}
-            </ul>
         </>
     )
 }
