@@ -1,5 +1,5 @@
 import React, {ChangeEvent, ReactNode, useEffect, useState} from "react";
-import {Category, newCategory} from "../model/page/Category.ts";
+import {Category} from "../model/page/Category.ts";
 import {useTranslation} from "react-i18next";
 import {formatDate, log} from "../service/Common.ts";
 import {useDispatch} from "react-redux";

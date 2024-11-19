@@ -17,7 +17,7 @@ export const addCategory = async (category: string, token: string) => {
         body: category
     });
     if (data.ok) {
-        return data.json();
+        return data.text();
     } else {
         return Promise.reject(data.status);
     }
@@ -31,7 +31,7 @@ export const deleteCategory = async (category: string, token: string) => {
         },
     });
     if (data.ok) {
-        return data.json();
+        return data.text();
     } else {
         return Promise.reject(data.status);
     }
