@@ -64,7 +64,7 @@ export default function NewPagesComponent() : ReactNode | null {
         <>
             <Typography variant="h2">{t("New pages")}</Typography>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>

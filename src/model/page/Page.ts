@@ -6,7 +6,7 @@ export interface Page {
     content: string;
     summary?: string;
     slug?: string;
-    categories: Category[];
+    categories?: Category[];
     block?: UserLevel;
     creationDate?: Date;
     modifiedDate?: Date;

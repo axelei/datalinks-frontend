@@ -182,7 +182,7 @@ export default function PageComponent(): ReactNode | null {
                 </>
             )}
             <ul>
-                {page.categories.map((category) => (
+                {page.categories?.map((category) => (
                     <li key={'category-' + category.name}>
                         {category.name} -
                     </li>

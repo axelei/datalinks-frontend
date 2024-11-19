@@ -64,7 +64,7 @@ export default function RecentChangesComponent() : ReactNode | null {
         <>
             <Typography variant="h2">{t("Recent changes")}</Typography>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table sx={{ minWidth: 650 }} size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>
