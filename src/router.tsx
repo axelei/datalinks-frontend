@@ -17,6 +17,7 @@ import AboutComponent from "./pages/AboutComponent.tsx";
 import DiffComponent from "./pages/DiffComponent.tsx";
 import UploadFileComponent from "./pages/UploadFileComponent.tsx";
 import CategoriesComponent from "./pages/CategoriesComponent.tsx";
+import CategoryPagesComponent from "./pages/CategoryPagesComponent.tsx";
 
 const router = createBrowserRouter([
     {
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
     {
         path: "/categories",
         element: <Layout><CategoriesComponent /></Layout>
+    },
+    {
+        path: "/category/:query",
+        element: <Layout><CategoryPagesComponent /></Layout>
     }
 ]);
 

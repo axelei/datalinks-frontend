@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ReactNode, useEffect, useState} from "react";
+import React, {ChangeEvent, ReactNode, SyntheticEvent, useEffect, useState} from "react";
 import "ckeditor5/ckeditor5-editor.css";
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {
@@ -92,16 +92,16 @@ export default function EditorComponent( props : Props) : ReactNode | null {
 
     const handleDeleteCategory = (categoryToDelete: Category) => {
         setCategories(categories.filter(category => category !== categoryToDelete));
+        props.setCategories(categories.filter(category => category !== categoryToDelete));
     };
 
     const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
             fetchCategory(inputValue.trim()).then((newCategory : Category) => {
                 if (!categories.includes(newCategory)) {
-                    setCategories([...foundCategories, newCategory]);
+                    setCategories([...categories, newCategory]);
                     props.setCategories([...categories, newCategory]);
                 }
-                setInputValue('');
             }).catch((error) => {
                 if (error === 404) {
                     log("Category not found: " + inputValue);
@@ -109,6 +109,12 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                     log("Error while adding category: " + error);
                 }
            });
+        }
+    }
+
+    const chooseSearch = (_event: SyntheticEvent<Element, Event>, value: string | null) => {
+        if (value) {
+            setInputValue(value);
         }
     }
 
@@ -210,21 +216,22 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                 onChange={props.changeContentEvent}
             />
             <Autocomplete sx={{ marginTop: 5 }}
-                options={foundCategories.map((option) => option.name)}
-                renderInput={(params) => <TextField
-                    {...params}
-                    label={t("Add categories")}
-                    onChange={(event : ChangeEvent<HTMLInputElement>) => {setInputValue(event.target.value)}}
-                    onKeyUp={(event ) => {searchKeyUp(event)}}
-                    slotProps={{
-                        input: {
-                            ...params.InputProps,
-                            type: 'search',
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
+                          options={foundCategories.map((option) => option.name)}
+                          onChange={chooseSearch}
+                          renderInput={(params) => <TextField
+                            {...params}
+                            label={t("Add categories")}
+                            onChange={(event : ChangeEvent<HTMLInputElement>) => {setInputValue(event.target.value)}}
+                            onKeyUp={(event ) => {searchKeyUp(event)}}
+                            slotProps={{
+                            input: {
+                                ...params.InputProps,
+                                type: 'search',
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
                         },
                     }}
                 />}

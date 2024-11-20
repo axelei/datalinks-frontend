@@ -135,7 +135,6 @@ export default function PageComponent(): ReactNode | null {
             setPage({...data});
             setPageTemp({...data});
             setMode(PageMode.read);
-            setBlocks();
             window.scroll(0, 0);
         }).catch((error: string) => {
             if (error == "404") {
@@ -152,7 +151,7 @@ export default function PageComponent(): ReactNode | null {
     useEffect(() => {
         log("PageComponent user useeffect");
         setBlocks();
-    }, [config.value, loggedUser.user.level, page.block]);
+    }, [loggedUser, page.block]);
 
     const setBlocks = (): void => {
         let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
@@ -166,7 +165,13 @@ export default function PageComponent(): ReactNode | null {
 
     return (
         <>
-            <EditButtons editPageEvent={editPageEvent} savePageEvent={savePageEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deletePageEvent}>
+            <EditButtons editPageEvent={editPageEvent}
+                         savePageEvent={savePageEvent}
+                         cancelEditionEvent={cancelEditionEvent}
+                         canEdit={canEdit}
+                         mode={mode}
+                         canDelete={canDelete}
+                         handleConfirmDelete={deletePageEvent}>
                 {mode === PageMode.read && (
                 <Tooltip title={t("Edits")} placement="left">
                     <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
@@ -183,7 +188,10 @@ export default function PageComponent(): ReactNode | null {
             )}
             {mode === PageMode.edit && (
                 <>
-                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent} initialCategories={page.categories} setCategories={setCategories} />
+                    <EditorComponent initialContent={pageTemp.content}
+                                     changeContentEvent={changeContentEvent}
+                                     initialCategories={page.categories}
+                                     setCategories={setCategories} />
                 </>
             )}
         </>
