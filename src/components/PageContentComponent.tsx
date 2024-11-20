@@ -31,7 +31,7 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
                     />
                 ))}
             </Stack>
-            {!content && (<Typography>{t("This page doesn't have any content yet.")}</Typography>)}
+            {!props.page.content && (<Typography>{t("This page doesn't have any content yet.")}</Typography>)}
         </>
     )
 }
