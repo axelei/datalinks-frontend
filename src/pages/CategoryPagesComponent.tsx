@@ -20,7 +20,7 @@ export default function CategoryPagesComponent() : ReactNode | null {
 
     const fetchPages = async () : Promise<Page[]> => {
         log("Fetching pages: ");
-        const data = await fetch(import.meta.env.VITE_API + '/category/findPages/' + category);
+        const data = await fetch(import.meta.env.VITE_API + '/category/findPages/' + category + "?page=" + page + "&pageSize=" + pageSize);
         if (data.ok) {
             return data.json();
         } else {
@@ -55,14 +55,14 @@ export default function CategoryPagesComponent() : ReactNode | null {
     }, [page, pageSize, category]);
 
     useEffect(() => {
-        setCategory(location.pathname.split('/')[2]);
+        setCategory(decodeURIComponent(location.pathname.split('/')[2]));
     }, [location]);
 
     return (
         <>
             <Typography variant="h2">{t("Pages from category:") + " " + category}</Typography>
             <TableContainer component={Paper}>
-                <Table size="small" aria-label="a dense table">
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>

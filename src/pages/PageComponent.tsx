@@ -151,7 +151,7 @@ export default function PageComponent(): ReactNode | null {
     useEffect(() => {
         log("PageComponent user useeffect");
         setBlocks();
-    }, [loggedUser, page.block]);
+    }, [loggedUser, page]);
 
     const setBlocks = (): void => {
         let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
