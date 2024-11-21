@@ -49,9 +49,11 @@ export default function CategoryPagesComponent() : ReactNode | null {
     useEffect(() => {
         log("CategoryPagesComponent useEffect");
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Category") + ": " + category;
+        if (category) {
+            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Category") + ": " + category;
 
-        searchEvent();
+            searchEvent();
+        }
     }, [page, pageSize, category]);
 
     useEffect(() => {
