@@ -98,7 +98,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
     const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
             fetchCategory(inputValue.trim()).then((newCategory : Category) => {
-                if (!categories.includes(newCategory)) {
+                if (!categories.some(category => newCategory.name === category.name)) {
                     setCategories([...categories, newCategory]);
                     props.setCategories([...categories, newCategory]);
                 }
