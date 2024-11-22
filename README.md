@@ -1,50 +1,40 @@
-# React + TypeScript + Vite
+# DataLinks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DataLinks is a wiki-like application built to be fast and rather simple to use. It's built with React and Spring Boot.
 
-Currently, two official plugins are available:
+## Features
+- Categories support
+- CKEditor WYSIWYG editor
+- It's very fast!
+- Internationalization support
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Nginx example configuration
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=files_cache:10m max_size=10g inactive=24h use_temp_path=off;
+server {
+        root /home/krusher/datalinks.krusher.net;
+        index index.html index.htm;
+        server_name datalinks.krusher.net;
+        listen 80;
+        location ^~ /datalinks-backend/ {
+                proxy_pass http://localhost:8080/;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+        location ^~ /datalinks-backend/file/get/ {
+                proxy_pass http://localhost:8080/file/get/;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_cache files_cache;
+                proxy_cache_key $request_uri;
+                proxy_cache_valid 200 1h;
+                proxy_cache_valid 404 10m;
+                add_header X-Cache-Status $upstream_cache_status;
+                proxy_set_header Host $host;
+        }
+        location / {
+                try_files $uri $uri/ /index.html;
+        }
+}
 ```
