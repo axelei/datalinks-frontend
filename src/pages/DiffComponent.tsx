@@ -40,8 +40,10 @@ export default function DiffComponent(): ReactNode | null {
 
     return (
         <>
-            <Typography variant="h2">{edit1?.title + t(" from: ") + formatDate(edit1?.date) + "/" + formatDate(edit2?.date)}</Typography>
-            <Typography variant="h3">{t("By: ") + edit1?.username + "/" + edit2?.username}</Typography>
+            <Typography variant="h2">{edit1?.title}</Typography>
+            <Typography>
+                {`${t(" from: ")}${formatDate(edit1?.date)}/${formatDate(edit2?.date)} ${t("By:")} ${edit1?.username}/${edit2?.username}`}
+            </Typography>
             <ReactDiffViewer oldValue={edit1?.content} newValue={edit2?.content} splitView={true} />
         </>
     )

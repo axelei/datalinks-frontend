@@ -55,5 +55,5 @@ export const formatDate = (date: Date | string | undefined) : string => {
 }
 
 export const insertPageJumps = (html: string) : string => {
-    return html.replace(/<\/p>/g, "</p>\n\n");
+    return html.replace(/<\/p>/g, "</p>\n\n").replace(/<\/figure>/g, "</p>\n\n");
 }

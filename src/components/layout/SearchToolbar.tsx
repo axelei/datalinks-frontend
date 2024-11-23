@@ -43,21 +43,27 @@ export default function SearchToolbar() {
 
     const chooseSearch = (_event: SyntheticEvent, value: string) => {
         if (value) {
-            query(value)
-                .then((data: Page[]) => {
-                    if (data.length == 1) {
-                        navigate('/page/' + value);
-                    } else {
-                        navigate('/search/' + value);
-                    }
-                });
+            gotoOrSearch(value);
         }
     }
 
     const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
-            navigate('/search/' + searchTerm);
+            if (searchTerm) {
+                gotoOrSearch(searchTerm);
+            }
         }
+    }
+
+    const gotoOrSearch = (value: string) => {
+        query(value)
+            .then((data: Page[]) => {
+                if (data.length == 1) {
+                    navigate('/page/' + data[0].title);
+                } else {
+                    navigate('/search/' + value);
+                }
+            });
     }
 
     return (<>
