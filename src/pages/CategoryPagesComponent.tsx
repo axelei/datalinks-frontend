@@ -8,25 +8,19 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
 
-export default function NewPagesComponent() : ReactNode | null {
+export default function CategoryPagesComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const [pages, setPages] = useState<Page[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
+    const [category, setCategory] = useState<string>('');
 
     const dispatch = useDispatch();
 
     const fetchPages = async () : Promise<Page[]> => {
         log("Fetching pages: ");
-        const requestOptions = {
-            method: 'POST',
-            body: JSON.stringify({
-                page: page,
-                pageSize: pageSize,
-            }),
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/page/newPages', requestOptions);
+        const data = await fetch(import.meta.env.VITE_API + '/category/findPages/' + category + "?page=" + page + "&pageSize=" + pageSize);
         if (data.ok) {
             return data.json();
         } else {
@@ -53,18 +47,24 @@ export default function NewPagesComponent() : ReactNode | null {
     }
 
     useEffect(() => {
-        log("NewPagesComponent useEffect");
+        log("CategoryPagesComponent useEffect");
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("New pages");
+        if (category) {
+            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Category") + ": " + category;
 
-        searchEvent();
-    }, [page, pageSize]);
+            searchEvent();
+        }
+    }, [page, pageSize, category]);
+
+    useEffect(() => {
+        setCategory(decodeURIComponent(location.pathname.split('/')[2]));
+    }, [location]);
 
     return (
         <>
-            <Typography variant="h2">{t("New pages")}</Typography>
+            <Typography variant="h2">{t("Pages from category:") + " " + category}</Typography>
             <TableContainer component={Paper}>
-                <Table size="small" aria-label="a dense table">
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>

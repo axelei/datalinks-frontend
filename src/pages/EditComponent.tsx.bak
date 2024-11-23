@@ -29,9 +29,15 @@ export default function EditComponent(): ReactNode | null {
 
     return (
         <>
+<<<<<<< HEAD
+            <Typography variant="h2">{`${edit?.title} ${t("from:")} ${formatDate(edit?.date)}`}</Typography>
+            <Typography variant="h3">{`${t("By:")} ${edit?.username}`}</Typography>
+            <PageContentComponent content={edit?.content} />
+=======
             <Typography variant="h2">{edit?.title + t(" from: ") + formatDate(edit?.date)}</Typography>
             <Typography variant="h3">{t("By: ") + edit?.username}</Typography>
             <PageContentComponent page={{title: edit?.title || "", content : edit?.content || ""}}/>
+>>>>>>> a22be86db0feee3815872e6661eb997f1d8628cd
         </>
     )
 }

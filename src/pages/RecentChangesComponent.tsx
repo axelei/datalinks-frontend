@@ -2,23 +2,23 @@ import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {Page} from "../model/page/Page.ts";
 import {formatDate, log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
+import {Edit} from "../model/page/Edit.ts";
 
 export default function RecentChangesComponent() : ReactNode | null {
 
     const { t } = useTranslation();
-    const [pages, setPages] = useState<Page[]>([]);
+    const [edits, setEdits] = useState<Edit[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
 
     const dispatch = useDispatch();
 
-    const fetchPages = async () : Promise<Page[]> => {
-        log("Fetching pages: ");
+    const fetchPages = async () : Promise<Edit[]> => {
+        log("Fetching edits: ");
         const requestOptions = {
             method: 'POST',
             body: JSON.stringify({
@@ -45,8 +45,8 @@ export default function RecentChangesComponent() : ReactNode | null {
     const searchEvent = () : void => {
         dispatch(loadingOn());
         const listResult = fetchPages();
-        listResult.then((data : Page[]) => {
-            setPages(data);
+        listResult.then((data : Edit[]) => {
+            setEdits(data);
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -64,29 +64,25 @@ export default function RecentChangesComponent() : ReactNode | null {
         <>
             <Typography variant="h2">{t("Recent changes")}</Typography>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table sx={{ minWidth: 650 }} size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Title")}</TableCell>
                             <TableCell align="right">{t("Modified date")}</TableCell>
-                            <TableCell align="right">ñasfla</TableCell>
-                            <TableCell align="right">werqwer)</TableCell>
-                            <TableCell align="right">gñap</TableCell>
+                            <TableCell align="right">{t("User")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {pages.map((row : Page) => (
+                        {edits.map((row : Edit) => (
                             <TableRow
-                                key={row.slug}
+                                key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
+                                <TableCell component="th" scope="row" style={{whiteSpace: "normal", wordBreak: "break-word"}}>
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
-                                <TableCell align="right">{formatDate(row.modifiedDate)}</TableCell>
-                                <TableCell align="right">345</TableCell>
-                                <TableCell align="right">234</TableCell>
-                                <TableCell align="right">345</TableCell>
+                                <TableCell align="right"><Link to={'/edit/' + row.id}>{formatDate(row.date)}</Link></TableCell>
+                                <TableCell align="right"><Link to={'/user/' + row.username}>{row.username}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

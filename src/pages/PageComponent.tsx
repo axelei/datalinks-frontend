@@ -16,6 +16,8 @@ import EditButtons from "../components/EditButtons.tsx";
 import {Fab, Tooltip} from "@mui/material";
 import {t} from "i18next";
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import {showError} from "../redux/showErrorSlice.ts";
+import {Category} from "../model/page/Category.ts";
 
 export default function PageComponent(): ReactNode | null {
 
@@ -31,7 +33,7 @@ export default function PageComponent(): ReactNode | null {
         if (data.ok) {
             return data.json();
         } else {
-            return Promise.reject(data.text());
+            return Promise.reject(data.status);
         }
     }
 
@@ -74,6 +76,9 @@ export default function PageComponent(): ReactNode | null {
         saveResult.then(() => {
             setMode(PageMode.read);
             setPage({...pageTemp});
+        }).catch((error) => {
+            log("Error while saving page: " + error);
+            dispatch(showError());
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -83,7 +88,10 @@ export default function PageComponent(): ReactNode | null {
         dispatch(loadingOn());
         const deleteResult = deletePage();
         deleteResult.then(() => {
-            window.location.href = '/';
+            navigate('/');
+        }).catch((error) => {
+            log("Error while deleting page: " + error);
+            dispatch(showError());
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -100,6 +108,10 @@ export default function PageComponent(): ReactNode | null {
 
     const editsEvent = (): void => {
         navigate('/edits/' + page.title);
+    }
+
+    const setCategories = (categories: Category[]) => {
+        setPageTemp({...pageTemp, categories: categories});
     }
 
     const [mode, setMode] = useState(PageMode.read);
@@ -123,13 +135,15 @@ export default function PageComponent(): ReactNode | null {
             setPage({...data});
             setPageTemp({...data});
             setMode(PageMode.read);
-            setBlocks();
             window.scroll(0, 0);
-        }).catch((error: Promise<string>) => {
-            const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-            setPage(newPage(decodeURIComponent(currentTitle)));
-            log("Page fetch failed: " + error);
+        }).catch((error: string) => {
+            if (error == "404") {
+                const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+                setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
+                setPage(newPage(decodeURIComponent(currentTitle)));
+            } else {
+                dispatch(showError());
+            }
         });
 
     }, [location.pathname]);
@@ -137,7 +151,7 @@ export default function PageComponent(): ReactNode | null {
     useEffect(() => {
         log("PageComponent user useeffect");
         setBlocks();
-    }, [config.value, loggedUser.user.level, page.block]);
+    }, [loggedUser, page]);
 
     const setBlocks = (): void => {
         let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
@@ -151,7 +165,13 @@ export default function PageComponent(): ReactNode | null {
 
     return (
         <>
-            <EditButtons editPageEvent={editPageEvent} savePageEvent={savePageEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deletePageEvent}>
+            <EditButtons editPageEvent={editPageEvent}
+                         savePageEvent={savePageEvent}
+                         cancelEditionEvent={cancelEditionEvent}
+                         canEdit={canEdit}
+                         mode={mode}
+                         canDelete={canDelete}
+                         handleConfirmDelete={deletePageEvent}>
                 {mode === PageMode.read && (
                 <Tooltip title={t("Edits")} placement="left">
                     <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
@@ -163,21 +183,17 @@ export default function PageComponent(): ReactNode | null {
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
-                    <PageContentComponent content={page.content}/>
+                    <PageContentComponent page={page}/>
                 </>
             )}
             {mode === PageMode.edit && (
                 <>
-                    <EditorComponent initialContent={pageTemp.content} changeContentEvent={changeContentEvent}/>
+                    <EditorComponent initialContent={pageTemp.content}
+                                     changeContentEvent={changeContentEvent}
+                                     initialCategories={page.categories}
+                                     setCategories={setCategories} />
                 </>
             )}
-            <ul>
-                {page.categories.map((category) => (
-                    <li key={'category-' + category.name}>
-                        {category.name} -
-                    </li>
-                ))}
-            </ul>
         </>
     )
 }

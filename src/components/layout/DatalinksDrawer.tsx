@@ -33,6 +33,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import {log} from "../../service/Common.ts";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
+import FolderIcon from '@mui/icons-material/Folder';
 import SearchToolbar from "./SearchToolbar.tsx";
 
 const drawerWidth = 240;
@@ -138,6 +139,11 @@ export default function DatalinksDrawer(props: Props) {
         navigate('/about');
     }
 
+    const categories = () => {
+        handleDrawerClose();
+        navigate('/categories');
+    }
+
     const drawer = (
         <div>
             <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
@@ -220,6 +226,15 @@ export default function DatalinksDrawer(props: Props) {
                             <ShuffleIcon />
                         </ListItemIcon>
                         <ListItemText primary={t("Random page")} />
+                    </ListItemButton>
+                </ListItem>
+                <Divider/>
+                <ListItem key='categories' disablePadding onClick={categories}>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <FolderIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("Categories")} />
                     </ListItemButton>
                 </ListItem>
                 <Divider/>

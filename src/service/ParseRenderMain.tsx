@@ -30,13 +30,14 @@ export const parseRenderMain = (content: string) : ReturnType<typeof domToReact>
                     return (<Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}<LinkIcon fontSize="small" /></Link>);
                 } else {
                     element.attribs.target = '_blank';
+                    element.attribs.rel = 'nofollow'
                 }
             }
 
             if (element.type == ElementType.Tag
                 && element.name.toLowerCase() == 'img'
                 && !element.attribs.parsed
-                && (element.parent as Element).name != 'a') {
+                && (element.parent as Element).name.toLowerCase() != 'a') {
                 if (element.attribs.src.toLowerCase().startsWith(import.meta.env.VITE_API.toLowerCase())) {
                     const upload = stripElementServer(element.attribs.src);
                     element.attribs.parsed = "true";

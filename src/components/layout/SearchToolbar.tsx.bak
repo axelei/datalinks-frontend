@@ -44,6 +44,9 @@ export default function SearchToolbar() {
 
     const chooseSearch = (_event: SyntheticEvent, value: string) => {
         if (value) {
+<<<<<<< HEAD
+            gotoOrSearch(value);
+=======
             query(value)
                 .then((data: Foundling[]) => {
                     if (data.length == 1) {
@@ -52,13 +55,27 @@ export default function SearchToolbar() {
                         navigate('/search/' + value);
                     }
                 });
+>>>>>>> a22be86db0feee3815872e6661eb997f1d8628cd
         }
     }
 
     const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
-            navigate('/search/' + searchTerm);
+            if (searchTerm) {
+                gotoOrSearch(searchTerm);
+            }
         }
+    }
+
+    const gotoOrSearch = (value: string) => {
+        query(value)
+            .then((data: Page[]) => {
+                if (data.length == 1) {
+                    navigate('/page/' + data[0].title);
+                } else {
+                    navigate('/search/' + value);
+                }
+            });
     }
 
     return (<>

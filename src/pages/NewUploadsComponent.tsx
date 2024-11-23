@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {ImageList, ImageListItem, ImageListItemBar, TablePagination, useMediaQuery} from '@mui/material';
+import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
 import {Link} from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function NewUploadsComponent() : ReactNode | null {
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
-    const isMobile = useMediaQuery('(max-width:600px)');
+    const [timesFit, setTimesFit] = useState(5);
 
 
     const dispatch = useDispatch();
@@ -54,10 +54,19 @@ export default function NewUploadsComponent() : ReactNode | null {
         });
     }
 
+    const calculateFit = ()=> {
+        const windowWidth = window.innerWidth;
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const fitInWidth = Math.floor((windowWidth - 200) / (150  * devicePixelRatio));
+        const fitAtLeastOne = Math.max(fitInWidth, 1);
+        setTimesFit(Math.min(fitAtLeastOne, 5))
+    }
+
     useEffect(() => {
         log("NewUploadsComponent useEffect");
 
         document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("New uploads");
+        calculateFit();
 
         searchEvent();
     }, [page, pageSize]);
@@ -65,7 +74,7 @@ export default function NewUploadsComponent() : ReactNode | null {
     return (
         <>
             <Typography variant="h2">{t("New uploads")}</Typography>
-            <ImageList cols={isMobile ? 1 : 5}>
+            <ImageList cols={timesFit}>
                 {uploads.map((item) => (
                     <Link to={'/upload/' + item.slug} key={item.slug}>
                         <ImageListItem key={item.slug}>
@@ -78,6 +87,7 @@ export default function NewUploadsComponent() : ReactNode | null {
                                 title={item.filename}
                                 subtitle={<span>{item.description}</span>}
                                 position="below"
+                                style={{whiteSpace: "normal", wordBreak: "break-word"}}
                             />
                         </ImageListItem>
                     </Link>
