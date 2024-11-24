@@ -19,7 +19,7 @@ export default function EditComponent(): ReactNode | null {
         const apiResponse = fetchEdit(editId);
         apiResponse.then(data => {
             setEdit({...data});
-            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.title + " " + t("edit");
+            document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.page?.title + " " + t("edit");
             window.scroll(0, 0);
         }).catch((error: Promise<string>) => {
             log("Edit fetch failed: " + error);
@@ -29,9 +29,9 @@ export default function EditComponent(): ReactNode | null {
 
     return (
         <>
-            <Typography variant="h2">{edit?.title + t(" from: ") + formatDate(edit?.date)}</Typography>
-            <Typography variant="h3">{t("By: ") + edit?.username}</Typography>
-            <PageContentComponent page={{title: edit?.title || "", content : edit?.content || ""}}/>
+            <Typography variant="h2">{edit?.page?.title + t(" from: ") + formatDate(edit?.date)}</Typography>
+            <Typography variant="h3">{t("By: ") + (edit?.user?.username || t("Nobody"))}</Typography>
+            <PageContentComponent page={{title: edit?.page?.title || "", content : edit?.content || ""}}/>
         </>
     )
 }

@@ -82,7 +82,7 @@ export default function CategoryPagesComponent() : ReactNode | null {
                                     <Link to={'/page/' + row.title}>{row.title}</Link>
                                 </TableCell>
                                 <TableCell align="right">{formatDate(row.creationDate)}</TableCell>
-                                <TableCell align="right"><Link to={'/user/' + row.creatorName}>{row.creatorName}</Link></TableCell>
+                                <TableCell align="right"><Link to={'/user/' + row.creator?.username}>{row.creator?.username}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

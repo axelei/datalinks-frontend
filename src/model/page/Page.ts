@@ -1,5 +1,6 @@
 import {Category} from "./Category.ts";
 import {UserLevel} from "../user/UserLevel.ts";
+import {User} from "../user/User.ts";
 
 export interface Page {
     title: string;
@@ -10,7 +11,7 @@ export interface Page {
     block?: UserLevel;
     creationDate?: Date;
     modifiedDate?: Date;
-    creatorName?: string;
+    creator? : User;
 }
 
 export const newPage = (title: string) : Page => {

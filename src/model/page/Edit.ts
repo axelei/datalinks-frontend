@@ -1,7 +1,10 @@
+import {User} from "../user/User.ts";
+import {Page} from "./Page.ts";
+
 export interface Edit {
     id: string;
-    title: string;
+    page?: Page;
     content: string;
     date: Date;
-    username?: string
+    user?: User;
 }

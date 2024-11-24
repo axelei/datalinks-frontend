@@ -101,7 +101,7 @@ export default function EditsComponent() : ReactNode | null {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    <Link to={'/user/' + row.username}>{row.username}</Link>
+                                    <Link to={'/user/' + row.user?.username}>{row.user?.username}</Link>
                                 </TableCell>
                                 <TableCell align="right"><Link to={"/edit/" + row.id}>{formatDate(row.date)}</Link></TableCell>
                                 <TableCell align="center">
