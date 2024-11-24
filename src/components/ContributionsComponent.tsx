@@ -65,7 +65,7 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row" style={{whiteSpace: "normal", wordBreak: "break-word"}}>
-                                    <Link to={'/page/' + row.title}>{row.title}</Link>
+                                    <Link to={'/page/' + row.page?.title}>{row.page?.title}</Link>
                                 </TableCell>
                                 <TableCell align="right"><Link to={'/edit/' + row.id}>{formatDate(row.date)}</Link></TableCell>
                             </TableRow>
