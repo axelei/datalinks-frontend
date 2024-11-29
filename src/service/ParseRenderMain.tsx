@@ -2,7 +2,7 @@ import parse, {DOMNode, domToReact, HTMLReactParserOptions} from 'html-react-par
 import type {Element} from 'domhandler';
 import {ElementType} from "domelementtype";
 import {Link} from "react-router-dom";
-
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
 
 export const parseRenderMain = (content: string) : ReturnType<typeof domToReact> => {
 
@@ -28,10 +28,8 @@ export const parseRenderMain = (content: string) : ReturnType<typeof domToReact>
                     const page = stripElement(element.attribs.href);
                     return (<Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}</Link>);
                 } else {
-                    element.attribs.target = '_blank';
-                    element.attribs.rel = 'nofollow';
-                    (element.children[0] as unknown as Text).data = (element.children[0] as unknown as Text).data + ' ';
-                    return domToReact(element.childNodes as DOMNode[], options);
+                    const text = (element.children[0] as unknown as Text).data;
+                    return (<><a href={element.attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /></a></>);
                 }
             }
 
