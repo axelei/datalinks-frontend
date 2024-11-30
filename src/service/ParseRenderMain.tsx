@@ -3,8 +3,10 @@ import type {Element} from 'domhandler';
 import {ElementType} from "domelementtype";
 import {Link} from "react-router-dom";
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import {Tooltip} from "@mui/material";
+import {SyntheticEvent} from "react";
 
-export const parseRenderMain = (content: string) : ReturnType<typeof domToReact> => {
+export const parseRenderMain = (content: string, tooltipContent : string, handleTooltipOpen: (event: SyntheticEvent) => void) : ReturnType<typeof domToReact> => {
 
     const stripElement = (element: string) => {
         return element.substring(element.lastIndexOf(import.meta.env.VITE_SITE_URL) + import.meta.env.VITE_SITE_URL.length + 1);
@@ -26,7 +28,7 @@ export const parseRenderMain = (content: string) : ReturnType<typeof domToReact>
                 && element.name.toLowerCase() == 'a') {
                 if (element.attribs.href.toLowerCase().startsWith(import.meta.env.VITE_SITE_URL.toLowerCase())) {
                     const page = stripElement(element.attribs.href);
-                    return (<Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}</Link>);
+                    return (<Tooltip title={tooltipContent} arrow onOpen={handleTooltipOpen}><Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}</Link></Tooltip>);
                 } else {
                     const text = (element.children[0] as unknown as Text).data;
                     return (<><a href={element.attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /></a></>);
