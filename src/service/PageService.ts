@@ -1,9 +1,15 @@
 import {Page} from "../model/page/Page.ts";
 import {log} from "./Common.ts";
 
-export const fetchPageShort = async (title: string): Promise<Page> => {
+export const fetchPageShort = async (title: string, token: string) : Promise<Page> => {
     log("Fetching pageshort: " + title);
-    const data = await fetch(import.meta.env.VITE_API + '/page/-short/' + title);
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+        },
+    };
+    const data = await fetch(import.meta.env.VITE_API + '/page/-short/' + title, requestOptions);
     if (data.ok) {
         return data.json();
     } else {
@@ -11,9 +17,15 @@ export const fetchPageShort = async (title: string): Promise<Page> => {
     }
 }
 
-export const fetchPage = async (title: string): Promise<Page> => {
+export const fetchPage = async (title: string, token : string): Promise<Page> => {
     log("Fetching page: " + title);
-    const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+        },
+    }
+    const data = await fetch(import.meta.env.VITE_API + '/page/' + title, requestOptions);
     if (data.ok) {
         return data.json();
     } else {

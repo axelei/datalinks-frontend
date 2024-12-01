@@ -101,7 +101,7 @@ export default function PageComponent(): ReactNode | null {
 
         document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + decodeURIComponent(currentTitle);
 
-        const apiResponse = fetchPage(currentTitle);
+        const apiResponse = fetchPage(currentTitle, loggedUser.token);
         apiResponse.then(data => {
             setPage({...data});
             setPageTemp({...data});
@@ -112,12 +112,14 @@ export default function PageComponent(): ReactNode | null {
                 const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
                 setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
                 setPage(newPage(decodeURIComponent(currentTitle)));
+            } else if (error == "403") {
+                setCanEdit(false);
             } else {
                 dispatch(showError());
             }
         });
 
-    }, [location.pathname]);
+    }, [location.pathname, loggedUser]);
 
     useEffect(() => {
         log("PageComponent user useeffect");
@@ -127,8 +129,8 @@ export default function PageComponent(): ReactNode | null {
 
     const setBlocks = (): void => {
         let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-        if (page.block) {
-            blockLevel = Math.max(blockLevel, page.block);
+        if (page.editBlock) {
+            blockLevel = Math.max(blockLevel, parseInt(UserLevel[page.editBlock]));
         }
         const deleteLevel = UserLevel[config.value['DELETE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
         setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
@@ -165,7 +167,7 @@ export default function PageComponent(): ReactNode | null {
                 {mode === PageMode.read && (
                     <>
                     <Tooltip title={t("Edits")} placement="left">
-                        <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
+                        <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent} disabled={!page.slug}>
                             <EditNoteIcon/>
                         </Fab></Typography>
                     </Tooltip>

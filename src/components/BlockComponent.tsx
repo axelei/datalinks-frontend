@@ -53,11 +53,11 @@ export default function BlockComponent(props : Props): ReactNode | null {
                     onChange={(event) => setReadLevel(event.target.value)}
                     label={t("Read block")}
                 >
-                    <MenuItem value="">&nbsp;</MenuItem>
+                    <MenuItem value="" key="">&nbsp;</MenuItem>
                     {Object.values(UserLevel)
                         .filter(value => typeof value === 'number')
                         .map((level) => (
-                        <MenuItem value={level}>{UserLevel[level]}</MenuItem>
+                        <MenuItem value={level} key={level}>{UserLevel[level]}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
@@ -69,11 +69,11 @@ export default function BlockComponent(props : Props): ReactNode | null {
                     onChange={(event) => setWriteLevel(event.target.value)}
                     label={t("Edit block")}
                 >
-                    <MenuItem value="">&nbsp;</MenuItem>
+                    <MenuItem value="" key="">&nbsp;</MenuItem>
                     {Object.values(UserLevel)
                         .filter(value => typeof value === 'number')
                         .map((level) => (
-                            <MenuItem value={level}>{UserLevel[level]}</MenuItem>
+                            <MenuItem value={level} key={level}>{UserLevel[level]}</MenuItem>
                         ))}
                 </Select>
             </FormControl>

@@ -8,6 +8,7 @@ import {Page} from "../model/page/Page.ts";
 import {Chip, Stack} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {fetchPageShort} from "../service/PageService.ts";
+import {useAppSelector} from "../hooks.ts";
 
 
 interface Props {
@@ -18,10 +19,12 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
 
     const [dynamicTooltipContent, setDynamicTooltipContent] = useState(t("Loading..."));
 
+    const loggedUser = useAppSelector((state) => state.loggedUser);
+
     const handleTooltipOpen = (event: SyntheticEvent) : void => {
         const target = event.target as HTMLAnchorElement;
         const page = target.href.substring(target.href.lastIndexOf('/') + 1);
-        fetchPageShort(page).then((data: Page) => {
+        fetchPageShort(page, loggedUser.token).then((data: Page) => {
             setDynamicTooltipContent(data.summary || "");
         }).catch(() => {
             target.style.color = "red";
