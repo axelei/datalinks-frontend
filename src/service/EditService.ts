@@ -10,3 +10,13 @@ export const fetchEdit = async (edit: string): Promise<Edit> => {
         return Promise.reject(data.text());
     }
 }
+
+export const fetchEdits = async (username : string, page : number, pageSize : number) : Promise<Edit[]> => {
+    log("Fetching edits: ");
+    const data = await fetch(import.meta.env.VITE_API + '/page/-contributions/' + username + "?page=" + page + "&pageSize=" + pageSize);
+    if (data.ok) {
+        return data.json();
+    } else {
+        return Promise.reject(data.text());
+    }
+}

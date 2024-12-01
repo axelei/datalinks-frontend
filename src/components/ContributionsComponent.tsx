@@ -6,6 +6,7 @@ import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagi
 import {User} from "../model/user/User.ts";
 import {Link} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
+import {fetchEdits} from "../service/EditService.ts";
 
 interface Props {
     user : User;
@@ -18,20 +19,10 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
 
-    const fetchEdits = async () : Promise<Edit[]> => {
-        log("Fetching edits: ");
-        const data = await fetch(import.meta.env.VITE_API + '/page/-contributions/' + props.user.username + "?page=" + page + "&pageSize=" + pageSize);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
     useEffect(() => {
         log("ContributionsComponent useEffect");
 
-        fetchEdits().then((data : Edit[]) => {
+        fetchEdits(props.user.username, page, pageSize).then((data : Edit[]) => {
             setEdits(data);
         }).catch(() => {
             setEdits([]);

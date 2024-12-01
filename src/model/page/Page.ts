@@ -8,7 +8,8 @@ export interface Page {
     summary?: string;
     slug?: string;
     categories?: Category[];
-    block?: UserLevel;
+    editBlock?: UserLevel;
+    readBlock?: UserLevel;
     creationDate?: Date;
     modifiedDate?: Date;
     creator? : User;

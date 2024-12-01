@@ -18,6 +18,9 @@ import {t} from "i18next";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import {showError} from "../redux/showErrorSlice.ts";
 import {Category} from "../model/page/Category.ts";
+import {blockPage, deletePage, fetchPage, savePage} from "../service/PageService.ts";
+import BlockIcon from '@mui/icons-material/Block';
+import BlockComponent from "../components/BlockComponent.tsx";
 
 export default function PageComponent(): ReactNode | null {
 
@@ -27,44 +30,6 @@ export default function PageComponent(): ReactNode | null {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const fetchPage = async (title: string): Promise<Page> => {
-        log("Fetching page: " + title);
-        const data = await fetch(import.meta.env.VITE_API + '/page/' + title);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.status);
-        }
-    }
-
-    const savePage = async (): Promise<object> => {
-        log("Saving page: " + pageTemp.title);
-        const requestOptions = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'text/plain',
-                'Authorization': 'Bearer ' + loggedUser.token,
-            },
-            body: JSON.stringify({
-                content: pageTemp.content,
-                categories: pageTemp.categories,
-            }),
-        };
-        return await fetch(import.meta.env.VITE_API + '/page/' + pageTemp.title, requestOptions);
-    }
-
-    const deletePage = async (): Promise<object> => {
-        log("Deleting page: " + page.title);
-        const requestOptions = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'text/plain',
-                'Authorization': 'Bearer ' + loggedUser.token,
-            },
-        };
-        return await fetch(import.meta.env.VITE_API + '/page/' + page.title, requestOptions);
-    }
-
     const editPageEvent = (): void => {
         setMode(PageMode.edit);
         setPageTemp({...page});
@@ -72,7 +37,7 @@ export default function PageComponent(): ReactNode | null {
 
     const savePageEvent = (): void => {
         dispatch(loadingOn());
-        const saveResult = savePage();
+        const saveResult = savePage(pageTemp, loggedUser.token);
         saveResult.then(() => {
             setMode(PageMode.read);
             setPage({...pageTemp});
@@ -86,7 +51,7 @@ export default function PageComponent(): ReactNode | null {
 
     const deletePageEvent = (): void => {
         dispatch(loadingOn());
-        const deleteResult = deletePage();
+        const deleteResult = deletePage(page, loggedUser.token);
         deleteResult.then(() => {
             navigate('/');
         }).catch((error) => {
@@ -110,6 +75,10 @@ export default function PageComponent(): ReactNode | null {
         navigate('/edits/' + page.title);
     }
 
+    const blockEvent = () : void => {
+        setBlockOpen(true);
+    }
+
     const setCategories = (categories: Category[]) => {
         setPageTemp({...pageTemp, categories: categories});
     }
@@ -119,6 +88,8 @@ export default function PageComponent(): ReactNode | null {
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
     const [canEdit, setCanEdit] = useState<boolean>(false);
     const [canDelete, setCanDelete] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [blockOpen, setBlockOpen] = useState<boolean>(false);
 
     useEffect(() => {
         log("PageComponent page useEffect");
@@ -150,6 +121,7 @@ export default function PageComponent(): ReactNode | null {
 
     useEffect(() => {
         log("PageComponent user useeffect");
+        setIsAdmin(UserLevel[loggedUser.user.level].toString() == UserLevel.ADMIN.toString());
         setBlocks();
     }, [loggedUser, page]);
 
@@ -163,6 +135,24 @@ export default function PageComponent(): ReactNode | null {
         setCanDelete(parseInt(UserLevel[loggedUser.user.level]) >= deleteLevel);
     }
 
+    const handleBlockClose = () => {
+        setBlockOpen(false);
+    }
+
+    const handleBlockAccept = (readLevel : string, writeLevel : string) => {
+        dispatch(loadingOn());
+        blockPage(page, readLevel, writeLevel, loggedUser.token)
+            .then(() => {
+                setBlockOpen(false);
+            }).catch((error) => {
+                log("Error while blocking page: " + error);
+                dispatch(showError());
+            }).finally(() => {
+                dispatch(loadingOff());
+            });
+    }
+
+
     return (
         <>
             <EditButtons editPageEvent={editPageEvent}
@@ -173,16 +163,24 @@ export default function PageComponent(): ReactNode | null {
                          canDelete={canDelete}
                          handleConfirmDelete={deletePageEvent}>
                 {mode === PageMode.read && (
-                <Tooltip title={t("Edits")} placement="left">
-                    <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
-                        <EditNoteIcon/>
-                    </Fab></Typography>
-                </Tooltip>
+                    <>
+                    <Tooltip title={t("Edits")} placement="left">
+                        <Typography><Fab color="info" aria-label={t("Edits")} onClick={editsEvent}>
+                            <EditNoteIcon/>
+                        </Fab></Typography>
+                    </Tooltip>
+                    <Tooltip title={t("Block")} placement="left">
+                        <Typography><Fab color="warning" aria-label={t("Block")} onClick={blockEvent} disabled={!isAdmin}>
+                            <BlockIcon/>
+                        </Fab></Typography>
+                    </Tooltip>
+                    </>
                 )}
             </EditButtons>
             <Typography variant="h2">{page.title}</Typography>
             {mode === PageMode.read && (
                 <>
+                    <BlockComponent open={blockOpen} onClose={handleBlockClose} handleAccept={handleBlockAccept} page={page} />
                     <PageContentComponent page={page}/>
                 </>
             )}
