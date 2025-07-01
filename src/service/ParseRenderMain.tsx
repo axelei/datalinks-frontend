@@ -28,10 +28,10 @@ export const parseRenderMain = (content: string, tooltipContent : string, handle
                 && element.name.toLowerCase() == 'a') {
                 if (element.attribs.href.toLowerCase().startsWith(import.meta.env.VITE_SITE_URL.toLowerCase())) {
                     const page = stripElement(element.attribs.href);
-                    return (<Tooltip title={tooltipContent} arrow onOpen={handleTooltipOpen}><Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)}</Link></Tooltip>);
+                    return (<Tooltip title={tooltipContent} arrow onOpen={handleTooltipOpen}><Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)} </Link></Tooltip>);
                 } else {
                     const text = (element.children[0] as unknown as Text).data;
-                    return (<><a href={element.attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /></a></>);
+                    return (<><a href={element.attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /> </a></>);
                 }
             }
 

@@ -28,7 +28,7 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
             setDynamicTooltipContent(data.summary || "");
         }).catch(() => {
             target.style.color = "red";
-            setDynamicTooltipContent(t("Error loading page"));
+            setDynamicTooltipContent("");
         });
     }
 
