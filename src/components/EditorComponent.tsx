@@ -136,6 +136,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
             <CKEditor
                 editor={ClassicEditor}
                 config={{
+                    licenseKey: 'GPL',
                     toolbar: {
                         items: [
                             'undo', 'redo', 'showBlocks', '|',
