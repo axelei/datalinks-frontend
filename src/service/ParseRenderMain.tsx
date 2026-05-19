@@ -1,6 +1,4 @@
 import parse, {DOMNode, domToReact, HTMLReactParserOptions} from 'html-react-parser';
-import type {Element} from 'domhandler';
-import {ElementType} from "domelementtype";
 import {Link} from "react-router-dom";
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import {Tooltip} from "@mui/material";
@@ -23,26 +21,35 @@ export const parseRenderMain = (content: string, tooltipContent : string, handle
     const options: HTMLReactParserOptions = {
         trim: true,
         replace: (element : DOMNode) => {
+            // Use runtime checks to avoid type-specific imports
+            const node: any = element as any;
+            if (!node || node.type !== 'tag') return;
 
-            if (element.type == ElementType.Tag
-                && element.name.toLowerCase() == 'a') {
-                if (element.attribs.href.toLowerCase().startsWith(import.meta.env.VITE_SITE_URL.toLowerCase())) {
-                    const page = stripElement(element.attribs.href);
-                    return (<Tooltip title={tooltipContent} arrow onOpen={handleTooltipOpen}><Link to={'/' + page}>{domToReact(element.childNodes as DOMNode[], options)} </Link></Tooltip>);
+            const name = typeof node.name === 'string' ? node.name : '';
+            const attribs = node.attribs ?? {};
+            const parentName = node.parent && typeof node.parent.name === 'string' ? node.parent.name : '';
+
+            const siteUrl = (import.meta.env.VITE_SITE_URL ?? '').toString();
+            const apiUrl = (import.meta.env.VITE_API ?? '').toString();
+
+            if (name.toLowerCase() === 'a') {
+                const href = (attribs.href ?? '');
+                if (href.toLowerCase().startsWith(siteUrl.toLowerCase())) {
+                    const page = stripElement(href);
+                    const children = node.children ?? node.childNodes ?? [];
+                    return (<Tooltip title={tooltipContent} arrow onOpen={handleTooltipOpen}><Link to={'/' + page}>{domToReact(children as DOMNode[], options)} </Link></Tooltip>);
                 } else {
-                    const text = (element.children[0] as unknown as Text).data;
-                    return (<><a href={element.attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /> </a></>);
+                    const text = (node.children && node.children[0] && (node.children[0] as any).data) ? (node.children[0] as any).data : (attribs.href ?? '');
+                    return (<><a href={attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /> </a></>);
                 }
             }
 
-            if (element.type == ElementType.Tag
-                && element.name.toLowerCase() == 'img'
-                && !element.attribs.parsed
-                && (element.parent as Element).name.toLowerCase() != 'a') {
-                if (element.attribs.src.toLowerCase().startsWith(import.meta.env.VITE_API.toLowerCase())) {
-                    const upload = stripElementServer(element.attribs.src);
-                    element.attribs.parsed = "true";
-                    return (<Link to={'/upload/' + afterSlash(upload)}>{domToReact([element] as DOMNode[], options)}</Link>);
+            if (name.toLowerCase() === 'img' && !attribs.parsed && parentName.toLowerCase() !== 'a') {
+                const src = (attribs.src ?? '');
+                if (src.toLowerCase().startsWith(apiUrl.toLowerCase())) {
+                    const upload = stripElementServer(src);
+                    (attribs as any).parsed = "true";
+                    return (<Link to={'/upload/' + afterSlash(upload)}>{domToReact([node] as DOMNode[], options)}</Link>);
                 }
             }
         }
