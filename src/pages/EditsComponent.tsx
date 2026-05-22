@@ -85,7 +85,7 @@ export default function EditsComponent() : ReactNode | null {
         <>
             <Typography variant="h2">{t("Edits for: ") + currentTitle}</Typography>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table sx={{ minWidth: 650 }} size="small" aria-label={t("a dense table")}>
                     <TableHead>
                         <TableRow>
                             <TableCell>{t("Username")}</TableCell>

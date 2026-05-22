@@ -284,7 +284,7 @@ export default function DatalinksDrawer(props: Props) {
                 <Toolbar>
                     <IconButton
                         color="inherit"
-                        aria-label="open drawer"
+                        aria-label={t("open drawer")}
                         edge="start"
                         onClick={handleDrawerToggle}
                         sx={{ mr: 2, display: { sm: 'none' } }}
@@ -299,7 +299,7 @@ export default function DatalinksDrawer(props: Props) {
             <Box
                 component="nav"
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-                aria-label="mailbox folders"
+                aria-label={t("mailbox folders")}
             >
                 <Drawer
                     container={container}

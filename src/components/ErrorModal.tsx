@@ -29,7 +29,7 @@ export default function ErrorModal(props: { show: boolean; message?: string }) :
                     <Typography>
                         {message}
                     </Typography>
-                    <Button onClick={() => dispatch(hideError())}>OK</Button>
+                    <Button onClick={() => dispatch(hideError())}>{t("OK")}</Button>
                 </Box>
             </Modal>
         </>

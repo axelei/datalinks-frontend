@@ -90,7 +90,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
           <Typography variant="h3">{t("Log in")}</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth>
-              <TextField label="Username" variant="outlined"
+              <TextField label={t("Username")} variant="outlined"
                          {...register("username", {required: true})}
                          helperText={errors.username && t("Username is required")}
                          error={!!errors.username}
@@ -98,7 +98,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
             </FormControl>
 
             <FormControl fullWidth>
-              <TextField label="Password" variant="outlined" type="password"
+              <TextField label={t("Password")} variant="outlined" type="password"
                          {...register("password", {required: true})}
                          helperText={errors.password && t("Password is required")}
                          error={!!errors.password}

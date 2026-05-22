@@ -113,5 +113,13 @@
 	"Server error, please try again later.": "Server error, please try again later.",
 	"The uploaded file is too large. Please upload a smaller file.": "The uploaded file is too large. Please upload a smaller file.",
 	"The requested resource was not found.": "The requested resource was not found.",
-	"You don't have permission to perform this action.": "You don't have permission to perform this action."
+	"You don't have permission to perform this action.": "You don't have permission to perform this action.",
+	"Create a new page": "Create a new page",
+	"Page name": "Page name",
+	"Enter page title": "Enter page title",
+	"Create": "Create",
+	"Datalinks": "Datalinks",
+	"open drawer": "open drawer",
+	"mailbox folders": "mailbox folders",
+	"a dense table": "a dense table"
 }

@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from 'react';
+import {ReactNode, useEffect, useRef, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
@@ -13,6 +13,7 @@ import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
 import EditButtons from "../components/EditButtons.tsx";
+import CreatePageFloatingButton from "../components/CreatePageFloatingButton.tsx";
 import {Fab, Tooltip} from "@mui/material";
 import {t} from "i18next";
 import EditNoteIcon from '@mui/icons-material/EditNote';
@@ -88,11 +89,15 @@ export default function PageComponent(): ReactNode | null {
     const [pageTemp, setPageTemp] = useState<Page>(newPage(''));
     const [canEdit, setCanEdit] = useState<boolean>(false);
     const [canDelete, setCanDelete] = useState<boolean>(false);
+    const [canCreate, setCanCreate] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [blockOpen, setBlockOpen] = useState<boolean>(false);
+    const consumedEditMode = useRef(false);
 
     useEffect(() => {
         log("PageComponent page useEffect");
+        const state = location.state as { openInEditMode?: boolean } | null;
+
         let currentTitle = location.pathname.split('/')[2];
         if (!currentTitle) {
             currentTitle = import.meta.env.VITE_SITE_INDEX;
@@ -106,12 +111,23 @@ export default function PageComponent(): ReactNode | null {
             setPage({...data});
             setPageTemp({...data});
             setMode(PageMode.read);
+            if (state?.openInEditMode && !consumedEditMode.current) {
+                consumedEditMode.current = true;
+                setMode(PageMode.edit);
+            }
             window.scroll(0, 0);
         }).catch((error: string) => {
             if (error == "404") {
                 const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-                setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-                setPage(newPage(decodeURIComponent(currentTitle)));
+                const userCanEdit = parseInt(UserLevel[loggedUser.user.level]) >= blockLevel;
+                setCanEdit(userCanEdit);
+                const newPg = newPage(decodeURIComponent(currentTitle));
+                setPage(newPg);
+                if (state?.openInEditMode && userCanEdit && !consumedEditMode.current) {
+                    consumedEditMode.current = true;
+                    setPageTemp({...newPg});
+                    setMode(PageMode.edit);
+                }
             } else if (error == "403") {
                 setCanEdit(false);
             } else {
@@ -135,6 +151,8 @@ export default function PageComponent(): ReactNode | null {
         const deleteLevel = UserLevel[config.value['DELETE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
         setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
         setCanDelete(parseInt(UserLevel[loggedUser.user.level]) >= deleteLevel);
+        const createLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
+        setCanCreate(parseInt(UserLevel[loggedUser.user.level]) >= createLevel);
     }
 
     const handleBlockClose = () => {
@@ -176,6 +194,7 @@ export default function PageComponent(): ReactNode | null {
                             <BlockIcon/>
                         </Fab></Typography>
                     </Tooltip>
+                    {canCreate && <CreatePageFloatingButton />}
                     </>
                 )}
             </EditButtons>
