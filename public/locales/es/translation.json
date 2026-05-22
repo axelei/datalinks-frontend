@@ -67,6 +67,8 @@
   "Password confirmation is required": "La confirmación de la contraseña es obligatoria",
   "By:": "Por:",
   "About": "Acerca de",
+  "Bad request. Please check your input.": "Solicitud incorrecta. Por favor, comprueba tus datos.",
+  "Conflict: the resource already exists or is in an invalid state.": "Conflicto: el recurso ya existe o está en un estado inválido.",
   "Name seems not correct": "El nombre no parece correcto",
   "Password has been successfully reset. Check your email for details.": "La contraseña ha sido restablecida con éxito. Revisa tu correo para más detalles.",
   "Save": "Guardar",
@@ -106,5 +108,10 @@
   "No recent changes found.": "No se encontraron cambios recientes.",
   "No contributions found.": "No se encontraron contribuciones.",
   "No new pages found.": "No se encontraron páginas nuevas.",
-  "No new uploads found.": "No se encontraron subidas nuevas."
+  "No new uploads found.": "No se encontraron subidas nuevas.",
+  "Network error, please try again.": "Error de red, por favor inténtalo de nuevo.",
+  "Server error, please try again later.": "Error del servidor, por favor inténtalo más tarde.",
+  "The uploaded file is too large. Please upload a smaller file.": "El archivo subido es demasiado grande. Por favor, sube un archivo más pequeño.",
+  "The requested resource was not found.": "El recurso solicitado no fue encontrado.",
+  "You don't have permission to perform this action.": "No tienes permiso para realizar esta acción."
 }

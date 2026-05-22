@@ -7,7 +7,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {log} from "../service/Common.ts";
+import {getErrorMessage, log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import {newUpload, Upload} from "../model/upload/Upload.ts";
 import {TextareaAutosize} from "@mui/material";
@@ -65,7 +65,7 @@ export default function UploadComponent(): ReactNode | null {
             setUpload({...uploadTemp});
         }).catch((error) => {
             log("Error while saving upload: " + error);
-            dispatch(showError());
+            dispatch(showError(getErrorMessage(t, error)));
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -78,7 +78,7 @@ export default function UploadComponent(): ReactNode | null {
             navigate('/');
         }).catch((error) => {
             log("Error while deleting upload: " + error);
-            dispatch(showError());
+            dispatch(showError(getErrorMessage(t, error)));
         }).finally(() => {
             dispatch(loadingOff());
         });

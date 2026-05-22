@@ -67,6 +67,8 @@
 	"Password confirmation is required": "Password confirmation is required",
 	"By:": "By:",
 	"About": "About",
+	"Bad request. Please check your input.": "Bad request. Please check your input.",
+	"Conflict: the resource already exists or is in an invalid state.": "Conflict: the resource already exists or is in an invalid state.",
 	"Name seems not correct": "Name seems not correct",
 	"Password has been successfully reset. Check your email for details.": "Password has been successfully reset. Check your email for details.",
 	"Save": "Save",
@@ -106,5 +108,10 @@
 	"No recent changes found.": "No recent changes found.",
 	"No contributions found.": "No contributions found.",
 	"No new pages found.": "No new pages found.",
-	"No new uploads found.": "No new uploads found."
+	"No new uploads found.": "No new uploads found.",
+	"Network error, please try again.": "Network error, please try again.",
+	"Server error, please try again later.": "Server error, please try again later.",
+	"The uploaded file is too large. Please upload a smaller file.": "The uploaded file is too large. Please upload a smaller file.",
+	"The requested resource was not found.": "The requested resource was not found.",
+	"You don't have permission to perform this action.": "You don't have permission to perform this action."
 }

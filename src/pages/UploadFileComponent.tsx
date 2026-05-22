@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import {Box, CircularProgress, Input, TextareaAutosize} from "@mui/material";
 import {t} from "i18next";
 import Button from "@mui/material/Button";
-import {log} from "../service/Common.ts";
+import {getErrorMessage, log} from "../service/Common.ts";
 import {showError} from "../redux/showErrorSlice.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 
@@ -74,11 +74,11 @@ export default function UploadFileComponent(): ReactNode | null {
                 if (!result.status) {
                     navigate('/upload/' + file.name);
                 } else {
-                    dispatch(showError());
+                    dispatch(showError(getErrorMessage(t, response.status)));
                 }
             } catch (error) {
                 log("Error uploading file: " + error);
-                dispatch(showError());
+                dispatch(showError(t("Network error, please try again.")));
             } finally {
                 setIsUploading(false);
             }

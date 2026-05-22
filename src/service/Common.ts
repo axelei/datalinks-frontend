@@ -84,6 +84,17 @@ export const formatDate = (date: Date | string | undefined) : string => {
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()  + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 }
 
+export const getErrorMessage = (t: (key: string) => string, error: unknown): string => {
+    const status = Number(error);
+    if (status === 400) return t("Bad request. Please check your input.");
+    if (status === 403) return t("You don't have permission to perform this action.");
+    if (status === 404) return t("The requested resource was not found.");
+    if (status === 409) return t("Conflict: the resource already exists or is in an invalid state.");
+    if (status === 413) return t("The uploaded file is too large. Please upload a smaller file.");
+    if (status === 500) return t("Server error, please try again later.");
+    return t("Either the server failed to process the request or you don't have permissions to perform the requested action.");
+}
+
 export const insertPageJumps = (html: string) : string => {
     return html.replace(/<\/p>/g, "</p>\n\n").replace(/<\/figure>/g, "</p>\n\n");
 }

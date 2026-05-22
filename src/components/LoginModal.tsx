@@ -7,6 +7,7 @@ import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import "../css/LoginModal.css";
+import {getErrorMessage} from "../service/Common.ts";
 import {showError} from "../redux/showErrorSlice.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
@@ -69,7 +70,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
       if (error == 404) {
         setValidationError(t("Username or password incorrect, or the username does not exist"));
       } else {
-        dispatch(showError());
+        dispatch(showError(getErrorMessage(t, error)));
       }
     }).finally(() => {
       dispatch(loadingOff());

@@ -29,6 +29,7 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
 
     const loading = useAppSelector((state) => state.loading.value);
     const showError = useAppSelector((state) => state.showError.value);
+    const errorMessage = useAppSelector((state) => state.showError.message);
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const dispatch = useDispatch();
     const [cookies, _setcookies, removeCookie] = useCookies(['loginToken']);
@@ -70,7 +71,7 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
     }, [cookies.loginToken, dispatch, loggedUser.token, removeCookie, loadConfig]);
 
     return (<>
-            <ErrorModal show={showError} />
+            <ErrorModal show={showError} message={errorMessage} />
             <LoadingModal loading={loading} />
             <DatalinksDrawer>
                 <Body>

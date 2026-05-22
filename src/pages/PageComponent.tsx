@@ -7,7 +7,7 @@ import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {useAppSelector} from "../hooks.ts";
 import Typography from "@mui/material/Typography";
-import {log} from "../service/Common.ts";
+import {getErrorMessage, log} from "../service/Common.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import PageContentComponent from "../components/PageContentComponent.tsx";
 import EditorComponent from "../components/EditorComponent.tsx";
@@ -43,7 +43,7 @@ export default function PageComponent(): ReactNode | null {
             setPage({...pageTemp});
         }).catch((error) => {
             log("Error while saving page: " + error);
-            dispatch(showError());
+            dispatch(showError(getErrorMessage(t, error)));
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -56,7 +56,7 @@ export default function PageComponent(): ReactNode | null {
             navigate('/');
         }).catch((error) => {
             log("Error while deleting page: " + error);
-            dispatch(showError());
+            dispatch(showError(getErrorMessage(t, error)));
         }).finally(() => {
             dispatch(loadingOff());
         });
@@ -115,7 +115,7 @@ export default function PageComponent(): ReactNode | null {
             } else if (error == "403") {
                 setCanEdit(false);
             } else {
-                dispatch(showError());
+                dispatch(showError(getErrorMessage(t, error)));
             }
         });
 
@@ -148,7 +148,7 @@ export default function PageComponent(): ReactNode | null {
                 setBlockOpen(false);
             }).catch((error) => {
                 log("Error while blocking page: " + error);
-                dispatch(showError());
+                dispatch(showError(getErrorMessage(t, error)));
             }).finally(() => {
                 dispatch(loadingOff());
             });

@@ -8,10 +8,13 @@ import {hideError} from "../redux/showErrorSlice.ts";
 import ErrorIcon from '@mui/icons-material/Error';
 import {useTranslation} from "react-i18next";
 
-export default function ErrorModal(props: { show: boolean }) : ReactNode | null {
+const DEFAULT_MESSAGE = "Either the server failed to process the request or you don't have permissions to perform the requested action.";
+
+export default function ErrorModal(props: { show: boolean; message?: string }) : ReactNode | null {
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const message = props.message || t(DEFAULT_MESSAGE);
 
     return (
         <>
@@ -24,7 +27,7 @@ export default function ErrorModal(props: { show: boolean }) : ReactNode | null 
                     <ErrorIcon />
                     <Typography variant="h2">{t("Something went wrong...")}</Typography>
                     <Typography>
-                        {t("Either the server failed to process the request or you don't have permissions to perform the requested action.")}
+                        {message}
                     </Typography>
                     <Button onClick={() => dispatch(hideError())}>OK</Button>
                 </Box>
