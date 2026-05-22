@@ -1,3 +1,33 @@
+interface ApiOptions {
+    method?: string;
+    body?: unknown;
+    token?: string;
+    contentType?: string;
+}
+
+export async function api<T>(path: string, options: ApiOptions = {}): Promise<T> {
+    const headers: Record<string, string> = {};
+    if (options.token) {
+        headers['Authorization'] = 'Bearer ' + options.token;
+    }
+    if (options.contentType) {
+        headers['Content-Type'] = options.contentType;
+    }
+    const fetchOptions: RequestInit = { method: options.method ?? 'GET', headers };
+    if (options.body !== undefined) {
+        fetchOptions.body = options.body as BodyInit;
+    }
+    const url = import.meta.env.VITE_API + path;
+    const data = await fetch(url, fetchOptions);
+    if (data.ok) {
+        const text = await data.text();
+        if (!text) return undefined as T;
+        try { return JSON.parse(text) as T; } catch { return text as T; }
+    } else {
+        return Promise.reject(data.status);
+    }
+}
+
 type DeepClone<T> = T extends object ? { [K in keyof T]: DeepClone<T[K]> } : T;
 export function clone<T>(obj: T): DeepClone<T> {
     return JSON.parse(JSON.stringify(obj));
@@ -16,7 +46,7 @@ export const modalStyle = {
 };
 
 export const log = (message : string | null | undefined) => {
-    if (import.meta.env.MODE === 'development' || import.meta.env.VITE_IS_DEV) {
+    if (import.meta.env.DEV) {
         const date = new Date();
         console.log(date + ' ' + message);
     }
@@ -57,3 +87,14 @@ export const formatDate = (date: Date | string | undefined) : string => {
 export const insertPageJumps = (html: string) : string => {
     return html.replace(/<\/p>/g, "</p>\n\n").replace(/<\/figure>/g, "</p>\n\n");
 }
+
+const isSecureEnv = (): boolean => {
+    return import.meta.env.MODE === 'production' || import.meta.env.VITE_IS_SECURE === 'true';
+}
+
+export const cookieOptions = {
+    path: '/',
+    sameSite: 'strict' as const,
+    secure: isSecureEnv(),
+    maxAge: 60 * 60 * 24 * 30,
+};

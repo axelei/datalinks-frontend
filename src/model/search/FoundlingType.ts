@@ -5,7 +5,7 @@ export enum FoundlingType {
     user = "USER",
 }
 
-export const getFoundlingPath = (foundlingType : FoundlingType)=> {
+export const getFoundlingPath = (foundlingType : FoundlingType): string => {
     switch (foundlingType) {
         case FoundlingType.page:
             return "/page/";

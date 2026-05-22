@@ -133,6 +133,9 @@ export default function EditsComponent() : ReactNode | null {
                         </TableRow>
                     </TableBody>
                 </Table>
+                {edits.length === 0 && (
+                    <Typography sx={{ p: 2 }}>{t("No edits found.")}</Typography>
+                )}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50, 100]}
                     component="div"

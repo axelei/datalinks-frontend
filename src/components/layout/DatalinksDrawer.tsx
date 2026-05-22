@@ -25,6 +25,7 @@ import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
 import {newUser} from "../../model/user/User.ts";
 import {useDispatch} from "react-redux";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import {cookieOptions} from "../../service/Common.ts";
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -79,7 +80,7 @@ export default function DatalinksDrawer(props: Props) {
 
     const clickLogout = () => {
         handleDrawerClose();
-        setCookie('loginToken', '', {path: '/'});
+        setCookie('loginToken', '', {...cookieOptions, maxAge: 0});
         dispatch(setLoggedUser(newUser()));
         dispatch(setLoggedToken(''));
 

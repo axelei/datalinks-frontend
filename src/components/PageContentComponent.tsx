@@ -1,4 +1,4 @@
-import {ReactNode, SyntheticEvent, useEffect, useState} from "react";
+import {ReactNode, SyntheticEvent, useState} from "react";
 import {parseRenderMain} from "../service/ParseRenderMain.tsx";
 import "ckeditor5/ckeditor5-content.css";
 import Typography from "@mui/material/Typography";
@@ -34,10 +34,6 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
 
     const content = parseRenderMain(props.page.content || "", dynamicTooltipContent, handleTooltipOpen);
     const navigate = useNavigate();
-
-    useEffect(() => {
-
-    }, []);
 
     return (
         <>

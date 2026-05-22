@@ -93,6 +93,9 @@ export default function NewUploadsComponent() : ReactNode | null {
                     </Link>
                 ))}
             </ImageList>
+            {uploads.length === 0 && (
+                <Typography sx={{ p: 2 }}>{t("No new uploads found.")}</Typography>
+            )}
             <TablePagination
                 rowsPerPageOptions={[10, 20, 50, 100]}
                 component="div"

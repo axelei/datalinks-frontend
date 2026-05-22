@@ -87,6 +87,9 @@ export default function NewPagesComponent() : ReactNode | null {
                         ))}
                     </TableBody>
                 </Table>
+                {pages.length === 0 && (
+                    <Typography sx={{ p: 2 }}>{t("No new pages found.")}</Typography>
+                )}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50, 100]}
                     component="div"

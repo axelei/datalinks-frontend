@@ -44,14 +44,12 @@ export default function SearchToolbar() {
 
     const chooseSearch = (_event: SyntheticEvent, value: string) => {
         if (value) {
-            query(value)
-                .then((data: Foundling[]) => {
-                    if (data.length == 1) {
-                        navigate(getFoundlingPath(data[0].type) + value);
-                    } else {
-                        navigate('/search/' + value);
-                    }
-                });
+            const match = data.filter((f) => f.title === value);
+            if (match.length === 1) {
+                navigate(getFoundlingPath(match[0].type) + value);
+            } else {
+                navigate('/search/' + value);
+            }
         }
     }
 

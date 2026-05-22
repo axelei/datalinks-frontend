@@ -97,5 +97,14 @@
   "Password already in reset process or user not found.": "La contraseña ya está en proceso de restablecimiento o el usuario no ha sido encontrado.",
   "Email seems not correct": "El correo electrónico no parece correcto",
   "Username": "Nombre de usuario",
-  "Loading...": "Cargando..."
+  "Loading...": "Cargando...",
+  "Profile": "Perfil",
+  "Level": "Nivel",
+  "No categories found.": "No se encontraron categorías.",
+  "No pages found in this category.": "No se encontraron páginas en esta categoría.",
+  "No edits found.": "No se encontraron ediciones.",
+  "No recent changes found.": "No se encontraron cambios recientes.",
+  "No contributions found.": "No se encontraron contribuciones.",
+  "No new pages found.": "No se encontraron páginas nuevas.",
+  "No new uploads found.": "No se encontraron subidas nuevas."
 }

@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from "react";
+import {ReactNode, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useDispatch} from "react-redux";
 import {useAppSelector} from "../hooks.ts";
@@ -10,13 +10,8 @@ import Typography from "@mui/material/Typography";
 import {Box, FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import {User} from "../model/user/User.ts";
 
-interface Props {
-    user : User;
-}
-
-export default function ChangePasswordComponent(props : Props) : ReactNode | null {
+export default function ChangePasswordComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -24,11 +19,6 @@ export default function ChangePasswordComponent(props : Props) : ReactNode | nul
 
     const [changePasswordValidationError, setChangePasswordValidationError] = useState<string>('');
     const [showSuccess, setShowSuccess] = useState(false);
-
-    useEffect(() => {
-        log("ChangeUserComponent useEffect");
-
-    }, [loggedUser.user.level, loggedUser.user.username, props.user.username]);
 
     const changePassword = async (inputs : ChangePasswordInputs) : Promise<string> => {
         const requestOptions = {

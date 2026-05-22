@@ -97,5 +97,14 @@
 	"Password already in reset process or user not found.": "Password already in reset process or user not found.",
 	"Email seems not correct": "Email seems not correct",
 	"Username": "Username",
-	"Loading...": "Loading..."
+	"Loading...": "Loading...",
+	"Profile": "Profile",
+	"Level": "Level",
+	"No categories found.": "No categories found.",
+	"No pages found in this category.": "No pages found in this category.",
+	"No edits found.": "No edits found.",
+	"No recent changes found.": "No recent changes found.",
+	"No contributions found.": "No contributions found.",
+	"No new pages found.": "No new pages found.",
+	"No new uploads found.": "No new uploads found."
 }

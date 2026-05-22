@@ -17,7 +17,7 @@ export default function SignUp() : ReactNode | null {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [validationError, setValidationError] = useState<string>('');
-    const [sucessOpen, setSucessOpen] = useState<boolean>(false);
+    const [successOpen, setSuccessOpen] = useState<boolean>(false);
     const [gray, setGray] = useState<boolean>(false);
     const [captcha, setCaptcha] = useState<string | null>(null);
 
@@ -75,7 +75,7 @@ export default function SignUp() : ReactNode | null {
         result.then((data: string) : void => {
             log("Signup success: " + data);
             setGray(true);
-            setSucessOpen(true);
+            setSuccessOpen(true);
         }).catch((error : Promise<string>) : void => {
             error.then((data: string) : void => {
                 log("Signup error: " + data);
@@ -97,8 +97,8 @@ export default function SignUp() : ReactNode | null {
         setCaptcha(value);
     }
 
-    const handleSucessClose = () => {
-        setSucessOpen(false);
+    const handleSuccessClose = () => {
+        setSuccessOpen(false);
     }
 
     const usernamePattern = /^[A-Za-z0-9]{3,20}$/i;
@@ -106,7 +106,7 @@ export default function SignUp() : ReactNode | null {
 
     return (
         <>
-            <InfoDialog show={sucessOpen} onClose={handleSucessClose} text={t("User created successfully. Please check your email to confirm it.")} />
+            <InfoDialog show={successOpen} onClose={handleSuccessClose} text={t("User created successfully. Please check your email to confirm it.")} />
             <div className="signup-form">
                 <Typography variant="h2">{t("Sign up")}</Typography>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -147,7 +147,7 @@ export default function SignUp() : ReactNode | null {
                     </FormControl>
                     <FormControl>
                         <ReCAPTCHA {...register("captcha")}
-                            sitekey="6Ld2MnUqAAAAAIEtHM3hx4e-DoouOJsViXLaGADX"
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                             onChange={onChangeCaptcha}
                         />
                     </FormControl>

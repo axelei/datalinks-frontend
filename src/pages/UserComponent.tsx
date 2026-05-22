@@ -12,11 +12,13 @@ import {fetchUser} from "../service/UserService.ts";
 import {UserLevel} from "../model/user/UserLevel.ts";
 import {useAppSelector} from "../hooks.ts";
 import ContributionsComponent from "../components/ContributionsComponent.tsx";
+import {useLocation} from "react-router-dom";
 
 
 export default function UserComponent() : ReactNode | null {
 
     const { t } = useTranslation();
+    const location = useLocation();
     const [user, setUser] = useState<User>(newUser());
     const [tab, setTab] = useState<number>(0);
     const [canEdit, setCanEdit] = useState<boolean>(false);
@@ -38,7 +40,7 @@ export default function UserComponent() : ReactNode | null {
             document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("User not found");
         });
 
-    }, [loggedUser.user.level, loggedUser.user.username, t, user.username]);
+    }, [location.pathname, loggedUser.user.level, loggedUser.user.username]);
 
     const handleChange = (_event: SyntheticEvent, newValue: number) => {
         setTab(newValue);
@@ -52,19 +54,22 @@ export default function UserComponent() : ReactNode | null {
                 {user.name}
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tab} onChange={handleChange}>
-                        <Tab label="Tralarí" />
+                        <Tab label={t("Profile")} />
                         <Tab label={t("Contributions")} />
                         <Tab label={t("Password change")} disabled={!canEdit} />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={tab} index={0}>
-                    ñasca
+                    <Typography>{t("Username")}: {user.username}</Typography>
+                    <Typography>{t("Email")}: {user.email}</Typography>
+                    <Typography>{t("Name")}: {user.name}</Typography>
+                    <Typography>{t("Level")}: {UserLevel[user.level]}</Typography>
                 </CustomTabPanel>
                 <CustomTabPanel value={tab} index={1}>
                     <ContributionsComponent user={user} />
                 </CustomTabPanel>
                 <CustomTabPanel value={tab} index={2}>
-                    <ChangePasswordComponent user={user} />
+                    <ChangePasswordComponent />
                 </CustomTabPanel>
             </article>
         </>

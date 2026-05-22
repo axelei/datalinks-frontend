@@ -87,6 +87,9 @@ export default function RecentChangesComponent() : ReactNode | null {
                         ))}
                     </TableBody>
                 </Table>
+                {edits.length === 0 && (
+                    <Typography sx={{ p: 2 }}>{t("No recent changes found.")}</Typography>
+                )}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50, 100]}
                     component="div"

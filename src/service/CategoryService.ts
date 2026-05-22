@@ -1,56 +1,30 @@
-export const fetchCategories = async (page: number | null, pageSize: number | null) => {
-    const data = await fetch(import.meta.env.VITE_API + '/category/all?page=' + page + '&pageSize=' + pageSize);
-    if (data.ok) {
-        return data.json();
-    } else {
-        return Promise.reject(data.status);
-    }
+import {api} from "./Common.ts";
+import {Category} from "../model/page/Category.ts";
+
+export const fetchCategories = async (page: number | null, pageSize: number | null): Promise<Category[]> => {
+    return api<Category[]>('/category/all?page=' + page + '&pageSize=' + pageSize);
 }
 
-export const fetchCategory = async (category: string) => {
-    const data = await fetch(import.meta.env.VITE_API + '/category/get/' + category);
-    if (data.ok) {
-        return data.json();
-    } else {
-        return Promise.reject(data.status);
-    }
+export const fetchCategory = async (category: string): Promise<Category> => {
+    return api<Category>('/category/get/' + category);
 }
 
-export const findCategories = async (query: string) => {
-    const data = await fetch(import.meta.env.VITE_API + '/category/find/' + query);
-    if (data.ok) {
-        return data.json();
-    } else {
-        return Promise.reject(data.status);
-    }
+export const findCategories = async (query: string): Promise<Category[]> => {
+    return api<Category[]>('/category/find/' + query);
 }
 
-export const addCategory = async (category: string, token: string) => {
-    const data = await fetch(import.meta.env.VITE_API + '/category/add', {
+export const addCategory = async (category: string, token: string): Promise<string> => {
+    return api<string>('/category/add', {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'text/plain',
-            'Authorization': 'Bearer ' + token,
-        },
-        body: category
+        token,
+        contentType: 'text/plain',
+        body: category,
     });
-    if (data.ok) {
-        return data.text();
-    } else {
-        return Promise.reject(data.status);
-    }
 }
 
-export const deleteCategory = async (category: string, token: string) => {
-    const data = await fetch(import.meta.env.VITE_API + '/category/delete/' + category, {
+export const deleteCategory = async (category: string, token: string): Promise<string> => {
+    return api<string>('/category/delete/' + category, {
         method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-        },
+        token,
     });
-    if (data.ok) {
-        return data.text();
-    } else {
-        return Promise.reject(data.status);
-    }
 }

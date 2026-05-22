@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useState} from 'react';
+import {ReactNode, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
@@ -32,10 +32,6 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
         email: string,
         captcha?: string,
     }
-
-    useEffect(() => {
-
-    }, [dispatch, t]);
 
     const sendPasswordResetRequest = async (inputs : Inputs) : Promise<string> => {
         const requestOptions = {
@@ -135,7 +131,7 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
                     </FormControl>
                     <FormControl>
                         <ReCAPTCHA {...register("captcha")}
-                                   sitekey="6Ld2MnUqAAAAAIEtHM3hx4e-DoouOJsViXLaGADX"
+                                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                                    onChange={onChangeCaptcha}
                         />
                     </FormControl>

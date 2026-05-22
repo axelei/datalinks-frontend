@@ -14,6 +14,7 @@ import {setLoggedToken, setLoggedUser} from "../redux/loggedUserSlice.ts";
 import {fetchUser} from "../service/UserService.ts";
 import {User} from "../model/user/User.ts";
 import {useCookies} from "react-cookie";
+import {cookieOptions} from "../service/Common.ts";
 
 export default function LoginModal(props: { show: boolean, onClose: () => void }): ReactNode | null {
 
@@ -61,7 +62,7 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
       fetchUser(inputs.username).then((user : User) => {
         dispatch(setLoggedUser({...user}));
         dispatch(setLoggedToken(data));
-        setCookie('loginToken', data, {path: '/'});
+        setCookie('loginToken', data, cookieOptions);
         handleClose();
       });
     }).catch((error) => {

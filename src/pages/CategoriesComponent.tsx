@@ -141,6 +141,9 @@ export default function CategoriesComponent(): ReactNode | null {
                         ))}
                     </TableBody>
                 </Table>
+                {categories.length === 0 && (
+                    <Typography sx={{ p: 2 }}>{t("No categories found.")}</Typography>
+                )}
                 <TablePagination
                     rowsPerPageOptions={[10, 20, 50, 100]}
                     component="div"
