@@ -1,6 +1,6 @@
 # DataLinks
 
-DataLinks is a wiki-like application built to be fast and rather simple to use. It's built with React and Spring Boot.
+DataLinks is a wiki-like application built to be fast and rather simple to use. It's built with React and Quarkus. (please find the [backend project here](https://github.com/krusher/datalinks-backend))
 
 ## Features
 - Categories support
@@ -15,15 +15,18 @@ server {
         root /home/krusher/datalinks.krusher.net;
         index index.html index.htm;
         server_name datalinks.krusher.net;
-        listen 80;
+
+    access_log /var/log/nginx/datalinks_access.log;
+    error_log /var/log/nginx/datalinks_error.log;
+
         location ^~ /datalinks-backend/ {
-                proxy_pass http://localhost:8080/;
+                proxy_pass http://localhost:8007/;
                 proxy_set_header Host $http_host;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
         location ^~ /datalinks-backend/file/get/ {
-                proxy_pass http://localhost:8080/file/get/;
+                proxy_pass http://localhost:8007/file/get/;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
                 proxy_cache files_cache;
@@ -36,5 +39,6 @@ server {
         location / {
                 try_files $uri $uri/ /index.html;
         }
+
 }
 ```
