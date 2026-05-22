@@ -1,6 +1,6 @@
 # DataLinks
 
-DataLinks is a wiki-like application built to be fast and rather simple to use. It's built with React and Quarkus. (please find the [backend project here](https://github.com/krusher/datalinks-backend))
+DataLinks is a wiki-like application built to be fast and rather simple to use. It's built with React and Quarkus. (please find the [backend project here](https://github.com/axelei/datalinks-backend))
 
 ## Features
 - Categories support
