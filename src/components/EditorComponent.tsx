@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ReactNode, SyntheticEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, ReactNode, SyntheticEvent, useEffect, useRef, useState} from "react";
 import "ckeditor5/ckeditor5-editor.css";
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {
@@ -50,10 +50,13 @@ import coreTranslationsEs from 'ckeditor5/translations/es.js';
 import coreTranslationsDe from 'ckeditor5/translations/de.js';
 import {useAppSelector} from "../hooks.ts";
 import {t} from "i18next";
-import {Autocomplete, Chip, InputAdornment, Stack, TextField} from "@mui/material";
+import {Autocomplete, Chip, Dialog, DialogContent, DialogTitle, InputAdornment, Stack, TextField} from "@mui/material";
 import {Category} from "../model/page/Category.ts";
 import {fetchCategory, findCategories} from "../service/CategoryService.ts";
 import {log, useDebounce} from "../service/Common.ts";
+import {Foundling} from "../model/search/Foundling.ts";
+import {FoundlingType} from "../model/search/FoundlingType.ts";
+import LinkToPagePlugin from "../ckeditor/LinkToPagePlugin.ts";
 import SearchIcon from "@mui/icons-material/Search";
 
 interface Props {
@@ -74,6 +77,12 @@ export default function EditorComponent( props : Props) : ReactNode | null {
     const [inputValue, setInputValue] = useState<string>('');
     const debouncedSearchTerm = useDebounce(inputValue, 300);
 
+    const editorRef = useRef<ClassicEditor | null>(null);
+    const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+    const [pageSearchTerm, setPageSearchTerm] = useState('');
+    const debouncedPageSearch = useDebounce(pageSearchTerm, 300);
+    const [pageResults, setPageResults] = useState<Foundling[]>([]);
+
     useEffect(
         () => {
             if (debouncedSearchTerm) {
@@ -88,6 +97,22 @@ export default function EditorComponent( props : Props) : ReactNode | null {
             }
         },
         [debouncedSearchTerm]
+    );
+
+    useEffect(
+        () => {
+            if (debouncedPageSearch) {
+                fetch(import.meta.env.VITE_API + '/search/titleSearch/' + encodeURIComponent(debouncedPageSearch), {
+                    headers: {Authorization: 'Bearer ' + loggedUser.token}
+                })
+                    .then(res => res.ok ? res.json() : [])
+                    .then((data: Foundling[]) => setPageResults(data.filter(f => f.type === FoundlingType.page)))
+                    .catch(() => setPageResults([]));
+            } else {
+                setPageResults([])
+            }
+        },
+        [debouncedPageSearch]
     );
 
     const handleDeleteCategory = (categoryToDelete: Category) => {
@@ -109,6 +134,25 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                     log("Error while adding category: " + error);
                 }
            });
+        }
+    }
+
+    const handleLinkToPage = (_event: SyntheticEvent, value: string | null) => {
+        if (value && editorRef.current) {
+            const editor = editorRef.current;
+            const siteUrl = (import.meta.env.VITE_SITE_URL ?? '').toString();
+            const linkUrl = siteUrl + '/page/' + encodeURIComponent(value);
+            const selection = editor.model.document.selection;
+            if (selection.isCollapsed) {
+                editor.model.change(writer => {
+                    const linkText = writer.createText(value, {linkHref: linkUrl});
+                    editor.model.insertContent(linkText);
+                });
+            } else {
+                editor.execute('link', linkUrl);
+            }
+            setLinkDialogOpen(false);
+            setPageSearchTerm('');
         }
     }
 
@@ -144,7 +188,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                             'sourceEditing', '|',
                             'heading', 'codeBlock', 'style', '-',
                             'insertImage', '|',
-                            'link', '|',
+                            'link', 'linkToPage', '|',
                             'horizontalLine', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                             'insertTable', '|',
                             'alignment', '|',
@@ -200,22 +244,58 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                     },
                     placeholder: t('Write your content here'),
                     menuBar: {
-                        isVisible: true
+                        isVisible: true,
+                        addItems: [
+                            {
+                                item: 'menuBar:linkToPage',
+                                position: 'end:insertInline',
+                            },
+                        ],
                     },
                     language: loggedUser.user.language,
+                    linkToPage: {
+                        onOpenDialog: () => setLinkDialogOpen(true),
+                        label: t('Link to Page'),
+                    },
                     plugins: [
                         Bold, Essentials, Italic, Mention, Paragraph, Undo, Heading, Font, HorizontalLine, AutoLink,
                         Link, List, Table, TableToolbar, TableCellProperties, TableProperties, TableColumnResize,
                         TableCaption, Alignment, Strikethrough, Subscript, Superscript, Underline, Code, CodeBlock,
                         Clipboard, RemoveFormat, SourceEditing, Style, GeneralHtmlSupport, ShowBlocks,
                         SimpleUploadAdapter, ImageToolbar, Image, ImageCaption, ImageResize, ImageStyle,
-                        LinkImage, ImageUpload, ImageInsertViaUrl,
+                        LinkImage, ImageUpload, ImageInsertViaUrl, LinkToPagePlugin,
                     ],
                     translations: [translation],
                     initialData: props.initialContent,
+                } as any}
+                onReady={(editor: ClassicEditor) => {
+                    editorRef.current = editor;
                 }}
                 onChange={props.changeContentEvent}
             />
+            <Dialog open={linkDialogOpen} onClose={() => { setLinkDialogOpen(false); setPageSearchTerm(''); }}>
+                <DialogTitle>{t('Link to Page')}</DialogTitle>
+                <DialogContent>
+                    <Autocomplete
+                        freeSolo
+                        disableClearable
+                        sx={{ width: 300, marginTop: 1 }}
+                        options={pageResults.map(option => option.title)}
+                        onChange={handleLinkToPage}
+                        renderInput={(params) => <TextField
+                            {...params}
+                            label={t('Search pages')}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => setPageSearchTerm(event.target.value)}
+                            onKeyUp={(event: React.KeyboardEvent<HTMLDivElement>) => {
+                                if (event.key === 'Enter' && pageResults.length > 0 && editorRef.current) {
+                                    handleLinkToPage(event, pageResults[0].title);
+                                }
+                            }}
+                            autoFocus
+                        />}
+                    />
+                </DialogContent>
+            </Dialog>
             <Autocomplete sx={{ marginTop: 5 }}
                           options={foundCategories.map((option) => option.name)}
                           onChange={chooseSearch}
