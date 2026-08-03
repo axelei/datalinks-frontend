@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {Foundling} from "../model/search/Foundling.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Avatar, TablePagination} from '@mui/material';
+import {Avatar} from '@mui/material';
 import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -12,6 +12,7 @@ import {Link, useParams} from "react-router-dom";
 import {FoundlingType, getFoundlingPath} from "../model/search/FoundlingType.ts";
 import {searchFull} from "../service/SearchService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 
 export default function SearchComponent() : ReactNode | null {
 
@@ -73,16 +74,14 @@ export default function SearchComponent() : ReactNode | null {
                     </ListItem>
                 ))}
             </List>
-            <TablePagination
-                rowsPerPageOptions={[10, 20, 50, 100]}
-                component="div"
-                count={-1}
-                rowsPerPage={pageSize}
+            <AppTablePagination
                 page={page}
+                pageSize={pageSize}
+                itemCount={foundlings.length}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <Typography hidden={foundlings.length != 0}>{t("No results found. You can create the page: ")}<Link to={"/page/" + encodeURIComponent(query)}>{query}</Link></Typography>
+            <Typography hidden={!(page === 0 && foundlings.length === 0)}>{t("No results found. You can create the page: ")}<Link to={"/page/" + encodeURIComponent(query)}>{query}</Link></Typography>
         </>
     );
 }

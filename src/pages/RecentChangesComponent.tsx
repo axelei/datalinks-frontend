@@ -4,11 +4,12 @@ import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {formatDate} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
 import {fetchRecentChanges} from "../service/EditService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 
 export default function RecentChangesComponent() : ReactNode | null {
 
@@ -59,12 +60,10 @@ export default function RecentChangesComponent() : ReactNode | null {
                 {edits.length === 0 && (
                     <Typography sx={{ p: 2 }}>{t("No recent changes found.")}</Typography>
                 )}
-                <TablePagination
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    component="div"
-                    count={-1}
-                    rowsPerPage={pageSize}
+                <AppTablePagination
                     page={page}
+                    pageSize={pageSize}
+                    itemCount={edits.length}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />

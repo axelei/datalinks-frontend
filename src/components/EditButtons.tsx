@@ -26,6 +26,7 @@ interface Props {
     canEdit: boolean;
     canDelete: boolean;
     mode: PageMode
+    hasUnsavedChanges: boolean;
     children?: ReactNode;
 }
 
@@ -35,12 +36,26 @@ export default function EditButtons( props : Props) : ReactNode | null {
     const [isHovered, setIsHovered] = useState(false);
     const isMobile = useMediaQuery('(max-width:600px)');
     const [openDialog, setOpenDialog] = useState(false);
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
     const handleDeleteClick = () => setOpenDialog(true);
     const handleCloseDialog = () => setOpenDialog(false);
     const handleConfirmDelete = () => {
         props.handleConfirmDelete();
         setOpenDialog(false);
+    }
+
+    const handleCancelClick = () => {
+        if (props.hasUnsavedChanges) {
+            setCancelDialogOpen(true);
+        } else {
+            props.cancelEditionEvent();
+        }
+    }
+    const handleCloseCancelDialog = () => setCancelDialogOpen(false);
+    const handleConfirmCancel = () => {
+        props.cancelEditionEvent();
+        setCancelDialogOpen(false);
     }
 
     const handleMouseEnter = () => setIsHovered(true);
@@ -84,7 +99,7 @@ export default function EditButtons( props : Props) : ReactNode | null {
                             </Fab></span>
                         </Tooltip>
                         <Tooltip title={t("Cancel")} placement="left">
-                            <span><Fab color="warning" aria-label={t("Cancel")} onClick={props.cancelEditionEvent}>
+                            <span><Fab color="warning" aria-label={t("Cancel")} onClick={handleCancelClick}>
                                 <CancelIcon/>
                             </Fab></span>
                         </Tooltip>
@@ -106,6 +121,25 @@ export default function EditButtons( props : Props) : ReactNode | null {
                         {t("Cancel")}
                     </Button>
                     <Button onClick={handleConfirmDelete} color="error" autoFocus>
+                        {t("Confirm")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={cancelDialogOpen}
+                onClose={handleCloseCancelDialog}
+            >
+                <DialogTitle>{t("Discard changes?")}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {t("You have unsaved changes. Are you sure you want to discard them?")}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseCancelDialog} color="primary">
+                        {t("Cancel")}
+                    </Button>
+                    <Button onClick={handleConfirmCancel} color="warning" autoFocus>
                         {t("Confirm")}
                     </Button>
                 </DialogActions>

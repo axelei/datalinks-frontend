@@ -12,7 +12,6 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow
 } from '@mui/material';
 import {Link, useLocation, useNavigate} from "react-router-dom";
@@ -20,6 +19,7 @@ import {Edit} from "../model/page/Edit.ts";
 import Button from "@mui/material/Button";
 import {fetchPageEdits} from "../service/EditService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 
 export default function EditsComponent() : ReactNode | null {
 
@@ -112,12 +112,10 @@ export default function EditsComponent() : ReactNode | null {
                 {edits.length === 0 && (
                     <Typography sx={{ p: 2 }}>{t("No edits found.")}</Typography>
                 )}
-                <TablePagination
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    component="div"
-                    count={-1}
-                    rowsPerPage={pageSize}
+                <AppTablePagination
                     page={page}
+                    pageSize={pageSize}
+                    itemCount={edits.length}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />

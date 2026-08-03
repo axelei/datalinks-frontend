@@ -95,6 +95,9 @@ export default function PageComponent(): ReactNode | null {
     const [blockOpen, setBlockOpen] = useState<boolean>(false);
     const consumedEditMode = useRef(false);
 
+    const hasUnsavedChanges = pageTemp.content !== page.content
+        || JSON.stringify(pageTemp.categories) !== JSON.stringify(page.categories);
+
     const setBlocks = useCallback((): void => {
         let blockLevel = levelValue(config.value['EDIT_LEVEL']);
         if (page.editBlock) {
@@ -182,6 +185,7 @@ export default function PageComponent(): ReactNode | null {
                          canEdit={canEdit}
                          mode={mode}
                          canDelete={canDelete}
+                         hasUnsavedChanges={hasUnsavedChanges}
                          handleConfirmDelete={deletePageEvent}>
                 {mode === PageMode.read && (
                     <>

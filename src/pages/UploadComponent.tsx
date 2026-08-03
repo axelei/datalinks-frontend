@@ -120,10 +120,11 @@ export default function UploadComponent(): ReactNode | null {
         setBlocks();
     }, [setBlocks]);
 
+    const hasUnsavedChanges = uploadTemp.description !== upload.description;
 
     return (
         <>
-            <EditButtons editPageEvent={editUploadEvent} savePageEvent={saveUploadEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deleteUploadEvent}/>
+            <EditButtons editPageEvent={editUploadEvent} savePageEvent={saveUploadEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} hasUnsavedChanges={hasUnsavedChanges} handleConfirmDelete={deleteUploadEvent}/>
             <Typography variant="h2">{upload.filename}</Typography>
             <p>
             <a href={import.meta.env.VITE_API + '/file/get/' + upload.slug} target="_blank" rel="noopener noreferrer"><img

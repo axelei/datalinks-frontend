@@ -16,7 +16,6 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow,
     TextField,
     Tooltip
@@ -26,6 +25,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {addCategory, deleteCategory, fetchCategories} from "../service/CategoryService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 import Box from "@mui/material/Box";
 import AddIcon from '@mui/icons-material/Add';
 import {useAppDispatch, useAppSelector} from "../hooks.ts";
@@ -135,12 +135,10 @@ export default function CategoriesComponent(): ReactNode | null {
                 {categories.length === 0 && (
                     <Typography sx={{ p: 2 }}>{t("No categories found.")}</Typography>
                 )}
-                <TablePagination
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    component="div"
-                    count={-1}
-                    rowsPerPage={pageSize}
+                <AppTablePagination
                     page={page}
+                    pageSize={pageSize}
+                    itemCount={categories.length}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />

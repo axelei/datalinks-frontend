@@ -2,12 +2,13 @@ import {ReactNode, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {formatDate, log} from "../service/Common.ts";
 import Typography from "@mui/material/Typography";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from "@mui/material";
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {User} from "../model/user/User.ts";
 import {Link} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
 import {fetchEdits} from "../service/EditService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "./AppTablePagination.tsx";
 
 interface Props {
     user : User;
@@ -58,12 +59,10 @@ export default function ContributionsComponent( props : Props) : ReactNode | nul
                 {edits.length === 0 && (
                     <Typography sx={{ p: 2 }}>{t("No contributions found.")}</Typography>
                 )}
-                <TablePagination
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    component="div"
-                    count={-1}
-                    rowsPerPage={pageSize}
+                <AppTablePagination
                     page={page}
+                    pageSize={pageSize}
+                    itemCount={edits.length}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />

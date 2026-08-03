@@ -3,11 +3,12 @@ import {useAppDispatch} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
+import {ImageList, ImageListItem, ImageListItemBar} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
 import {Link} from "react-router-dom";
 import {fetchNewUploads} from "../service/UploadService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 
 export default function NewUploadsComponent() : ReactNode | null {
 
@@ -63,12 +64,10 @@ export default function NewUploadsComponent() : ReactNode | null {
             {uploads.length === 0 && (
                 <Typography sx={{ p: 2 }}>{t("No new uploads found.")}</Typography>
             )}
-            <TablePagination
-                rowsPerPageOptions={[10, 20, 50, 100]}
-                component="div"
-                count={-1}
-                rowsPerPage={pageSize}
+            <AppTablePagination
                 page={page}
+                pageSize={pageSize}
+                itemCount={uploads.length}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />

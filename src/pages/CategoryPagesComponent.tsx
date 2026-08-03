@@ -5,10 +5,11 @@ import Typography from "@mui/material/Typography";
 import {Page} from "../model/page/Page.ts";
 import {formatDate} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import {Link, useParams} from "react-router-dom";
 import {findPagesInCategory} from "../service/CategoryService.ts";
 import {usePagination} from "../service/usePagination.ts";
+import AppTablePagination from "../components/AppTablePagination.tsx";
 
 export default function CategoryPagesComponent() : ReactNode | null {
 
@@ -63,12 +64,10 @@ export default function CategoryPagesComponent() : ReactNode | null {
                 {pages.length === 0 && (
                     <Typography sx={{ p: 2 }}>{t("No pages found in this category.")}</Typography>
                 )}
-                <TablePagination
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    component="div"
-                    count={-1}
-                    rowsPerPage={pageSize}
+                <AppTablePagination
                     page={page}
+                    pageSize={pageSize}
+                    itemCount={pages.length}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
