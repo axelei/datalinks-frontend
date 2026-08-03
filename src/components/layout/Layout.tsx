@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from "react";
+import {Suspense, useCallback, useEffect} from "react";
 import {Outlet} from "react-router-dom";
 import DatalinksDrawer from "./DatalinksDrawer.tsx";
 import Body from "./Body.tsx";
@@ -6,6 +6,7 @@ import Footer from "./Footer.tsx";
 import {useAppDispatch, useAppSelector} from "../../hooks.ts";
 import LoadingModal from "../LoadingModal.tsx";
 import ErrorModal from "../ErrorModal.tsx";
+import SuspenseFallback from "../SuspenseFallback.tsx";
 import {useCookies} from "react-cookie";
 import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
 import {fetchUserByLoginToken} from "../../service/UserService.ts";
@@ -66,7 +67,9 @@ export default function Layout() {
             <LoadingModal loading={loading} />
             <DatalinksDrawer>
                 <Body>
-                    <Outlet />
+                    <Suspense fallback={<SuspenseFallback />}>
+                        <Outlet />
+                    </Suspense>
                 </Body>
                 <Footer />
             </DatalinksDrawer>

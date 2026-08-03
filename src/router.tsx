@@ -1,25 +1,27 @@
+import {lazy} from "react";
 import {createBrowserRouter} from "react-router-dom";
-import NotFoundComponent from "./pages/NotFoundComponent.tsx";
-import ErrorBoundary from "./components/ErrorBoundary.tsx";
-import PageComponent from "./pages/PageComponent.tsx";
-import UserComponent from "./pages/UserComponent.tsx";
 import Layout from "./components/layout/Layout.tsx";
-import SignUpComponent from "./pages/SignupComponent.tsx";
-import ActivateUserComponent from "./pages/ActivateUserComponent.tsx";
-import ResetPasswordRequestComponent from "./pages/ResetPasswordRequestComponent.tsx";
-import ResetPasswordComponent from "./pages/ResetPasswordComponent.tsx";
-import NewPagesComponent from "./pages/NewPagesComponent.tsx";
-import RecentChangesComponent from "./pages/RecentChangesComponent.tsx";
-import NewUploadsComponent from "./pages/NewUploadsComponent.tsx";
-import SearchComponent from "./pages/SearchComponent.tsx";
-import UploadComponent from "./pages/UploadComponent.tsx";
-import EditsComponent from "./pages/EditsComponent.tsx";
-import EditComponent from "./pages/EditComponent.tsx";
-import AboutComponent from "./pages/AboutComponent.tsx";
-import DiffComponent from "./pages/DiffComponent.tsx";
-import UploadFileComponent from "./pages/UploadFileComponent.tsx";
-import CategoriesComponent from "./pages/CategoriesComponent.tsx";
-import CategoryPagesComponent from "./pages/CategoryPagesComponent.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
+
+const PageComponent = lazy(() => import("./pages/PageComponent.tsx"));
+const UserComponent = lazy(() => import("./pages/UserComponent.tsx"));
+const SignUpComponent = lazy(() => import("./pages/SignupComponent.tsx"));
+const ActivateUserComponent = lazy(() => import("./pages/ActivateUserComponent.tsx"));
+const ResetPasswordRequestComponent = lazy(() => import("./pages/ResetPasswordRequestComponent.tsx"));
+const ResetPasswordComponent = lazy(() => import("./pages/ResetPasswordComponent.tsx"));
+const NewPagesComponent = lazy(() => import("./pages/NewPagesComponent.tsx"));
+const RecentChangesComponent = lazy(() => import("./pages/RecentChangesComponent.tsx"));
+const NewUploadsComponent = lazy(() => import("./pages/NewUploadsComponent.tsx"));
+const SearchComponent = lazy(() => import("./pages/SearchComponent.tsx"));
+const UploadComponent = lazy(() => import("./pages/UploadComponent.tsx"));
+const EditsComponent = lazy(() => import("./pages/EditsComponent.tsx"));
+const EditComponent = lazy(() => import("./pages/EditComponent.tsx"));
+const AboutComponent = lazy(() => import("./pages/AboutComponent.tsx"));
+const DiffComponent = lazy(() => import("./pages/DiffComponent.tsx"));
+const UploadFileComponent = lazy(() => import("./pages/UploadFileComponent.tsx"));
+const CategoriesComponent = lazy(() => import("./pages/CategoriesComponent.tsx"));
+const CategoryPagesComponent = lazy(() => import("./pages/CategoryPagesComponent.tsx"));
+const NotFoundComponent = lazy(() => import("./pages/NotFoundComponent.tsx"));
 
 const router = createBrowserRouter([
     {

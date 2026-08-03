@@ -1,4 +1,4 @@
-import {ReactNode, useCallback, useEffect, useRef, useState} from 'react';
+import {lazy, ReactNode, Suspense, useCallback, useEffect, useRef, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import {newPage, Page} from "../model/page/Page.ts";
@@ -9,8 +9,10 @@ import Typography from "@mui/material/Typography";
 import {getErrorMessage, log} from "../service/Common.ts";
 import {hasLevel, isLevel, levelValue, UserLevel} from "../model/user/UserLevel.ts";
 import PageContentComponent from "../components/PageContentComponent.tsx";
-import EditorComponent from "../components/EditorComponent.tsx";
+import SuspenseFallback from "../components/SuspenseFallback.tsx";
 import {ClassicEditor, EventInfo} from "ckeditor5";
+
+const EditorComponent = lazy(() => import("../components/EditorComponent.tsx"));
 import EditButtons from "../components/EditButtons.tsx";
 import CreatePageFloatingButton from "../components/CreatePageFloatingButton.tsx";
 import {Fab, Tooltip} from "@mui/material";
@@ -205,12 +207,12 @@ export default function PageComponent(): ReactNode | null {
                 </>
             )}
             {mode === PageMode.edit && (
-                <>
+                <Suspense fallback={<SuspenseFallback />}>
                     <EditorComponent initialContent={pageTemp.content}
                                      changeContentEvent={changeContentEvent}
                                      initialCategories={page.categories}
                                      setCategories={setCategories} />
-                </>
+                </Suspense>
             )}
         </>
     )
