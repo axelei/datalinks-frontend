@@ -4,9 +4,10 @@ import {Autocomplete, InputAdornment, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {t} from "i18next";
 import {useNavigate} from "react-router-dom";
-import {log, useDebounce} from "../../service/Common.ts";
+import {useDebounce} from "../../service/Common.ts";
 import {Foundling} from "../../model/search/Foundling.ts";
 import {getFoundlingPath} from "../../model/search/FoundlingType.ts";
+import {titleSearch} from "../../service/SearchService.ts";
 
 export default function SearchToolbar() {
 
@@ -16,23 +17,13 @@ export default function SearchToolbar() {
     const [searchTerm, setSearchTerm] = useState("");
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-    const query = async (query: string): Promise<Foundling[]> => {
-        log("Fetching query: " + query);
-        const data = await fetch(import.meta.env.VITE_API + '/search/titleSearch/' + query);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
     useEffect(
         () => {
             if (debouncedSearchTerm) {
-                query(debouncedSearchTerm)
+                titleSearch(debouncedSearchTerm, '')
                     .then((data: Foundling[]) => {
                         setData(data);
-                    }).catch((_error) => {
+                    }).catch(() => {
                         setData([]);
                     });
             } else {
@@ -46,16 +37,16 @@ export default function SearchToolbar() {
         if (value) {
             const match = data.filter((f) => f.title === value);
             if (match.length === 1) {
-                navigate(getFoundlingPath(match[0].type) + value);
+                navigate(getFoundlingPath(match[0].type) + encodeURIComponent(value));
             } else {
-                navigate('/search/' + value);
+                navigate('/search/' + encodeURIComponent(value));
             }
         }
     }
 
     const searchKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
-            navigate('/search/' + searchTerm);
+            navigate('/search/' + encodeURIComponent(searchTerm));
         }
     }
 

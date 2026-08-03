@@ -2,11 +2,11 @@ import {createSlice} from '@reduxjs/toolkit'
 import {RootState} from "./store.ts";
 
 interface LoadingState {
-    value: boolean
+    count: number
 }
 
 const initialState: LoadingState = {
-    value: false,
+    count: 0,
 }
 
 export const loadingSlice = createSlice({
@@ -14,15 +14,15 @@ export const loadingSlice = createSlice({
     initialState,
     reducers: {
         loadingOn: (state) => {
-            state.value = true
+            state.count += 1
         },
         loadingOff: (state) => {
-            state.value = false
+            state.count = Math.max(0, state.count - 1)
         },
     },
 });
 
 export const { loadingOn, loadingOff } = loadingSlice.actions;
 export default loadingSlice.reducer;
-export const selectLoading = (state: RootState) => state.loading.value;
+export const selectLoading = (state: RootState) => state.loading.count > 0;
 

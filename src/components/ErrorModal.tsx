@@ -3,7 +3,7 @@ import {Box, Modal} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import {modalStyle} from "../service/Common.ts";
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from "../hooks.ts";
 import {hideError} from "../redux/showErrorSlice.ts";
 import ErrorIcon from '@mui/icons-material/Error';
 import {useTranslation} from "react-i18next";
@@ -13,7 +13,7 @@ const DEFAULT_MESSAGE = "Either the server failed to process the request or you 
 export default function ErrorModal(props: { show: boolean; message?: string }) : ReactNode | null {
 
     const { t } = useTranslation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const message = props.message || t(DEFAULT_MESSAGE);
 
     return (

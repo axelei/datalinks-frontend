@@ -9,7 +9,7 @@ import Tab from '@mui/material/Tab';
 import {Box} from "@mui/material";
 import {CustomTabPanel} from "../components/layout/CustomTabPanel.tsx";
 import {fetchUser} from "../service/UserService.ts";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {isLevel, levelName, UserLevel} from "../model/user/UserLevel.ts";
 import {useAppSelector} from "../hooks.ts";
 import ContributionsComponent from "../components/ContributionsComponent.tsx";
 import {useLocation} from "react-router-dom";
@@ -26,13 +26,13 @@ export default function UserComponent() : ReactNode | null {
 
     useEffect(() => {
         log("UserComponent useEffect");
-        const usernamePath = location.pathname.split('/')[2];
+        const usernamePath = decodeURIComponent(location.pathname.split('/')[2] ?? '');
 
         fetchUser(usernamePath)
             .then((data : User) => {
                 setUser({...data});
                 document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + data.username;
-                if (loggedUser.user.username === data.username || loggedUser.user.level === UserLevel.ADMIN) {
+                if (loggedUser.user.username === data.username || isLevel(loggedUser.user.level, UserLevel.ADMIN)) {
                     setCanEdit(true);
                 }
             }).catch(() => {
@@ -40,7 +40,7 @@ export default function UserComponent() : ReactNode | null {
             document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("User not found");
         });
 
-    }, [location.pathname, loggedUser.user.level, loggedUser.user.username]);
+    }, [location.pathname, loggedUser.user.level, loggedUser.user.username, t]);
 
     const handleChange = (_event: SyntheticEvent, newValue: number) => {
         setTab(newValue);
@@ -63,7 +63,7 @@ export default function UserComponent() : ReactNode | null {
                     <Typography>{t("Username")}: {user.username}</Typography>
                     <Typography>{t("Email")}: {user.email}</Typography>
                     <Typography>{t("Name")}: {user.name}</Typography>
-                    <Typography>{t("Level")}: {UserLevel[user.level]}</Typography>
+                    <Typography>{t("Level")}: {levelName(user.level)}</Typography>
                 </CustomTabPanel>
                 <CustomTabPanel value={tab} index={1}>
                     <ContributionsComponent user={user} />

@@ -1,4 +1,6 @@
 import {createBrowserRouter} from "react-router-dom";
+import NotFoundComponent from "./pages/NotFoundComponent.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import PageComponent from "./pages/PageComponent.tsx";
 import UserComponent from "./pages/UserComponent.tsx";
 import Layout from "./components/layout/Layout.tsx";
@@ -21,81 +23,91 @@ import CategoryPagesComponent from "./pages/CategoryPagesComponent.tsx";
 
 const router = createBrowserRouter([
     {
-        path: "/",
-        element: <Layout><PageComponent /></Layout>,
+        element: <Layout />,
+        errorElement: <ErrorBoundary />,
+        children: [
+            {
+                path: "/",
+                element: <PageComponent />,
+            },
+            {
+                path: "/page/:title",
+                element: <PageComponent />,
+            },
+            {
+                path: "/user/:name",
+                element: <UserComponent />
+            },
+            {
+                path: "/activateUser/:token",
+                element: <ActivateUserComponent />
+            },
+            {
+                path: "/resetPassword/:token",
+                element: <ResetPasswordComponent />
+            },
+            {
+                path: "/signup",
+                element: <SignUpComponent />
+            },
+            {
+                path: "/passwordReset",
+                element: <ResetPasswordRequestComponent />
+            },
+            {
+                path: "/newPages",
+                element: <NewPagesComponent />
+            },
+            {
+                path: "/recentChanges",
+                element: <RecentChangesComponent />
+            },
+            {
+                path: "/newUploads",
+                element: <NewUploadsComponent />
+            },
+            {
+                path: "/upload/:title",
+                element: <UploadComponent />
+            },
+            {
+                path: "/search/:query",
+                element: <SearchComponent />
+            },
+            {
+                path: "/edits/:query",
+                element: <EditsComponent />
+            },
+            {
+                path: "/edit/:query",
+                element: <EditComponent />
+            },
+            {
+                path: "/about",
+                element: <AboutComponent />
+            },
+            {
+                path: "/diff/:diff1/:diff2",
+                element: <DiffComponent />
+            },
+            {
+                path: "/uploadFile",
+                element: <UploadFileComponent />
+            },
+            {
+                path: "/categories",
+                element: <CategoriesComponent />
+            },
+            {
+                path: "/category/:query",
+                element: <CategoryPagesComponent />
+            },
+            {
+                path: "*",
+                element: <NotFoundComponent />
+            }
+        ],
     },
-    {
-        path: "/page/:title",
-        element: <Layout><PageComponent /></Layout>,
-    },
-    {
-        path: "/user/:name",
-        element: <Layout><UserComponent /></Layout>
-    },
-    {
-        path: "/activateUser/:token",
-        element: <Layout><ActivateUserComponent /></Layout>
-    },
-    {
-        path: "/resetPassword/:token",
-        element: <Layout><ResetPasswordComponent /></Layout>
-    },
-    {
-        path: "/signup",
-        element: <Layout><SignUpComponent /></Layout>
-    },
-    {
-        path: "/passwordReset",
-        element: <Layout><ResetPasswordRequestComponent /></Layout>
-    },
-    {
-        path: "/newPages",
-        element: <Layout><NewPagesComponent /></Layout>
-    },
-    {
-        path: "/recentChanges",
-        element: <Layout><RecentChangesComponent /></Layout>
-    },
-    {
-        path: "/newUploads",
-        element: <Layout><NewUploadsComponent /></Layout>
-    },
-    {
-        path: "/upload/:title",
-        element: <Layout><UploadComponent /></Layout>
-    },
-    {
-        path: "/search/:query",
-        element: <Layout><SearchComponent /></Layout>
-    },
-    {
-        path: "/edits/:query",
-        element: <Layout><EditsComponent /></Layout>
-    },
-    {
-        path: "/edit/:query",
-        element: <Layout><EditComponent /></Layout>
-    },
-    {
-        path: "/about",
-        element: <Layout><AboutComponent /></Layout>
-    },
-    {
-        path: "/diff/:diff1/:diff2",
-        element: <Layout><DiffComponent /></Layout>
-    },
-    {
-        path: "/uploadFile",
-        element: <Layout><UploadFileComponent /></Layout>
-    },
-    {
-        path: "/categories",
-        element: <Layout><CategoriesComponent /></Layout>
-    },
-    {
-        path: "/category/:query",
-        element: <Layout><CategoryPagesComponent /></Layout>
-    }
 ]);
 
 export default router;

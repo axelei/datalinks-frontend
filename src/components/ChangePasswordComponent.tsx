@@ -1,7 +1,6 @@
 import {ReactNode, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {useDispatch} from "react-redux";
-import {useAppSelector} from "../hooks.ts";
+import {useAppDispatch, useAppSelector} from "../hooks.ts";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
@@ -10,36 +9,20 @@ import Typography from "@mui/material/Typography";
 import {Box, FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
+import {changePassword} from "../service/UserService.ts";
 
 export default function ChangePasswordComponent() : ReactNode | null {
 
     const { t } = useTranslation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loggedUser = useAppSelector((state) => state.loggedUser);
 
     const [changePasswordValidationError, setChangePasswordValidationError] = useState<string>('');
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const changePassword = async (inputs : ChangePasswordInputs) : Promise<string> => {
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + loggedUser.token
-            },
-            body: inputs.password,
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/user/passwordChange', requestOptions);
-        if (data.ok) {
-            return data.text();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
     const sendPasswordChange = (inputs : ChangePasswordInputs) : void => {
         dispatch(loadingOn());
-        const result = changePassword(inputs);
+        const result = changePassword(inputs.password, loggedUser.token);
         result.then((data: string) : void => {
             log("Signup success: " + data);
             setShowSuccess(true);

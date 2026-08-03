@@ -1,19 +1,18 @@
-import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
+import {ChangeEvent, ReactNode, useCallback, useEffect, useState} from 'react';
 import {PageMode} from "../model/page/PageMode.ts";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import '../css/PageComponent.css';
-import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {useAppSelector} from "../hooks.ts";
+import {useAppDispatch, useAppSelector} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {getErrorMessage, log} from "../service/Common.ts";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {hasLevel, levelValue} from "../model/user/UserLevel.ts";
 import {newUpload, Upload} from "../model/upload/Upload.ts";
 import {TextareaAutosize} from "@mui/material";
 import {Page} from "../model/page/Page.ts";
 import EditButtons from "../components/EditButtons.tsx";
-import {fetchUpload, saveUpload} from "../service/UploadService.ts";
+import {deleteUpload, fetchUpload, fetchUploadUsages, saveUpload} from "../service/UploadService.ts";
 import {showError} from "../redux/showErrorSlice.ts";
 
 export default function UploadComponent(): ReactNode | null {
@@ -21,36 +20,9 @@ export default function UploadComponent(): ReactNode | null {
     const {t} = useTranslation();
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const config = useAppSelector((state) => state.config);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const location = useLocation();
     const navigate = useNavigate();
-
-    const fetchUsage = async (fileName: string): Promise<Page[]> => {
-        log("Fetching usages: " + fileName);
-        const data = await fetch(import.meta.env.VITE_API + '/file/usages/' + fileName);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.status);
-        }
-    }
-
-    const deleteUpload = async (fileName: string): Promise<string> => {
-        log("Deleting upload: " + fileName);
-        const requestOptions = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'text/plain',
-                'Authorization': 'Bearer ' + loggedUser.token,
-            },
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/file/delete/' + fileName, requestOptions);
-        if (data.ok) {
-            return data.text();
-        } else {
-            return Promise.reject(data.status);
-        }
-    }
 
     const editUploadEvent = (): void => {
         setMode(PageMode.edit);
@@ -73,8 +45,8 @@ export default function UploadComponent(): ReactNode | null {
 
     const deleteUploadEvent = (): void => {
         dispatch(loadingOn());
-        const deleteResult = deleteUpload(upload.filename);
-        deleteResult.then((_data) => {
+        const deleteResult = deleteUpload(upload.filename, loggedUser.token);
+        deleteResult.then(() => {
             navigate('/');
         }).catch((error) => {
             log("Error while deleting upload: " + error);
@@ -100,15 +72,25 @@ export default function UploadComponent(): ReactNode | null {
     const [canDelete, setCanDelete] = useState<boolean>(false);
     const [usages, setUsages] = useState<Page[]>([]);
 
+    const setBlocks = useCallback((): void => {
+        let blockLevel = levelValue(config.value['EDIT_LEVEL']);
+        if (upload.editBlock) {
+            blockLevel = Math.max(blockLevel, levelValue(upload.editBlock));
+        }
+        setCanEdit(hasLevel(loggedUser.user.level, blockLevel));
+        const deleteLevel = levelValue(config.value['DELETE_LEVEL']);
+        setCanDelete(hasLevel(loggedUser.user.level, deleteLevel));
+    }, [config, loggedUser, upload.editBlock]);
+
     useEffect(() => {
         log("UploadComponent upload useEffect");
-        let filename = location.pathname.split('/')[2];
+        let filename = decodeURIComponent(location.pathname.split('/')[2] ?? '');
         if (!filename) {
             filename = import.meta.env.VITE_SITE_INDEX;
         }
         log("Current title: " + filename);
 
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + decodeURIComponent(filename);
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + filename;
 
         const apiResponse = fetchUpload(filename);
         apiResponse.then(data => {
@@ -117,8 +99,7 @@ export default function UploadComponent(): ReactNode | null {
             setMode(PageMode.read);
             setBlocks();
 
-            const usageResponse = fetchUsage(filename);
-            usageResponse.then(data => {
+            fetchUploadUsages(filename).then(data => {
                 setUsages(data);
             }).catch((error: Promise<string>) => {
                 log("Usages fetch failed: " + error);
@@ -126,28 +107,18 @@ export default function UploadComponent(): ReactNode | null {
 
             window.scroll(0, 0);
         }).catch((error: Promise<string>) => {
-            const blockLevel = UserLevel[config.value['CREATE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-            setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-            setUpload(newUpload(decodeURIComponent(filename)));
+            const blockLevel = levelValue(config.value['CREATE_LEVEL']);
+            setCanEdit(hasLevel(loggedUser.user.level, blockLevel));
+            setUpload(newUpload(filename));
             log("Page fetch failed: " + error);
         });
 
-    }, [location.pathname]);
+    }, [location.pathname, config, loggedUser, setBlocks]);
 
     useEffect(() => {
         log("UploadComponent user useeffect");
         setBlocks();
-    }, [config.value, loggedUser.user.level, upload.editBlock]);
-
-    const setBlocks = (): void => {
-        let blockLevel = UserLevel[config.value['EDIT_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-        if (upload.editBlock) {
-            blockLevel = Math.max(blockLevel, upload.editBlock);
-        }
-        setCanEdit(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-        const deleteLevel = UserLevel[config.value['DELETE_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-        setCanDelete(parseInt(UserLevel[loggedUser.user.level]) >= deleteLevel);
-    }
+    }, [setBlocks]);
 
 
     return (
@@ -155,7 +126,7 @@ export default function UploadComponent(): ReactNode | null {
             <EditButtons editPageEvent={editUploadEvent} savePageEvent={saveUploadEvent} cancelEditionEvent={cancelEditionEvent} canEdit={canEdit} mode={mode}  canDelete={canDelete} handleConfirmDelete={deleteUploadEvent}/>
             <Typography variant="h2">{upload.filename}</Typography>
             <p>
-            <a href={import.meta.env.VITE_API + '/file/get/' + upload.slug} target="_blank"><img
+            <a href={import.meta.env.VITE_API + '/file/get/' + upload.slug} target="_blank" rel="noopener noreferrer"><img
                 src={import.meta.env.VITE_API + '/file/get/' + upload.slug}
                 alt={upload.filename}
                 className="uploadImage" /></a>
@@ -174,12 +145,10 @@ export default function UploadComponent(): ReactNode | null {
             <ul>
                 {usages.map((item) => (
                     <li key={item.title}>
-                        <Link to={'/page/' + item.title}>{item.title}</Link>
+                        <Link to={'/page/' + encodeURIComponent(item.title)}>{item.title}</Link>
                     </li>
                 ))}
             </ul>
         </>
     )
 }
-
-

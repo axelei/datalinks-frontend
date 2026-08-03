@@ -1,64 +1,33 @@
-import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
-import {useDispatch} from "react-redux";
+import {ReactNode, useEffect, useState} from 'react';
+import {useAppDispatch} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {formatDate, log} from "../service/Common.ts";
+import {formatDate} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from '@mui/material';
 import {Link} from "react-router-dom";
 import {Edit} from "../model/page/Edit.ts";
+import {fetchRecentChanges} from "../service/EditService.ts";
+import {usePagination} from "../service/usePagination.ts";
 
 export default function RecentChangesComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const [edits, setEdits] = useState<Edit[]>([]);
-    const [page, setPage] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(10);
+    const { page, pageSize, handleChangePage, handleChangeRowsPerPage } = usePagination();
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const fetchPages = async () : Promise<Edit[]> => {
-        log("Fetching edits: ");
-        const requestOptions = {
-            method: 'POST',
-            body: JSON.stringify({
-                page: page,
-                pageSize: pageSize,
-            }),
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/page/recentChanges', requestOptions);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
+    useEffect(() => {
+        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Recent changes");
 
-    const handleChangePage = (_event: unknown, newPage: number) : void => {
-        setPage(newPage);
-    }
-
-    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) : void => {
-        setPageSize(parseInt(event.target.value, 10));
-    }
-
-    const searchEvent = () : void => {
         dispatch(loadingOn());
-        const listResult = fetchPages();
-        listResult.then((data : Edit[]) => {
+        fetchRecentChanges(page, pageSize).then((data : Edit[]) => {
             setEdits(data);
         }).finally(() => {
             dispatch(loadingOff());
         });
-    }
-
-    useEffect(() => {
-        log("NewPagesComponent useEffect");
-
-        document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("Recent changes");
-
-        searchEvent();
-    }, [page, pageSize]);
+    }, [page, pageSize, dispatch, t]);
 
     return (
         <>
@@ -79,10 +48,10 @@ export default function RecentChangesComponent() : ReactNode | null {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row" style={{whiteSpace: "normal", wordBreak: "break-word"}}>
-                                    <Link to={'/page/' + row.page?.title}>{row.page?.title}</Link>
+                                    <Link to={'/page/' + encodeURIComponent(row.page?.title ?? '')}>{row.page?.title}</Link>
                                 </TableCell>
                                 <TableCell align="right"><Link to={'/edit/' + row.id}>{formatDate(row.date)}</Link></TableCell>
-                                <TableCell align="right"><Link to={'/user/' + row.user?.username}>{row.user?.username}</Link></TableCell>
+                                <TableCell align="right"><Link to={'/user/' + encodeURIComponent(row.user?.username ?? '')}>{row.user?.username}</Link></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -103,5 +72,3 @@ export default function RecentChangesComponent() : ReactNode | null {
         </>
     );
 }
-
-

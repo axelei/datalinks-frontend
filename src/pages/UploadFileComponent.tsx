@@ -1,21 +1,20 @@
-import React, {ChangeEvent, ReactNode, useEffect, useState} from 'react';
+import React, {ChangeEvent, ReactNode, useCallback, useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import '../css/PageComponent.css';
-import {useDispatch} from "react-redux";
-import {useAppSelector} from "../hooks.ts";
+import {useAppDispatch, useAppSelector} from "../hooks.ts";
 import Typography from "@mui/material/Typography";
 import {Box, CircularProgress, Input, TextareaAutosize} from "@mui/material";
 import {t} from "i18next";
 import Button from "@mui/material/Button";
 import {getErrorMessage, log} from "../service/Common.ts";
 import {showError} from "../redux/showErrorSlice.ts";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {hasLevel, levelValue} from "../model/user/UserLevel.ts";
 
 export default function UploadFileComponent(): ReactNode | null {
 
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const config = useAppSelector((state) => state.config);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const [file, setFile] = useState<File | null>(null);
@@ -72,7 +71,7 @@ export default function UploadFileComponent(): ReactNode | null {
                 const result = await response.json();
                 console.log('Upload result:', result);
                 if (!result.status) {
-                    navigate('/upload/' + file.name);
+                    navigate('/upload/' + encodeURIComponent(file.name));
                 } else {
                     dispatch(showError(getErrorMessage(t, response.status)));
                 }
@@ -85,14 +84,14 @@ export default function UploadFileComponent(): ReactNode | null {
         }
     };
 
-    const setBlocks = (): void => {
-        const blockLevel = UserLevel[config.value['UPLOAD_LEVEL'] as keyof typeof UserLevel]?.valueOf();
-        setCanUpload(parseInt(UserLevel[loggedUser.user.level]) >= blockLevel);
-    }
+    const setBlocks = useCallback((): void => {
+        const blockLevel = levelValue(config.value['UPLOAD_LEVEL']);
+        setCanUpload(hasLevel(loggedUser.user.level, blockLevel));
+    }, [config, loggedUser]);
 
     useEffect(() => {
         setBlocks();
-    }, [config, loggedUser]);
+    }, [setBlocks]);
 
 
     return (

@@ -2,7 +2,7 @@ import {ReactNode, useEffect, useState} from "react";
 import {Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {t} from "i18next";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {levelName, levelValue, UserLevel} from "../model/user/UserLevel.ts";
 import {Page} from "../model/page/Page.ts";
 
 interface Props {
@@ -22,8 +22,8 @@ export default function BlockComponent(props : Props): ReactNode | null {
     }
 
     useEffect(() => {
-        setReadLevel(props.page.readBlock ? UserLevel[props.page.readBlock] : '');
-        setWriteLevel(props.page.editBlock ? UserLevel[props.page.editBlock] : '');
+        setReadLevel(props.page.readBlock ? String(levelValue(props.page.readBlock)) : '');
+        setWriteLevel(props.page.editBlock ? String(levelValue(props.page.editBlock)) : '');
     }, [props.page.readBlock, props.page.editBlock]);
 
     return (
@@ -57,7 +57,7 @@ export default function BlockComponent(props : Props): ReactNode | null {
                     {Object.values(UserLevel)
                         .filter(value => typeof value === 'number')
                         .map((level) => (
-                        <MenuItem value={level} key={level}>{UserLevel[level]}</MenuItem>
+                        <MenuItem value={String(level)} key={level}>{levelName(level)}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
@@ -73,7 +73,7 @@ export default function BlockComponent(props : Props): ReactNode | null {
                     {Object.values(UserLevel)
                         .filter(value => typeof value === 'number')
                         .map((level) => (
-                            <MenuItem value={level} key={level}>{UserLevel[level]}</MenuItem>
+                            <MenuItem value={String(level)} key={level}>{levelName(level)}</MenuItem>
                         ))}
                 </Select>
             </FormControl>

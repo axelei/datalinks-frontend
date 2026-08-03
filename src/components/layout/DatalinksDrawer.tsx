@@ -13,9 +13,9 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {useAppSelector} from "../../hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../hooks.ts";
 import PersonIcon from '@mui/icons-material/Person';
-import {UserLevel} from "../../model/user/UserLevel.ts";
+import {isLevel, UserLevel} from "../../model/user/UserLevel.ts";
 import HouseIcon from '@mui/icons-material/House';
 import {Link, useNavigate} from 'react-router-dom';
 import LoginModal from "../LoginModal.tsx";
@@ -23,7 +23,6 @@ import {useTranslation} from "react-i18next";
 import {useCookies} from "react-cookie";
 import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
 import {newUser} from "../../model/user/User.ts";
-import {useDispatch} from "react-redux";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import {cookieOptions} from "../../service/Common.ts";
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -36,6 +35,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
 import FolderIcon from '@mui/icons-material/Folder';
 import SearchToolbar from "./SearchToolbar.tsx";
+import {fetchRandomPage} from "../../service/PageService.ts";
 
 const drawerWidth = 240;
 
@@ -54,9 +54,9 @@ export default function DatalinksDrawer(props: Props) {
 
     const loggedUser = useAppSelector((state) => state.loggedUser);
     const navigate = useNavigate();
-    const [_cookies, setCookie] = useCookies(['loginToken']);
+    const [, setCookie] = useCookies(['loginToken']);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -89,7 +89,7 @@ export default function DatalinksDrawer(props: Props) {
 
     const clickUser = () => {
         handleDrawerClose();
-        navigate('/user/' + loggedUser.user.username);
+        navigate('/user/' + encodeURIComponent(loggedUser.user.username));
     }
 
     const clickSignup = () => {
@@ -117,19 +117,10 @@ export default function DatalinksDrawer(props: Props) {
         navigate('/recentChanges');
     }
 
-    const getRandomPage = async () => {
-        const data = await fetch(import.meta.env.VITE_API + '/page/-randomPage');
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
     const randomPage = () => {
         handleDrawerClose();
-        getRandomPage().then((page) => {
-            navigate('/page/' + page.title);
+        fetchRandomPage().then((page) => {
+            navigate('/page/' + encodeURIComponent(page.title));
         }).catch((error) => {
             log(error);
         });
@@ -147,7 +138,6 @@ export default function DatalinksDrawer(props: Props) {
 
     const drawer = (
         <div>
-            <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
             <Link to='/' onClick={handleDrawerClose}>
                 <img id="site-logo" src={'/images/datalinks.svg'} alt={t("Site logo")} />
             </Link>
@@ -163,7 +153,7 @@ export default function DatalinksDrawer(props: Props) {
             </List>
             <Divider/>
             <List>
-                {loggedUser.user.level == UserLevel.GUEST &&
+                {isLevel(loggedUser.user.level, UserLevel.GUEST) &&
                     <>
                         <ListItem key='login' disablePadding onClick={clickLogin}>
                             <ListItemButton>
@@ -182,7 +172,7 @@ export default function DatalinksDrawer(props: Props) {
                             </ListItemButton>
                         </ListItem>
                     </>}
-                {loggedUser.user.level != UserLevel.GUEST &&
+                {!isLevel(loggedUser.user.level, UserLevel.GUEST) &&
                     <>
                         <ListItem key='user' disablePadding onClick={clickUser}>
                             <ListItemButton>
@@ -274,6 +264,7 @@ export default function DatalinksDrawer(props: Props) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
+            <LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
             <AppBar
                 position="fixed"
                 sx={{
@@ -299,7 +290,7 @@ export default function DatalinksDrawer(props: Props) {
             <Box
                 component="nav"
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-                aria-label={t("mailbox folders")}
+                aria-label={t("Main navigation")}
             >
                 <Drawer
                     container={container}

@@ -1,8 +1,7 @@
-import React, {ChangeEvent, ReactNode, useEffect, useState} from "react";
+import React, {ReactNode, useCallback, useEffect, useState} from "react";
 import {Category} from "../model/page/Category.ts";
 import {useTranslation} from "react-i18next";
 import {formatDate, log} from "../service/Common.ts";
-import {useDispatch} from "react-redux";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import Typography from "@mui/material/Typography";
 import {
@@ -26,25 +25,25 @@ import {Link} from "react-router-dom";
 import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {addCategory, deleteCategory, fetchCategories} from "../service/CategoryService.ts";
+import {usePagination} from "../service/usePagination.ts";
 import Box from "@mui/material/Box";
 import AddIcon from '@mui/icons-material/Add';
-import {useAppSelector} from "../hooks.ts";
-import {UserLevel} from "../model/user/UserLevel.ts";
+import {useAppDispatch, useAppSelector} from "../hooks.ts";
+import {isLevel, UserLevel} from "../model/user/UserLevel.ts";
 
 export default function CategoriesComponent(): ReactNode | null {
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const {t} = useTranslation();
     const [categories, setCategories] = useState<Category[]>([]);
     const [categoryName, setCategoryName] = useState('');
-    const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const { page, pageSize, handleChangePage, handleChangeRowsPerPage } = usePagination();
     const [addCategoryOpen, setAddCategoryOpen] = useState(false);
     const [deleteCategoryOpen, setDeleteCategoryOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const loggedUser = useAppSelector((state) => state.loggedUser);
 
-    const searchCategories = () => {
+    const searchCategories = useCallback(() => {
         dispatch(loadingOn());
         const result = fetchCategories(page, pageSize);
         result.then((categories) => {
@@ -54,23 +53,15 @@ export default function CategoriesComponent(): ReactNode | null {
         }).finally(() => {
             dispatch(loadingOff());
         });
-    }
+    }, [page, pageSize, dispatch]);
 
     useEffect(() => {
         searchCategories();
-    }, [page, pageSize]);
+    }, [searchCategories]);
 
     useEffect(() => {
-        setIsAdmin(UserLevel[loggedUser.user.level].toString() == UserLevel.ADMIN.toString());
+        setIsAdmin(isLevel(loggedUser.user.level, UserLevel.ADMIN));
     }, [loggedUser]);
-
-    const handleChangePage = (_event: unknown, newPage: number) : void => {
-        setPage(newPage);
-    }
-
-    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) : void => {
-        setPageSize(parseInt(event.target.value, 10));
-    }
 
     const handleDelete = () => {
         dispatch(loadingOn());
@@ -131,7 +122,7 @@ export default function CategoriesComponent(): ReactNode | null {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row" style={{whiteSpace: "normal", wordBreak: "break-word"}}>
-                                    <Link to={'/category/' + row.name}>{row.name}</Link>
+                                    <Link to={'/category/' + encodeURIComponent(row.name)}>{row.name}</Link>
                                 </TableCell>
                                 <TableCell align="right">{formatDate(row.creationDate)}</TableCell>
                                 <TableCell align="right">

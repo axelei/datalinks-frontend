@@ -23,7 +23,7 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
 
     const handleTooltipOpen = (event: SyntheticEvent) : void => {
         const target = event.target as HTMLAnchorElement;
-        const page = target.href.substring(target.href.lastIndexOf('/') + 1);
+        const page = decodeURIComponent(target.href.substring(target.href.lastIndexOf('/') + 1));
         fetchPageShort(page, loggedUser.token).then((data: Page) => {
             setDynamicTooltipContent(data.summary || "");
         }).catch(() => {
@@ -39,12 +39,12 @@ export default function PageContentComponent( props : Props) : ReactNode | null 
         <>
             <article className="ck-content">{content}</article>
             <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-                {props.page.categories?.map((category : Category, index : number) => (
+                {props.page.categories?.map((category : Category) => (
                     <Chip
-                        key={index}
+                        key={category.name}
                         label={category.name}
                         color="primary"
-                        onClick={() => navigate('/category/' + category.name)}
+                        onClick={() => navigate('/category/' + encodeURIComponent(category.name))}
                     />
                 ))}
             </Stack>

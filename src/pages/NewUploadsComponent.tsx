@@ -1,58 +1,22 @@
-import {ChangeEvent, ReactNode, useEffect, useState} from 'react';
-import {useDispatch} from "react-redux";
+import {ReactNode, useEffect, useState} from 'react';
+import {useAppDispatch} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
-import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {ImageList, ImageListItem, ImageListItemBar, TablePagination} from '@mui/material';
 import {Upload} from "../model/upload/Upload.ts";
 import {Link} from "react-router-dom";
+import {fetchNewUploads} from "../service/UploadService.ts";
+import {usePagination} from "../service/usePagination.ts";
 
 export default function NewUploadsComponent() : ReactNode | null {
 
     const { t } = useTranslation();
     const [uploads, setUploads] = useState<Upload[]>([]);
-    const [page, setPage] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(10);
+    const { page, pageSize, handleChangePage, handleChangeRowsPerPage } = usePagination();
     const [timesFit, setTimesFit] = useState(5);
 
-
-    const dispatch = useDispatch();
-
-    const fetchPages = async () : Promise<Upload[]> => {
-        log("Fetching uploads: ");
-        const requestOptions = {
-            method: 'POST',
-            body: JSON.stringify({
-                page: page,
-                pageSize: pageSize,
-            }),
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/file/newUploads', requestOptions);
-        if (data.ok) {
-            return data.json();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
-    const handleChangePage = (_event: unknown, newPage: number) : void => {
-        setPage(newPage);
-    }
-
-    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) : void => {
-        setPageSize(parseInt(event.target.value, 10));
-    }
-
-    const searchEvent = () : void => {
-        dispatch(loadingOn());
-        const listResult = fetchPages();
-        listResult.then((data : Upload[]) => {
-            setUploads(data);
-        }).finally(() => {
-            dispatch(loadingOff());
-        });
-    }
+    const dispatch = useAppDispatch();
 
     const calculateFit = ()=> {
         const windowWidth = window.innerWidth;
@@ -63,23 +27,26 @@ export default function NewUploadsComponent() : ReactNode | null {
     }
 
     useEffect(() => {
-        log("NewUploadsComponent useEffect");
-
         document.title = import.meta.env.VITE_SITE_TITLE + ' - ' + t("New uploads");
         calculateFit();
 
-        searchEvent();
-    }, [page, pageSize]);
+        dispatch(loadingOn());
+        fetchNewUploads(page, pageSize).then((data : Upload[]) => {
+            setUploads(data);
+        }).finally(() => {
+            dispatch(loadingOff());
+        });
+    }, [page, pageSize, dispatch, t]);
 
     return (
         <>
             <Typography variant="h2">{t("New uploads")}</Typography>
             <ImageList cols={timesFit}>
                 {uploads.map((item) => (
-                    <Link to={'/upload/' + item.slug} key={item.slug}>
+                    <Link to={'/upload/' + encodeURIComponent(item.slug ?? '')} key={item.slug}>
                         <ImageListItem key={item.slug}>
                             <img
-                                src={import.meta.env.VITE_API + '/file/get/' + item.slug}
+                                src={import.meta.env.VITE_API + '/file/get/' + encodeURIComponent(item.slug ?? '')}
                                 alt={item.filename}
                                 loading="lazy"
                             />
@@ -108,5 +75,3 @@ export default function NewUploadsComponent() : ReactNode | null {
         </>
     );
 }
-
-

@@ -4,18 +4,19 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
 import {FormControl, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from "../hooks.ts";
 import Typography from "@mui/material/Typography";
 import {useTranslation} from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 import {log} from "../service/Common.ts";
 import InfoDialog from "../components/InfoDialog.tsx";
+import {signup} from "../service/UserService.ts";
 
 
 export default function SignUp() : ReactNode | null {
 
     const { t } = useTranslation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [validationError, setValidationError] = useState<string>('');
     const [successOpen, setSuccessOpen] = useState<boolean>(false);
     const [gray, setGray] = useState<boolean>(false);
@@ -28,20 +29,6 @@ export default function SignUp() : ReactNode | null {
         email: string,
         name?: string,
         captcha?: string,
-    }
-
-    const signup = async (inputs : Inputs) : Promise<string> => {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({...inputs, captcha: captcha, language: navigator.language }),
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/user/signup', requestOptions);
-        if (data.ok) {
-            return data.text();
-        } else {
-            return Promise.reject(data.text());
-        }
     }
 
     const validateForm = (inputs : Inputs) : Promise<string> => {
@@ -71,7 +58,7 @@ export default function SignUp() : ReactNode | null {
 
     const sendSignup = (inputs : Inputs) : void => {
         dispatch(loadingOn());
-        const result = signup(inputs);
+        const result = signup({...inputs, captcha, language: navigator.language});
         result.then((data: string) : void => {
             log("Signup success: " + data);
             setGray(true);

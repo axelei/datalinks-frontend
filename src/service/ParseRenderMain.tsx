@@ -51,7 +51,7 @@ export const parseRenderMain = (content: string, tooltipContent : string, handle
                 } else {
                     const firstChild = element.children?.[0];
                     const text = firstChild && isTagNode(firstChild) ? '' : (firstChild as HtmlText | undefined)?.data ?? attribs.href ?? '';
-                    return (<><a href={attribs.href} target="_blank" rel="nofollow">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /> </a></>);
+                    return (<><a href={attribs.href} target="_blank" rel="nofollow noopener noreferrer">{text}<InsertLinkIcon fontSize="small" sx={{verticalAlign: "middle"}} /> </a></>);
                 }
             }
 

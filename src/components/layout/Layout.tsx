@@ -1,38 +1,29 @@
-import {ReactNode, useCallback, useEffect} from "react";
+import {useCallback, useEffect} from "react";
+import {Outlet} from "react-router-dom";
 import DatalinksDrawer from "./DatalinksDrawer.tsx";
 import Body from "./Body.tsx";
 import Footer from "./Footer.tsx";
-import {useAppSelector} from "../../hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../hooks.ts";
 import LoadingModal from "../LoadingModal.tsx";
 import ErrorModal from "../ErrorModal.tsx";
 import {useCookies} from "react-cookie";
 import {setLoggedToken, setLoggedUser} from "../../redux/loggedUserSlice.ts";
 import {fetchUserByLoginToken} from "../../service/UserService.ts";
 import {newUser, User} from "../../model/user/User.ts";
-import {useDispatch} from "react-redux";
 import {setConfig} from "../../redux/configSlice.ts";
-import {AssociativeArray, log} from "../../service/Common.ts";
+import {AssociativeArray} from "../../service/Common.ts";
 import {Configlet} from "../../model/page/Configlet.ts";
 import {cookieOptions} from "../../service/Common.ts";
+import {fetchConfig} from "../../service/ConfigService.ts";
 
-const fetchConfig = async () : Promise<Configlet[]> => {
-    const data = await fetch(import.meta.env.VITE_API + '/config/all');
-    if (data.ok) {
-        return await data.json();
-    } else {
-        log('Error fetching config: ' + data);
-        return Promise.reject(data);
-    }
-}
+export default function Layout() {
 
-export default function Layout(props: { children?: ReactNode }) : ReactNode | null {
-
-    const loading = useAppSelector((state) => state.loading.value);
+    const loading = useAppSelector((state) => state.loading.count > 0);
     const showError = useAppSelector((state) => state.showError.value);
     const errorMessage = useAppSelector((state) => state.showError.message);
     const loggedUser = useAppSelector((state) => state.loggedUser);
-    const dispatch = useDispatch();
-    const [cookies, _setcookies, removeCookie] = useCookies(['loginToken']);
+    const dispatch = useAppDispatch();
+    const [cookies, , removeCookie] = useCookies(['loginToken']);
 
     const loadConfig = useCallback(() => {
         fetchConfig()
@@ -75,7 +66,7 @@ export default function Layout(props: { children?: ReactNode }) : ReactNode | nu
             <LoadingModal loading={loading} />
             <DatalinksDrawer>
                 <Body>
-                    {props.children}
+                    <Outlet />
                 </Body>
                 <Footer />
             </DatalinksDrawer>

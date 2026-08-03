@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import {modalStyle} from "../service/Common.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from "../hooks.ts";
 import {Link} from "react-router-dom";
 import "../css/LoginModal.css";
 import {getErrorMessage} from "../service/Common.ts";
@@ -12,7 +12,7 @@ import {showError} from "../redux/showErrorSlice.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {setLoggedToken, setLoggedUser} from "../redux/loggedUserSlice.ts";
-import {fetchUser} from "../service/UserService.ts";
+import {fetchUser, login} from "../service/UserService.ts";
 import {User} from "../model/user/User.ts";
 import {useCookies} from "react-cookie";
 import {cookieOptions} from "../service/Common.ts";
@@ -21,8 +21,8 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
 
   const { t } = useTranslation();
   const [validationError, setValidationError] = useState<string>('');
-  const [_cookies, setCookie] = useCookies(['loginToken']);
-  const dispatch = useDispatch();
+  const [, setCookie] = useCookies(['loginToken']);
+  const dispatch = useAppDispatch();
 
   const handleClose = () => {
     props.onClose();
@@ -31,22 +31,6 @@ export default function LoginModal(props: { show: boolean, onClose: () => void }
   type Inputs = {
     username: string
     password: string
-  }
-
-  const login = async (username: string, password: string): Promise<string> => {
-    const requestOptions = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({username, password}),
-    };
-    const data = await fetch(import.meta.env.VITE_API + '/user/login', requestOptions);
-    if (data.ok) {
-      return data.json();
-    } else if (data.status == 404) {
-      return Promise.reject(404);
-    } else {
-      return Promise.reject(500);
-    }
   }
 
   const {

@@ -11,7 +11,7 @@ import {fetchEdit} from "../service/EditService.ts";
 export default function EditComponent(): ReactNode | null {
 
     const location = useLocation();
-    const editId = location.pathname.split('/')[2];
+    const editId = decodeURIComponent(location.pathname.split('/')[2] ?? '');
     const [edit, setEdit] = useState<Edit>();
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function EditComponent(): ReactNode | null {
             log("Edit fetch failed: " + error);
         });
 
-    }, [location.pathname]);
+    }, [location.pathname, editId]);
 
     return (
         <>

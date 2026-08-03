@@ -10,6 +10,7 @@ import {
     Code,
     CodeBlock,
     Essentials,
+    EditorConfig,
     EventInfo,
     Font,
     GeneralHtmlSupport,
@@ -53,6 +54,7 @@ import {t} from "i18next";
 import {Autocomplete, Chip, Dialog, DialogContent, DialogTitle, InputAdornment, Stack, TextField} from "@mui/material";
 import {Category} from "../model/page/Category.ts";
 import {fetchCategory, findCategories} from "../service/CategoryService.ts";
+import {titleSearch} from "../service/SearchService.ts";
 import {log, useDebounce} from "../service/Common.ts";
 import {Foundling} from "../model/search/Foundling.ts";
 import {FoundlingType} from "../model/search/FoundlingType.ts";
@@ -65,6 +67,13 @@ interface Props {
     changeContentEvent: (event: EventInfo<string, unknown>, editor : ClassicEditor) => void;
     setCategories: (categories: Category[]) => void;
 }
+
+type EditorConfigWithLinkToPage = EditorConfig & {
+    linkToPage: {
+        onOpenDialog: () => void;
+        label: string;
+    };
+};
 
 
 export default function EditorComponent( props : Props) : ReactNode | null {
@@ -89,7 +98,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                 findCategories(debouncedSearchTerm)
                     .then((data: Category[]) => {
                         setFoundCategories(data);
-                    }).catch((_error) => {
+                    }).catch(() => {
                     setFoundCategories([]);
                 });
             } else {
@@ -102,17 +111,14 @@ export default function EditorComponent( props : Props) : ReactNode | null {
     useEffect(
         () => {
             if (debouncedPageSearch) {
-                fetch(import.meta.env.VITE_API + '/search/titleSearch/' + encodeURIComponent(debouncedPageSearch), {
-                    headers: {Authorization: 'Bearer ' + loggedUser.token}
-                })
-                    .then(res => res.ok ? res.json() : [])
+                titleSearch(debouncedPageSearch, loggedUser.token)
                     .then((data: Foundling[]) => setPageResults(data.filter(f => f.type === FoundlingType.page)))
                     .catch(() => setPageResults([]));
             } else {
                 setPageResults([])
             }
         },
-        [debouncedPageSearch]
+        [debouncedPageSearch, loggedUser.token]
     );
 
     const handleDeleteCategory = (categoryToDelete: Category) => {
@@ -267,7 +273,7 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                     ],
                     translations: [translation],
                     initialData: props.initialContent,
-                } as any}
+                } as EditorConfigWithLinkToPage}
                 onReady={(editor: ClassicEditor) => {
                     editorRef.current = editor;
                 }}
@@ -318,9 +324,9 @@ export default function EditorComponent( props : Props) : ReactNode | null {
                 />}
                />
             <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, marginTop: 5 }}>
-                {categories.map((category : Category, index : number) => (
+                {categories.map((category : Category) => (
                     <Chip
-                        key={index}
+                        key={category.name}
                         label={category.name}
                         onDelete={() => handleDeleteCategory(category)}
                         color="primary"

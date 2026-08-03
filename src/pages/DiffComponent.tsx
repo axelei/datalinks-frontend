@@ -11,8 +11,8 @@ import ReactDiffViewer from 'react-diff-viewer-continued';
 export default function DiffComponent(): ReactNode | null {
 
     const location = useLocation();
-    const editId1 = location.pathname.split('/')[2];
-    const editId2 = location.pathname.split('/')[3];
+    const editId1 = decodeURIComponent(location.pathname.split('/')[2] ?? '');
+    const editId2 = decodeURIComponent(location.pathname.split('/')[3] ?? '');
     const [edit1, setEdit1] = useState<Edit>();
     const [edit2, setEdit2] = useState<Edit>();
 
@@ -36,7 +36,7 @@ export default function DiffComponent(): ReactNode | null {
             log("Edit fetch failed: " + error);
         });
 
-    }, [location.pathname]);
+    }, [location.pathname, editId1, editId2]);
 
     return (
         <>

@@ -1,5 +1,5 @@
 import {ReactNode, useState} from 'react';
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from "../hooks.ts";
 import {useTranslation} from "react-i18next";
 import Typography from "@mui/material/Typography";
 import {
@@ -17,6 +17,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {log} from "../service/Common.ts";
 import {loadingOff, loadingOn} from "../redux/loadingSlice.ts";
+import {requestPasswordReset} from "../service/UserService.ts";
 
 export default function ResetPasswordRequestComponent() : ReactNode | null {
 
@@ -25,7 +26,7 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
     const [sucessOpen, setSucessOpen] = useState<boolean>(false);
     const [gray, setGray] = useState<boolean>(false);
     const [captcha, setCaptcha] = useState<string | null>(null);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     type Inputs = {
         username: string,
@@ -33,21 +34,7 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
         captcha?: string,
     }
 
-    const sendPasswordResetRequest = async (inputs : Inputs) : Promise<string> => {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({...inputs, captcha: captcha }),
-        };
-        const data = await fetch(import.meta.env.VITE_API + '/user/requestReset', requestOptions);
-        if (data.ok) {
-            return data.text();
-        } else {
-            return Promise.reject(data.text());
-        }
-    }
-
-    const validateForm = (_inputs : Inputs) : Promise<string> => {
+    const validateForm = (): Promise<string> => {
         if (!captcha) {
             return Promise.reject(t("Captcha is required"));
         }
@@ -61,9 +48,9 @@ export default function ResetPasswordRequestComponent() : ReactNode | null {
     } = useForm<Inputs>()
     const onSubmit : SubmitHandler<Inputs> = (inputs : Inputs) : void => {
         setValidationError('');
-        validateForm(inputs)
+        validateForm()
             .then(() => {
-                const request = sendPasswordResetRequest(inputs);
+                const request = requestPasswordReset({...inputs, captcha});
                 dispatch(loadingOn());
                 request.then(() => {
                     setSucessOpen(true);
